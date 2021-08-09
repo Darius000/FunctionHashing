@@ -1,13 +1,14 @@
 #include "PCH.h"
 #include "NodeGraph.h"
 #include "Core\Events\KeyCodes.h"
+#include "Registry\NodeRegistry.h"
 #include "imgui.h"
 #include "ImNodes/imnodes.h"
 #include "imgui_internal.h"
 #include "DataTypes/Property.h"
 #include "Nodes/FunctionNode.h"
 #include "DataTypes/TypeDescriptor.h"
-#include "DataTypes\DataTypeRegistry.h"
+#include "DataTypes/DataTypeRegistry.h"
 
 NodeGraph::NodeGraph()
 {
@@ -169,7 +170,7 @@ const bool NodeGraph::IsAnyItemHovered() const
 
 void NodeGraph::DrawNodeList()
 {	
-	auto& list = NodeRegistry<>::NodeTypes();
+	auto& list = NodeCatgeories::GetCategoryList();
 
 	ImGui::BeginGroup();
 	DrawCategory(list);
@@ -242,7 +243,7 @@ void NodeGraph::DrawNodeListContextMenu()
 	if (ImGui::BeginPopupContextItem("Nodes"))
 	{
 		const ImVec2 click_pos = ImGui::GetMousePosOnOpeningCurrentPopup();
-		DrawCategory(NodeRegistry<>::NodeTypes(), &selected);
+		DrawCategory(NodeCatgeories::GetCategoryList(), &selected);
 		if (selected)
 		{
 			ImNodes::SetNodeScreenSpacePos(last_added_node, click_pos);

@@ -2,19 +2,14 @@
 #include "CommentNode.h"
 #include "NodeGraph/NodeGraph.h"
 
-CommentNode::CommentNode()
+Comment::Comment()
 {
 	m_Comment = "This is a comment node!";
 	m_TitleStyle = ETitleStyle_::Custom;
 	m_Color = {.1f, .1f, .1f , .2f};
 }
 
-std::string CommentNode::GetTypeName() const
-{
-	return "Comment";
-}
-
-void CommentNode::CustomDraw()
+void Comment::CustomDraw()
 {
 	
 	ImNodes::BeginNodeTitleBar();
@@ -26,7 +21,7 @@ void CommentNode::CustomDraw()
 	DrawResizeButton();
 }
 
-void CommentNode::DrawResizeButton()
+void Comment::DrawResizeButton()
 {
 	ImVec2 pos = ImNodes::GetNodeScreenSpacePos(GetID());
 	ImVec2 dim = ImNodes::GetNodeDimensions(GetID());
@@ -61,4 +56,4 @@ void CommentNode::DrawResizeButton()
 	}
 }
 
-REGISTER_NODE(CommentNode,"Comment", "Add a comment")
+DEFINE_REGISTER_NODE(Comment)

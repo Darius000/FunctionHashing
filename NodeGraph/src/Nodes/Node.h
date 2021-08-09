@@ -2,7 +2,8 @@
 
 #include "Core/Core.h"
 #include "DataTypes/Property.h"
-#include "NodeRegistry.h"
+#include "INodeCreation.h"
+#include "Registry/NodeRegistry.h"
 #include "NodeEditorObject.h"
 #include "Pin.h"
 

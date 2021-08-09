@@ -51,22 +51,7 @@ struct is_convertible
 	enum { value = std::is_convertible<U, T>::value };
 };
 
-inline static void SplitString(const std::string& str, 
-	const std::string& delimiter, std::vector<std::string>& out)
-{
-	size_t pos = 0;
-	size_t start;
-	std::string token;
 
-	while ((start = str.find_first_not_of(delimiter, pos)) != std::string::npos)
-	{
-		pos = str.find(delimiter, start);
-
-		//add 1 to offset space character
-		token = str.substr(start, pos - start);
-		out.push_back(token);
-	}
-}
 
 #define  BIT(x) (1 << x)
 

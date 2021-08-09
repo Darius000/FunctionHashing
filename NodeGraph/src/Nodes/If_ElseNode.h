@@ -11,14 +11,7 @@ public:
 
 	void OnExecute() override;
 
-	virtual std::string GetTypeName() const override { return "If_Else";};
-
-	static Node* CreateMethod()
-	{
-		return new If_ElseNode();
-	}
-
-	static std::string GetFactoryName() { return "If Else"; }
+	DEFINE_NODE_CLASS(If_ElseNode, "", "Branching");
 
 	bool default_in = false;
 };	

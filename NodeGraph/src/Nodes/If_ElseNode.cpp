@@ -17,4 +17,5 @@ void If_ElseNode::OnExecute()
 	
 }
 
-REGISTER_NODE(If_ElseNode, "If Else", "Branching")
+
+DEFINE_REGISTER_NODE(If_ElseNode)

@@ -62,7 +62,7 @@ private:
 	void DrawNodeLinks();
 
 	//Creates the category hierarchy, returns when an item is clicked
-	void DrawCategory(const CategoryList& list, bool* selected = 0);
+	void DrawCategory(const struct CategoryList& list, bool* selected = 0);
 
 	const bool IsEditorHovered() const;
 

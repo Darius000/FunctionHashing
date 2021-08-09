@@ -2,6 +2,9 @@
 
 #include "Core/Core.h"
 
+template<typename... Args>
+class NodeRegistry;
+
 class INodeCreation
 {
 public:
@@ -47,3 +50,19 @@ struct NodeCreationMethod
 		bool registered = NodeRegistry<__VA_ARGS__>::Registrate(Class::GetFactoryName(), \
 		NodeCreationMethod(Class::CreateMethod, Category, Description));\
 	}
+
+#define DEFINE_REGISTER_NODE(Class, ...)\
+	namespace Register##Class\
+	{\
+		bool registered = NodeRegistry<__VA_ARGS__>::Registrate(Class::GetFactoryName(), \
+				NodeCreationMethod(Class::CreateMethod, Class::GetFactoryCategory(),\
+				Class::GetFactoryDescription()));\
+	}
+	
+
+#define DEFINE_NODE_CLASS(Class, Category, Description)\
+	virtual std::string GetTypeName() const override { return #Class;}\
+	static Node* CreateMethod() { return new Class(); }\
+	static std::string GetFactoryName() { return #Class; };\
+	static std::string GetFactoryCategory() { return std::string(Category) + Class::GetFactoryName();}\
+	static std::string GetFactoryDescription() { return Description; }

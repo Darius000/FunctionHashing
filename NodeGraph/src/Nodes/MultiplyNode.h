@@ -11,18 +11,11 @@ public:
 
 	void OnExecute() override;
 
-	virtual std::string GetTypeName() const override { return "Multiply";}
-
-	static Node* CreateMethod()
-	{
-		return new MultiplyNode();
-	}
-
-	static std::string GetFactoryName();
+	DEFINE_NODE_CLASS(MultiplyNode, "Math|", "Multiply")
 };
 
 template<>
-std::string MultiplyNode<int>::GetFactoryName() { return "MultiplyInt"; }
+std::string MultiplyNode<int>::GetFactoryName() { return "Multiply(Int)"; }
 
 template<>
-std::string MultiplyNode<float>::GetFactoryName() { return "MultiplyFloat"; }
+std::string MultiplyNode<float>::GetFactoryName() { return "Multiply(Float)"; }

@@ -22,5 +22,5 @@ using MultiplyNodeInt = MultiplyNode<int>;
 using MultiplyNodeFloat = MultiplyNode<float>;
 
 
-REGISTER_NODE(MultiplyNodeInt, "Math |MultiplyInt", "Multiply node for int")
-REGISTER_NODE(MultiplyNodeFloat, "Math |MultiplyFloat", "Multiply node for floats")
+DEFINE_REGISTER_NODE(MultiplyNodeInt)
+DEFINE_REGISTER_NODE(MultiplyNodeFloat)
