@@ -1,24 +1,10 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "DataTypes/DataTypeEnum.h"
 #include "DataTypes/Property.h"
 #include "Nodes/INodeCreation.h"
 #include "Category/Category.h"
 #include <any>
-
-enum class EVariableNodeType : uint8_t
-{
-	Get,
-	Set,
-	Max
-};
-
-
-template<>
-std::vector<std::string> EnumStrings<EVariableNodeType>::Data = {
-		"Get", "Set"
-};
 
 class NodeRegistry
 {

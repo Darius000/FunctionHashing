@@ -1,16 +1,13 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "Core/Events/KeyEvents.h"
-#include "Core/Events/MouseEvent.h"
-#include "Nodes/Node.h"
-#include "NodeLink/NodeLink.h"
+
 
 class NodeGraph
 {
-	using NodeList = std::map<ImGuiID, Scope<class Node>>;
-	using NodesSelected = std::vector<ImGuiID>;
-	using NodeLinks = std::unordered_map<ImGuiID, Scope<NodeLink>>;
+	using NodeList = typename std::map<ImGuiID, Scope<class Node>>;
+	using NodesSelected = typename std::vector<ImGuiID>;
+	using NodeLinks = typename std::unordered_map<ImGuiID, Scope<class NodeLink>>;
 	using PropertyList = std::vector<Ref<struct IProperty>>;
 
 public:
@@ -24,18 +21,18 @@ public:
 		assert(newNode != nullptr);
 
 		last_added_node = newNode->GetID();
-		m_Nodes.emplace(newNode->GetID(), Scope<Node>(newNode));
+		m_Nodes.emplace(newNode->GetID(), Scope<class Node>(newNode));
 	}
 
 	void Draw();
 
 
 	//remove a node with the id
-	void RemoveNode(ImGuiID id);
+	void RemoveNode(typename ImGuiID id);
 
-	void RemoveLinks(ImGuiID id);
+	void RemoveLinks(typename ImGuiID id);
 
-	inline const ImGuiID& GetID() const { return m_ID; }
+	typename inline const ImGuiID& GetID() const { return m_ID; }
 
 protected:
 	//void RemoveVariable(Ref<class Property> var);
@@ -71,7 +68,7 @@ private:
 private:
 
 	//Check if node attrs are the same type float, boo, etc
-	bool CanPinsConnect(Pin* s_attr, Pin* e_attr);
+	bool CanPinsConnect(struct Pin* s_attr, struct Pin* e_attr);
 
 	void DeleteSelectedNodes();
 	void DeleteSelectedLinks();
@@ -82,7 +79,7 @@ private:
 
 	bool m_Item_Hovered = false;
 
-	ImGuiID last_added_node = 0;
+	typename ImGuiID last_added_node = 0;
 
 	NodeList m_Nodes;
 
@@ -90,9 +87,9 @@ private:
 
 	NodeLinks m_NodeLinks;
 
-	ImDrawListSplitter splitter;
+	struct ImDrawListSplitter splitter;
 
-	ImGuiID m_ID;
+	typename ImGuiID m_ID;
 
 	static ImGuiID s_ID;
 };

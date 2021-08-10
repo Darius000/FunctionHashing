@@ -8,6 +8,11 @@
 #include "DataTypes/Property.h"
 #include "DataTypes/TypeDescriptor.h"
 #include "DataTypes/DataTypeRegistry.h"
+#include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
+#include "Core/Events/KeyEvents.h"
+#include "Core/Events/MouseEvent.h"
+#include "Nodes/Node.h"
+#include "NodeLink/NodeLink.h"
 
 NodeGraph::NodeGraph()
 {

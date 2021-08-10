@@ -1,6 +1,20 @@
 #pragma once
 
+#include "DataTypes/DataTypeEnum.h"
 #include "Nodes/Node.h"
+
+enum class EVariableNodeType : uint8_t
+{
+	Get,
+	Set,
+	Max
+};
+
+
+template<>
+std::vector<std::string> EnumStrings<EVariableNodeType>::Data = {
+		"Get", "Set"
+};
 
 
 template<typename T>
