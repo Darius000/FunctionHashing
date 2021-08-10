@@ -1,18 +1,17 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "FunctionNode.h"
-#include "INodeCreation.h"
+#include "Node.h"
 
-class If_ElseNode :public FunctionNode, public INodeCreation
+class If_ElseNode :public Node
 {
 public:
 	If_ElseNode();
 
 	void OnExecute() override;
 
-	DEFINE_NODE_CLASS(If_ElseNode, "", "Branching");
+	DEFINE_NODE_CLASS(If_ElseNode, "", "Branching", true);
 
-	bool default_in = false;
+	static Node* CreateMethod() { return new If_ElseNode(); }
 };	
 

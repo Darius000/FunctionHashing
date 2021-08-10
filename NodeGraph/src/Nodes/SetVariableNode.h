@@ -1,27 +1,19 @@
 #pragma once
 
 #include "Node.h"
-#include "GetVariableNode.h"
-#include "DataTypes/Property.h"
-#include "INodeCreation.h"
+#include "VariableNodeInterface/VariableNodeInterface.h"
 
 template<typename T>
-class SetVariableNode : public Node, public INodeCreation
+class SetVariableNode : public VariableNodeInterface<T>
 {
 public:
 	SetVariableNode(Ref<IProperty> prop)
+		:VariableNodeInterface(prop)
 	{
-		m_PropertyName = prop->GetName();
-		prop->AddRef(GetID());
-
 		AddDataPin<T>("In", ImNodesAttributeType_Input, prop);
 		AddDataPin<T>("Out", ImNodesAttributeType_Output, prop);
 		AddExecutionPin(ImNodesAttributeType_Input);
 		AddExecutionPin(ImNodesAttributeType_Output);
-
-		m_Color = prop->GetColor();
-		m_Color.w = .5f;
-		m_TitleStyle = ETitleStyle_::Custom;
 	}
 
 	virtual void OnExecute() override 
@@ -31,23 +23,14 @@ public:
 
 	virtual void CustomDraw() override
 	{
-		auto propdata = GetParameter("Out");
-		ImGui::TextUnformatted(propdata->GetProperty()->GetName().c_str());
+		ImGui::TextUnformatted(m_Property->GetName().c_str());
 	}
 
-	static std::string GetFactoryName();
+	DEFINE_NODE_CLASS(SetVariableNode,"", "", false)
 
-	static Node* CreateMethod(Ref<IProperty> prop)
-	{
-		return new SetVariableNode(prop);
-	}
+	static Node* CreateMethod(Ref<IProperty> prop) { return new SetVariableNode(prop); }
 
-	std::string m_PropertyName;
 
-	std::string GetTypeName() const override
-	{
-		return "Set";
-	}
 };
 
 template<>

@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Node.h"
-#include "INodeCreation.h"
 
 template<typename From, typename To>
-class CastNode : public Node, public INodeCreation
+class CastNode : public Node
 {
 public:
 	CastNode()
@@ -15,43 +14,15 @@ public:
 		AddDataPin<To>("Out", ImNodesAttributeType_Output, MakeRef<IPropertyT<To>>());
 	}
 
-	std::string GetTypeName() const override
-	{
-		return "Cast";
-	}
+	DEFINE_NODE_CLASS(CastNode, "Operators|", "Casting", true);
 
 	static Node* CreateMethod()
 	{
 		return new CastNode<From, To>();
 	}
 
-	static std::string GetFactoryName() { return "Cast"; }
-
 };
 
-template<>
-inline Node* CastNode<int, bool>::CreateMethod()
-{
-	return new CastNode();
-}
-
-template<>
-inline Node* CastNode<float, bool>::CreateMethod()
-{
-	return new CastNode();
-}
-
-template<>
-inline Node* CastNode<bool, int>::CreateMethod()
-{
-	return new CastNode();
-}
-
-template<>
-inline Node* CastNode<bool ,float>::CreateMethod()
-{
-	return new CastNode();
-}
 
 template<>
 inline std::string CastNode<int, bool>::GetFactoryName()

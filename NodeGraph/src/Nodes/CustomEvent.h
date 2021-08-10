@@ -1,22 +1,19 @@
 #pragma once
 
 
-#include "FunctionNode.h"
-#include "INodeCreation.h"
+#include "Node.h"
 
-class CustomEventNode : public FunctionNode, public INodeCreation
+class CustomEventNode : public Node
 {
 public:
 	CustomEventNode();
 
-	virtual std::string GetTypeName() const override;
+	DEFINE_NODE_CLASS(CustomEventNode, "", "Add An Event", true)
 
 	static Node* CreateMethod()
 	{
 		return new CustomEventNode();
 	}
-
-	static std::string GetFactoryName() { return "Event"; }
 
 	virtual void CustomDraw() override;
 

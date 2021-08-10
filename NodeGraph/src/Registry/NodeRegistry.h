@@ -5,6 +5,7 @@
 #include "DataTypes/Property.h"
 #include "Nodes/INodeCreation.h"
 #include "Category/Category.h"
+#include <any>
 
 enum class EVariableNodeType : uint8_t
 {
@@ -19,42 +20,60 @@ std::vector<std::string> EnumStrings<EVariableNodeType>::Data = {
 		"Get", "Set"
 };
 
-template<typename ...Args>
 class NodeRegistry
 {
+	using NodePtrT = class Node*;
+
 public:
 	//Register a node type with the name and a static create function
 	
-	static bool Registrate(const std::string& name, NodeCreationMethod<Args...> CN)
+	template<typename R, typename...Args>
+	static bool Registrate(const std::string& name, const NodeCreationMethod<R, Args...>& CN)
 	{
 		auto it = Registry().find(name);
 
 		if (it == Registry().end())
 		{
-			Registry()[name] = CN;
+			Registry()[name] = CN.m_CreateFunc;
 
-			if(CN.m_Category.size() > 0)
+			if (CN.m_Category.size() > 0 && CN.m_PlaceInCategories)
 				NodeCatgeories::AddCategory(CN.m_Category, CN.m_Description);
 
 			std::cout << "Registered Node Class: " << name << "\n";
 			return true;
 		}
-		
 		return false;
 	}
 
 	
-
-	static Node* Instaniate(const std::string& name, Args ... args)
+	template<typename...Args>
+	static NodePtrT Instaniate(const std::string& name, Args ... args)
 	{
-		auto it = Registry().find(name);
-		return it == Registry().end() ? nullptr : it->second.m_CreateFunc(args...);
+		using CreaterTraitT = NodePtrT(*)(Args...);
+
+		const auto it = Registry().find(name);
+
+		if (it == Registry().end())
+		{
+			return nullptr;
+		}
+		try
+		{
+			auto creater = std::any_cast<CreaterTraitT>(it->second);
+			return creater(std::forward<Args>(args)...);
+		}
+		catch (const std::bad_any_cast& e)
+		{
+			std::cout << e.what() << "\n";
+		}
+	
+		return nullptr;
 	}
 
 
-	static std::unordered_map<std::string, NodeCreationMethod<Args...>>& Registry()
+	static std::unordered_map<std::string, std::any>& Registry()
 	{
-		static std::unordered_map<std::string, NodeCreationMethod<Args...>> impl;
+		static std::unordered_map<std::string, std::any> impl;
 		return impl;
 	}
 

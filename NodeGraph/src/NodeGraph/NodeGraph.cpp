@@ -6,7 +6,6 @@
 #include "ImNodes/imnodes.h"
 #include "imgui_internal.h"
 #include "DataTypes/Property.h"
-#include "Nodes/FunctionNode.h"
 #include "DataTypes/TypeDescriptor.h"
 #include "DataTypes/DataTypeRegistry.h"
 
@@ -16,17 +15,6 @@ NodeGraph::NodeGraph()
 	ImNodes::GetIO().LinkDetachWithModifierClick.Modifier = &ImGui::GetIO().KeyAlt;
 	ImNodes::PushAttributeFlag(ImNodesAttributeFlags_EnableLinkDetachWithDragClick);
 }
-
-
-//void NodeGraph::Instantiate(Ref<class Property> prop, const TEnum<EDataType>& name, const TEnum<EVariableNodeType>& type)
-//{
-//	auto newNode = NodeRegistry::Instaniate(prop, name, type);
-//	newNode->OnSetAsStartEvent.AddBinding([this](Node* node) {
-//		this->m_StartNode = node;
-//	});
-//	last_added_node = newNode->GetID();
-//	m_Nodes.emplace((ImGuiID)newNode->GetID(), std::move(newNode));
-//}
 
 void NodeGraph::Draw()
 {
@@ -301,7 +289,7 @@ void NodeGraph::DrawVariableListProp(Ref<IProperty> prop)
 			auto nodecreationtype = TEnum<EVariableNodeType>::GetStrings()[i];
 			if (ImGui::Selectable(nodecreationtype.c_str(), false))
 			{
-				Instantiate(nodecreationtype + prop->GetTypeName(), prop );
+				Instantiate(nodecreationtype + prop->GetTypeName(), prop);
 			}
 		}
 	

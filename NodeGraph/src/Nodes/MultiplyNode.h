@@ -1,17 +1,19 @@
 #pragma once
 
-#include "FunctionNode.h"
+#include "Node.h"
 #include "INodeCreation.h"
 
 template<typename T>
-class MultiplyNode : public FunctionNode , public INodeCreation
+class MultiplyNode : public Node
 {
 public:
 	MultiplyNode();
 
 	void OnExecute() override;
 
-	DEFINE_NODE_CLASS(MultiplyNode, "Math|", "Multiply")
+	DEFINE_NODE_CLASS(MultiplyNode, "Math|", "Multiply", true)
+
+	static Node* CreateMethod() { return new MultiplyNode(); }
 };
 
 template<>

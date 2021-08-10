@@ -3,8 +3,8 @@
 #include "Core/Core.h"
 #include "DataTypes/Property.h"
 #include "INodeCreation.h"
-#include "Registry/NodeRegistry.h"
 #include "NodeEditorObject.h"
+#include "Registry/NodeRegistry.h"
 #include "Pin.h"
 
 template<class T>
@@ -22,7 +22,7 @@ using Pins = std::vector<Ref<Pin>>;
 using ParameterMap = std::vector<Ref<DataPin>>;
 using ExecutionPins = std::vector<Ref<ExecutionPin>>;
 
-class Node : public NodeEditorObject
+class Node : public NodeEditorObject, public INodeCreation
 {
 
 public:

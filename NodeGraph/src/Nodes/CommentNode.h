@@ -1,14 +1,16 @@
 #pragma once
-#include "Node.h"
-#include "INodeCreation.h"
 
-class Comment : public Node, public INodeCreation
+#include "Node.h"
+
+class Comment : public Node
 {
 
 public:
 	Comment();
 
-	DEFINE_NODE_CLASS(Comment, "", "Comment")
+	DEFINE_NODE_CLASS(Comment, "", "Comment", true)
+
+	static Node* CreateMethod() { return new Comment(); }
 
 	//Actual comment string
 	std::string m_Comment;

@@ -6,7 +6,7 @@ using FloatToBool = CastNode<float, bool>;
 using BoolToInt = CastNode<bool, int>;
 using BoolToFloat = CastNode<bool, float>;
 
-REGISTER_NODE(IntToBool, "Operators|Int to Bool", "Convert int to bool")
-REGISTER_NODE(FloatToBool, "Operators|Float to Bool", "Convert float to bool")
-REGISTER_NODE(BoolToInt, "Operators |Bool to Int", "Convert bool to int")
-REGISTER_NODE(BoolToFloat, "Operators |Bool to Float", "Convert bool to float")
+DEFINE_REGISTER_NODE(IntToBool)
+DEFINE_REGISTER_NODE(FloatToBool)
+DEFINE_REGISTER_NODE(BoolToInt)
+DEFINE_REGISTER_NODE(BoolToFloat)

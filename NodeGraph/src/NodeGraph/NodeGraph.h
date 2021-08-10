@@ -16,10 +16,10 @@ class NodeGraph
 public:
 	NodeGraph();
 
-	template<typename ... Args>
+	template<typename...Args>
 	void Instantiate(const std::string& name, Args... args)
 	{
-		auto newNode = NodeRegistry<Args...>::Instaniate(name, args...);
+		auto newNode = NodeRegistry::Instaniate(name, args...);
 
 		assert(newNode != nullptr);
 

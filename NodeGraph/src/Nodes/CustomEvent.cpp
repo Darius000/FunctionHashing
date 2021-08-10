@@ -9,11 +9,6 @@ CustomEventNode::CustomEventNode()
 	AddExecutionPin(ImNodesAttributeType_Output);
 }
 
-std::string CustomEventNode::GetTypeName() const
-{
-	return "CustomEvent";
-}
-
 void CustomEventNode::CustomDraw()
 {
 	Node::CustomDraw();
@@ -26,4 +21,4 @@ void CustomEventNode::OnExecute()
 
 }
 
-REGISTER_NODE(CustomEventNode, "Event", "Add An Event")
+DEFINE_REGISTER_NODE(CustomEventNode)
