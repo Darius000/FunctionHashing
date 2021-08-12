@@ -11,8 +11,6 @@
 
 
 #include "Core/Application.h"
-#include "Functions/Functions.h"
-#include "Nodes/CustomEvent.h"
 
 int main(int argc, char* argv[])
 {

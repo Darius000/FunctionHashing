@@ -21,6 +21,13 @@ void Comment::CustomDraw()
 	DrawResizeButton();
 }
 
+void Comment::OnDrawDetails()
+{
+	Node::OnDrawDetails();
+
+	ImGui::InputText("##comment", &m_Comment);
+}
+
 void Comment::DrawResizeButton()
 {
 	ImVec2 pos = ImNodes::GetNodeScreenSpacePos(GetID());

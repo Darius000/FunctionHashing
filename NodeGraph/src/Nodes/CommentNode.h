@@ -16,6 +16,7 @@ public:
 	std::string m_Comment;
 protected:
 	void CustomDraw() override;
+	void OnDrawDetails() override;
 
 	void DrawResizeButton();
 };

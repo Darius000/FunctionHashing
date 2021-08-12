@@ -1,6 +1,22 @@
 #include "PCH.h"
 #include "Property.h"
 
+void IProperty::OnDrawDetails()
+{
+	std::string str = GetName();
+	if (ImGui::InputText("Name", &str, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		OnNameChanged.Broadcast(str);
+		SetName(str);
+	}
+	
+	auto tooltip = GetToolTip();
+	if (ImGui::InputText("Tooltip", &tooltip))
+	{
+		SetToolTip(tooltip);
+	}
+}
+
 template<>
 void IPropertyT<int>::OnDraw()
 {
@@ -60,3 +76,5 @@ std::string IPropertyT<bool>::GetStaticTypeName()
 REGISTER_TYPE(int);
 REGISTER_TYPE(float)
 REGISTER_TYPE(bool)
+
+

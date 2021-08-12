@@ -18,8 +18,7 @@ enum class ETitleStyle_ : int
 	Custom
 };
 
-using Pins = std::vector<Ref<Pin>>;
-using ParameterMap = std::vector<Ref<DataPin>>;
+using Parameters = std::unordered_map<std::string, Ref<PropertyWrapper>>;
 using ExecutionPins = std::vector<Ref<ExecutionPin>>;
 
 class Node : public NodeEditorObject, public INodeCreation
@@ -32,6 +31,7 @@ public:
 	virtual std::string GetTypeName() const { return "Node"; }
 
 	virtual void OnDraw() override;
+	virtual void OnDrawDetails() override;
 
 	//Execute a function
 	void Execute();
@@ -45,13 +45,11 @@ protected:
 	virtual void OnExecute() {};
 
 public:
-	DataPin* GetParameter(const std::string& name);
+	PropertyWrapper* GetParameter(const std::string& name);
 
-	DataPin* GetParameter(int index);
+	Parameters& GetParameters() { return m_Parameters; }
 
-	ParameterMap& GetParameters() { return m_DataPins; }
-
-	Pin* GetPinWithID(ImGuiID id);
+	PropertyWrapper* GetParameterWithID(ImGuiID id);
 
 	std::vector<ExecutionPin*> GetExecutionPinsByType(ImNodesAttributeType_ type) const;
 
@@ -59,25 +57,56 @@ protected:
 	ETitleStyle_ m_TitleStyle;
 
 	ImVec2 m_DefaultSize;
+	ImVec2 m_Size;
+	ImVec2 m_ScreenPos;
 	ImVec4 m_Color;
 	ImVec4 m_TitleColor;
 	float m_Rounding;
 
 protected:
-	template<typename T>
-	void AddDataPin(const std::string& name, ImNodesAttributeType_ type, Ref<IProperty> prop)
+
+	void AddDataPin(const std::string& name, PropertyType type, Ref<IProperty> prop)
 	{
-		auto dp = MakeRef<DataPinT<T>>(name, type, prop, this);
-		m_DataPins.push_back(dp);
-		m_Pins.push_back(dp);
+		if (m_Parameters.find(name) == m_Parameters.end())
+		{
+			auto propertywrapper = MakeRef<PropertyWrapper>(type, prop);
+
+			//add lambda to change map key when prop name changes
+			prop->OnNameChanged.AddBinding([this, prop](const std::string& name)
+			{
+				auto it = std::find_if(m_Parameters.begin(), m_Parameters.end(), [prop](const auto& p){
+					return p.first == prop->GetName();
+				});
+
+				if (it != m_Parameters.end())
+				{
+					auto nodeHandler = m_Parameters.extract(it->first);
+					nodeHandler.key() = name;
+					m_Parameters.insert(std::move(nodeHandler));
+				}
+				
+			});
+
+			m_Parameters.emplace(name, propertywrapper);
+			if (type == PropertyType::Input)
+			{
+				m_InputParameters.emplace(name, propertywrapper);
+			}
+			else
+			{
+				m_OutputParameters.emplace(name, propertywrapper);
+			}
+		}
+			
 	}
 
 	void AddExecutionPin(ImNodesAttributeType_ type);
 
 protected:
-	ParameterMap m_DataPins;
+	Parameters m_Parameters;
+	Parameters m_InputParameters;
+	Parameters m_OutputParameters;
 	ExecutionPins m_ExecPins;
-	Pins m_Pins;
 
 	bool m_IsSelected = false;
 };

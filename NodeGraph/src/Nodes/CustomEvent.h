@@ -17,5 +17,10 @@ public:
 
 	virtual void CustomDraw() override;
 
+	virtual void OnDrawDetails() override;
+
 	virtual void OnExecute() override;
+
+private:
+	void DrawAddPinButton();
 };

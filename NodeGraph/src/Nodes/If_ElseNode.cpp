@@ -3,7 +3,7 @@
 
 If_ElseNode::If_ElseNode()
 {
-	AddDataPin<bool>("Condition", ImNodesAttributeType_Input, MakeRef<IPropertyT<bool>>());
+	AddDataPin("Condition", PropertyType::Input, MakeRef<IPropertyT<bool>>());
 	AddExecutionPin(ImNodesAttributeType_Input);
 	AddExecutionPin(ImNodesAttributeType_Output);
 	

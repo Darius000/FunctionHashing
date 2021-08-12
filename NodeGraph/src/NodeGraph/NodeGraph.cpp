@@ -11,8 +11,8 @@
 #include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
 #include "Core/Events/KeyEvents.h"
 #include "Core/Events/MouseEvent.h"
-#include "Nodes/Node.h"
-#include "NodeLink/NodeLink.h"
+
+
 
 NodeGraph::NodeGraph()
 {
@@ -32,7 +32,7 @@ void NodeGraph::Draw()
 
 	DrawVariableList();
 
-	DrawSelectedPropertyWidget(m_SelectedProperty);
+	DrawSelectedPropertyWidget(m_SelectedObject);
 	
 	ImNodes::PushColorStyle(ImNodesCol_GridBackground, ImGui::GetColorU32(ImVec4(0 ,0 ,0 , 0)));
 	ImNodes::BeginNodeEditor();
@@ -55,10 +55,10 @@ void NodeGraph::Draw()
 	{	
 		auto& start_node = m_Nodes[start_node_id];
 		auto& end_node = m_Nodes[end_node_id];
-		auto* start_pin = start_node->GetPinWithID(start_attr_id);
-		auto* end_pin = end_node->GetPinWithID(end_attr_id);
+		auto start_pin = start_node->GetParameterWithID(start_attr_id);
+		auto end_pin = end_node->GetParameterWithID(end_attr_id);
 
-		if (CanPinsConnect(start_pin, end_pin))
+		if (end_pin->CanConnect(start_pin))
 		{
 			start_pin->OnConnected(end_pin);
 			end_pin->OnConnected(start_pin);
@@ -79,7 +79,7 @@ void NodeGraph::Draw()
 	m_Item_Hovered = ImNodes::IsNodeHovered(&item_hovered);
 	m_Item_Hovered |= ImNodes::IsAnyAttributeActive();
 	m_Item_Hovered |= ImNodes::IsLinkHovered(&item_hovered);
-	
+
 	//Delete selected nodes when delete key is pressed
 	if (ImGui::IsKeyPressed((int)EKeyCode::Delete))
 	{
@@ -180,8 +180,7 @@ void NodeGraph::DrawVariableList()
 		{
 			if ((*it)->IsPendingDestroy())
 			{
-				//clear selected property
-				if (m_SelectedProperty == it->get()) m_SelectedProperty = nullptr;
+				if(m_SelectedObject == it->get()) m_SelectedObject = nullptr;
 
 				//remove property from vector
 				it = m_Properties.erase(it);
@@ -220,6 +219,11 @@ void NodeGraph::DrawAddNewProperty()
 			if (ImGui::Selectable(registeredtype.c_str()))
 			{
 				auto type = DataTypeRegistry::Instaniate(registeredtype);
+				type->OnSelected.AddBinding([this](NodeEditorObject* obj)
+				{
+					if (m_SelectedObject != obj)
+						m_SelectedObject = obj;
+				});
 				m_Properties.emplace_back(type);
 			}
 		}
@@ -271,7 +275,7 @@ void NodeGraph::DrawVariableListProp(Ref<IProperty> prop)
 
 	if (ImGui::Button(prop->GetName().c_str(), textSize + ImVec2(5, 5)))
 	{
-		m_SelectedProperty = prop.get();
+		prop->OnSelected.Broadcast(prop.get());
 	}
 	
 	ImGui::PopStyleColor(2);
@@ -319,47 +323,22 @@ void NodeGraph::DrawVariableListProp(Ref<IProperty> prop)
 	ImGui::PopID();
 }
 
-void NodeGraph::DrawSelectedPropertyWidget(IProperty* prop)
+void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 {
 	if (ImGui::Begin("Details"))
 	{
-		float availablewidth = ImGui::GetWindowContentRegionWidth() / 2.0f;
-		float itemwidth = 0;
 
-		if (prop)
+		if (obj)
 		{
-			
-
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
 			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(.1f, .1f, .1f, 1.0f));
 
-			//change property name
-			itemwidth = ImGui::CalcItemWidth() / 2.0f;
-			ImGui::SetCursorPosX(availablewidth - itemwidth);
-
-			auto str = prop->GetName();
-			if (ImGui::InputText("Name", &str))
-			{
-				prop->SetName(str);
-			}
-
-			//change tooltip
-			itemwidth = ImGui::CalcItemWidth() / 2.0f;
-			ImGui::SetCursorPosX(availablewidth - itemwidth);
-
-			auto tooltip = prop->GetToolTip();
-			if (ImGui::InputText("Tooltip", &tooltip))
-			{
-				prop->SetToolTip(tooltip);
-			}
+			
 
 			ImGui::PopStyleColor();
 			ImGui::PopStyleVar();
 
-			itemwidth = ImGui::CalcItemWidth() / 2.0f;
-			ImGui::SetCursorPosX(availablewidth - itemwidth);
-
-			m_SelectedProperty->Draw();
+			obj->DrawDetails();
 		}
 	}
 
@@ -373,6 +352,9 @@ void NodeGraph::DrawNodes()
 		if (it->second->IsPendingDestroy())
 		{
 			RemoveNode(it->first);
+
+			if (m_SelectedObject == it->second.get()) m_SelectedObject = nullptr;
+
 			it = m_Nodes.erase(it);
 		}
 		else
@@ -451,16 +433,14 @@ void NodeGraph::OnDestroyedLink(const int link_id)
 	auto startpinid = link->m_Start_Ids.second;
 	auto endnodeid = link->m_End_Ids.first;
 	auto endpinid = link->m_End_Ids.second;
-	auto* pinA = m_Nodes[startnodeid]->GetPinWithID(startpinid);
-	auto* pinB = m_Nodes[endnodeid]->GetPinWithID(endpinid);
-	if (pinA)
-		pinA->OnDisConnected();
-	if (pinB)
-		pinB->OnDisConnected();
+	auto pinA = m_Nodes[startnodeid]->GetParameterWithID(startpinid);
+	auto pinB = m_Nodes[endnodeid]->GetParameterWithID(endpinid);
+	pinA->OnDisConnected();
+	pinB->OnDisConnected();
 
 	link->Destroy();
 }
 
-struct IProperty* NodeGraph::m_SelectedProperty = nullptr;
+NodeEditorObject* NodeGraph::m_SelectedObject = nullptr;
 
 ImGuiID NodeGraph::s_ID = 1;

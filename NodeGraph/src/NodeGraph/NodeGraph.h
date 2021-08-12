@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Core/Core.h"
-
+#include "NodeLink/NodeLink.h"
+#include "Nodes/Node.h"
 
 class NodeGraph
 {
@@ -17,6 +18,11 @@ public:
 	void Instantiate(const std::string& name, Args... args)
 	{
 		auto newNode = NodeRegistry::Instaniate(name, args...);
+		newNode->OnSelected.AddBinding([this](NodeEditorObject* obj)
+		{
+			if(m_SelectedObject != obj)
+				m_SelectedObject = obj;
+		});
 
 		assert(newNode != nullptr);
 
@@ -52,7 +58,7 @@ private:
 	//the list of properties in a new window
 	void DrawVariableListProp(Ref<struct IProperty> prop);
 
-	void DrawSelectedPropertyWidget(struct IProperty* prop);
+	void DrawSelectedPropertyWidget(class NodeEditorObject* prop);
 
 	void DrawNodes();
 
@@ -75,7 +81,7 @@ private:
 	void OnDestroyedLink(const int link_id);
 
 private:
-	static struct IProperty* m_SelectedProperty;
+	static class NodeEditorObject* m_SelectedObject;
 
 	bool m_Item_Hovered = false;
 

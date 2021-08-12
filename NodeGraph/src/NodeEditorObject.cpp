@@ -4,7 +4,7 @@
 NodeEditorObject::NodeEditorObject()
 {	
 	auto id = GetNextAvialableID();
-	m_Name = "Object";
+	m_Name = "Object" + std::to_string(id);
 	m_ID = id;
 	m_PendingDestroy = false;
 }
@@ -30,6 +30,14 @@ void NodeEditorObject::Draw()
 	ImGui::PopID();
 }
 
+void NodeEditorObject::DrawDetails()
+{
+	ImGuiID id = m_ID;
+	ImGui::PushID(id);
+	OnDrawDetails();
+	ImGui::PopID();
+}
+
 void NodeEditorObject::Destroy()
 {
 	m_PendingDestroy = true;
@@ -41,7 +49,17 @@ void NodeEditorObject::SetName(const std::string& str)
 	m_Name = str;
 }
 
+void NodeEditorObject::SetToolTip(const std::string& tooltip)
+{
+	m_ToolTip = tooltip;
+}
+
 void NodeEditorObject::OnDraw()
+{
+
+}
+
+void NodeEditorObject::OnDrawDetails()
 {
 
 }

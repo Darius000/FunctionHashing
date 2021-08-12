@@ -10,7 +10,7 @@ public:
 	GetVariableNode(Ref<IProperty> prop)
 		:VariableNodeInterface(prop)
 	{
-		AddDataPin<T>(m_PropertyName, ImNodesAttributeType_Output, prop);
+		AddDataPin(m_PropertyName, PropertyType::Output, prop);
 	}
 	
 	DEFINE_NODE_CLASS(GetVariableNode, "", "", false)
@@ -20,12 +20,7 @@ public:
 		return new GetVariableNode(prop);
 	}
 
-	std::string m_PropertyName;
 protected:
-	void CustomDraw() override
-	{
-		ImGui::TextUnformatted(m_Property->GetName().c_str());
-	}
 };
 
 template<>

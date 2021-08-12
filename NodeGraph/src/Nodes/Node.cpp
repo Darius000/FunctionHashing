@@ -12,29 +12,19 @@ Node::Node()
 	m_DefaultSize = {150.0f, 50.0f};
 }
 
-DataPin* Node::GetParameter(const std::string& name)
+PropertyWrapper* Node::GetParameter(const std::string& name)
 {
-	auto& pair = std::find_if(m_DataPins.begin(), m_DataPins.end(), [name](const Ref<DataPin>& p)
-	{
-		return p->m_Name == name;
-	});
-
-	return (*pair).get();
+	return m_Parameters[name].get();
 }
 
-DataPin* Node::GetParameter(int index)
+PropertyWrapper* Node::GetParameterWithID(ImGuiID id)
 {
-	return  m_DataPins[index].get();
-}
-
-Pin* Node::GetPinWithID(ImGuiID id)
-{
-	auto& pair = std::find_if(m_Pins.begin(), m_Pins.end(), [id](const Ref<Pin>& p)
+	auto& pair = std::find_if(m_Parameters.begin(), m_Parameters.end(), [id](const auto& p)
 	{
-		return p->GetID() == id;
+		return p.second->m_Property->GetID() == id;
 	});
 
-	return (*pair).get();
+	return pair->second.get();
 }
 
 std::vector<ExecutionPin*> Node::GetExecutionPinsByType(ImNodesAttributeType_ type) const
@@ -56,7 +46,6 @@ void Node::AddExecutionPin(ImNodesAttributeType_ type)
 {
 	auto expin = MakeRef<ExecutionPin>(type, this);
 	m_ExecPins.push_back(expin);
-	m_Pins.push_back(expin);
 }
 
 void Node::OnDraw()
@@ -64,6 +53,16 @@ void Node::OnDraw()
 	BeginDraw();
 	CustomDraw();
 	EndDraw();
+}
+
+void Node::OnDrawDetails()
+{
+	for (auto input : m_InputParameters)
+	{
+		
+		input.second->m_Property->Draw(); ImGui::SameLine();
+		ImGui::Text(input.first.c_str()); 
+	}
 }
 
 void Node::Execute()
@@ -98,7 +97,6 @@ void Node::BeginDraw()
 		ImNodes::EndNodeTitleBar();
 		
 	}
-	
 }
 
 void Node::EndDraw()
@@ -112,8 +110,12 @@ void Node::EndDraw()
 
 	ImNodes::EndNode();
 
-
 	m_IsSelected = ImNodes::IsNodeSelected(GetID());
+
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && ImGui::IsItemHovered())
+	{
+		OnSelected.Broadcast(this);
+	}
 
 	if (ImGui::BeginPopupContextItem("Actions"))
 	{
@@ -170,24 +172,25 @@ void Node::DrawDataPins()
 	for (auto& output : GetParameters())
 	{
 
-		auto prop = output->GetProperty();
+		auto prop = output.second->m_Property;
 		ImNodes::PushColorStyle(ImNodesCol_Pin, ImGui::GetColorU32(prop->GetColor()));
 
-		if (output->m_Type == ImNodesAttributeType_Output)
+		if (output.second->m_PropertyType == PropertyType::Output)
 		{
-			ImNodes::BeginOutputAttribute(output->GetID());
+			ImNodes::BeginOutputAttribute(prop->GetID());
+			ImGui::TextUnformatted(output.first.c_str());
 			ImNodes::EndOutputAttribute();
 		}
-		else if (output->m_Type == ImNodesAttributeType_Input)
+		else if (output.second->m_PropertyType == PropertyType::Input)
 		{
 
-			ImNodes::BeginInputAttribute(output->GetID());
-			ImGui::TextUnformatted(output->m_Name.c_str()); ImGui::SameLine();
+			ImNodes::BeginInputAttribute(prop->GetID());
+			ImGui::TextUnformatted(output.first.c_str()); ImGui::SameLine();
 
-			if (!output->IsConnected())
+			if (!output.second->IsConnected())
 			{
 				ImGui::SetNextItemWidth(80.0f);
-				output->GetProperty()->Draw();
+				prop->Draw();
 			}
 
 			ImNodes::EndInputAttribute();

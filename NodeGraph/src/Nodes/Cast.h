@@ -3,47 +3,59 @@
 #include "Node.h"
 
 template<typename From, typename To>
-class CastNode : public Node
+class CastTo : public Node
 {
 public:
-	CastNode()
+	CastTo()
 	{
-		m_Color = ImVec4(0.3f, 1.0f, 0.3f, 1.0f);
+		m_Color = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
 
-		AddDataPin<From>("In", ImNodesAttributeType_Input, MakeRef<IPropertyT<From>>());
-		AddDataPin<To>("Out", ImNodesAttributeType_Output, MakeRef<IPropertyT<To>>());
+		AddDataPin("In", PropertyType::Input, MakeRef<IPropertyT<From>>());
+		AddDataPin("Out", PropertyType::Output, MakeRef<IPropertyT<To>>());
 	}
 
-	DEFINE_NODE_CLASS(CastNode, "Operators|", "Casting", true);
+	DEFINE_NODE_CLASS(CastTo, "Casting|", "Casting", true);
 
 	static Node* CreateMethod()
 	{
-		return new CastNode<From, To>();
+		return new CastTo<From, To>();
 	}
 
 };
 
 
 template<>
-inline std::string CastNode<int, bool>::GetFactoryName()
+inline std::string CastTo<int, bool>::GetFactoryName()
 {
 	return "Int to Bool";
 }
 
 template<>
-inline std::string CastNode<float, bool>::GetFactoryName()
+inline std::string CastTo<float, bool>::GetFactoryName()
 {
 	return "Float to Bool";
 }
 
 template<>
-inline std::string CastNode<bool, int>::GetFactoryName()
+inline std::string CastTo<bool, int>::GetFactoryName()
 {
 	return "Bool to Int";
 }
 
 template<>
-inline std::string CastNode<bool, float>::GetFactoryName()
+inline std::string CastTo<bool, float>::GetFactoryName()
 {
 	return "Bool to Float";
+}
+
+template<>
+inline std::string CastTo<int, float>::GetFactoryName()
+{
+	return "Int to Float";
+}
+
+template<>
+inline std::string CastTo<float , int>::GetFactoryName()
+{
+	return "Float to Int";
 }

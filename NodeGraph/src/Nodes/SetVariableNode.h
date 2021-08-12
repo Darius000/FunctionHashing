@@ -10,8 +10,8 @@ public:
 	SetVariableNode(Ref<IProperty> prop)
 		:VariableNodeInterface(prop)
 	{
-		AddDataPin<T>("In", ImNodesAttributeType_Input, prop);
-		AddDataPin<T>("Out", ImNodesAttributeType_Output, prop);
+		AddDataPin("In", PropertyType::Input, prop);
+		AddDataPin("Out", PropertyType::Output, prop);
 		AddExecutionPin(ImNodesAttributeType_Input);
 		AddExecutionPin(ImNodesAttributeType_Output);
 	}
