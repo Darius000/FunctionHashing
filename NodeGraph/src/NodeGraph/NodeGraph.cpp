@@ -58,8 +58,24 @@ void NodeGraph::Draw()
 
 				if (startpin && endpin)
 				{
-					bool valid = startpin->IsValidConnection(*endpin) &&
-					endpin->IsValidConnection(*startpin);
+					TEnum<EPinRejectReason> rejectreason = EPinRejectReason::None;
+					bool valid = startpin->IsValidConnection(*endpin, rejectreason) &&
+					endpin->IsValidConnection(*startpin, rejectreason);
+
+					auto show_label = [rejectreason]() {
+						auto label = rejectreason.ToString().c_str();
+						auto drawlist = ImGui::GetWindowDrawList();
+						auto pos = ImGui::GetMousePos();
+
+						auto size = ImGui::CalcTextSize(label);
+
+						ImGui::SetCursorScreenPos(pos);
+						
+						drawlist->AddRectFilled(pos, pos + size, ImColor(ImGuiExtras::Black) );
+
+						ImGui::TextUnformatted(label);
+					};
+
 
 					if ( valid )
 					{
@@ -75,11 +91,27 @@ void NodeGraph::Draw()
 					}
 					else
 					{
+						
+						show_label();
 						ed::RejectNewItem({1, 0, 0 ,1}, m_LinkThickness);
 					}
 				}
 				
 			}
+		}
+
+		ed::PinId pinId = 0;
+		if (ed::QueryNewNode(&pinId))
+		{
+			//TODO: SHow node list add new node from pin
+			//DrawNodeList();
+			//if (ed::AcceptNewItem())
+			//{
+
+			//	//ed::Suspend();
+			//	
+			//	//ed::Resume();
+			//}
 		}
 	}
 	ed::EndCreate();

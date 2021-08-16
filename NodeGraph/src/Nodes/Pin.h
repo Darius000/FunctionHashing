@@ -4,6 +4,7 @@
 #include "NodeEditorObject.h"
 #include "DataTypes/Property.h"
 #include "NodeEditor/imgui_node_editor.h"
+#include "DataTypes/Enum.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -14,6 +15,21 @@ enum class EPinType
 	ExecutionPin
 };
 
+enum class EPinRejectReason : uint8_t
+{
+	None,
+	InValid,
+	DifferentPinTypes,
+	AlreadyHasConnection,
+	DifferentDataTypes,
+	Max
+};
+
+template<>
+std::vector<std::string> EnumStrings<EPinRejectReason>::Data = {
+		"None", "InValid", "Different Pin Types" , "Already Has Connection", "Different Data Types"
+};
+
 struct Pin : public NodeEditorObject
 {
 	Pin();
@@ -21,7 +37,7 @@ struct Pin : public NodeEditorObject
 
 	virtual const EPinType GetPinType() const { return EPinType::None; }
 
-	virtual bool IsValidConnection(const Pin& pin) const;
+	virtual bool IsValidConnection(const Pin& pin, TEnum<EPinRejectReason>& reason) const;
 
 	virtual IProperty* GetProperty() { return nullptr; };
 
@@ -41,7 +57,7 @@ struct DataPin : public Pin
 {
 	virtual const EPinType GetPinType() const override { return EPinType::DataPin; }
 
-	bool IsValidConnection(const Pin& pin) const override;
+	bool IsValidConnection(const Pin& pin, TEnum<EPinRejectReason>& reason) const override;
 
 	virtual IProperty* GetProperty() override { return m_Property.get(); };
 

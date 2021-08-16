@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "DataTypes/Property.h"
 #include "Nodes/INodeCreation.h"
-#include "Category/Category.h"
+#include "Core/Category/Category.h"
 #include <any>
 
 class NodeRegistry
