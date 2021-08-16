@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ImGuiOperators.h"
+#include "ImguiExtras.h"
 
 #include <memory>
 

@@ -6,6 +6,14 @@
 #include "imgui_stdlib.h"
 
 DECLARE_ONE_PARAMETER_EVENT(OnSelected, class NodeEditorObject*, obj)
+DECLARE_ONE_PARAMETER_EVENT(OnDestroyed, class NodeEditorObject*, obj)
+
+enum class EObjectType
+{	
+	None,
+	Node,
+	Property
+};
 
 class NodeEditorObject
 {
@@ -15,16 +23,12 @@ public:
 
 	virtual ~NodeEditorObject();
 
-	void Draw();
-	void DrawDetails();
 	void Destroy();
 	void SetName(const std::string& str);
 	void SetToolTip(const std::string& tooltip);
 
-	virtual void OnDraw();
-	virtual void OnDrawDetails();
-	
 	FOnSelectedEvent OnSelected;
+	FOnDestroyedEvent OnDestroyed;
 	
 	inline std::string& GetToolTip() { return m_ToolTip; }
 	inline std::string& GetName() { return m_Name; }
@@ -34,6 +38,7 @@ public:
 
 	const bool operator==(const NodeEditorObject& obj);
 	NodeEditorObject& operator=(const NodeEditorObject& obj);
+	virtual const EObjectType GetObjectType() { return EObjectType::None; };
 
 private:
 	static ImGuiID GetNextAvialableID();

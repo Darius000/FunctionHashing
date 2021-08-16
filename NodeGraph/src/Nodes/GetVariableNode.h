@@ -1,7 +1,9 @@
-#pragma once
+#pragma once 
 
 #include "VariableNodeInterface/VariableNodeInterface.h"
 #include "INodeCreation.h"
+
+#define TYPENAME "Get"
 
 template<typename T>
 class GetVariableNode : public VariableNodeInterface<T>
@@ -10,7 +12,14 @@ public:
 	GetVariableNode(Ref<IProperty> prop)
 		:VariableNodeInterface(prop)
 	{
-		AddDataPin(m_PropertyName, PropertyType::Output, prop);
+		m_Rounding = 30.0f;
+		auto pin = AddDataPin(m_PropertyName, ed::PinKind::Output, prop);
+
+		prop->OnDestroyed.AddBinding([pin](NodeEditorObject* obj) {
+
+			pin->SetName("UnReferenced Property!");
+			pin->m_Property = nullptr;
+		});
 	}
 	
 	DEFINE_NODE_CLASS(GetVariableNode, "", "", false)
@@ -22,6 +31,8 @@ public:
 
 protected:
 };
+
+#undef TYPENAME
 
 template<>
 inline std::string GetVariableNode<int>::GetFactoryName()

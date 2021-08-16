@@ -1,11 +1,14 @@
 #include "PCH.h"
 #include "ImGuiLayer.h"
 #include "imgui.h"
-#include "ImNodes/imnodes.h"
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_opengl3.h"
 #include "Application.h"
 #include "WindowGUI/NodeGraphPanel.h"
+#include "NodeEditor/imgui_node_editor.h"
+
+namespace ed = ax::NodeEditor;
+static ed::EditorContext* g_Context = nullptr;
 
 ImGuiLayer::ImGuiLayer()
 	:Layer("ImGui")
@@ -18,10 +21,7 @@ void ImGuiLayer::OnAttach()
 	//Init IMGUI
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImNodes::CreateContext();
-
-	ImNodesStyle& node_style = ImNodes::GetStyle();
-	node_style.Colors[ImNodesCol_LinkSelected] = ImGui::GetColorU32({1, 1, 0, 1});
+	g_Context = ed::CreateEditor();
 
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -100,7 +100,7 @@ void ImGuiLayer::OnDetach()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-	ImNodes::DestroyContext();
+	ed::DestroyEditor(g_Context);
 }
 
 void ImGuiLayer::ProcessEvents(Event& e)
@@ -113,6 +113,7 @@ void ImGuiLayer::OnBegin()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+	ed::SetCurrentEditor(g_Context);
 }
 
 void ImGuiLayer::OnEnd()

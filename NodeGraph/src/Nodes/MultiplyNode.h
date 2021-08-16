@@ -3,24 +3,26 @@
 #include "Node.h"
 #include "INodeCreation.h"
 
+#define TYPENAME "Multiply"
+
 template<typename T>
 class MultiplyNode : public Node
 {
 public:
 	MultiplyNode()
 	{
-		AddDataPin("A", PropertyType::Input, MakeRef<IPropertyT<T>>());
-		AddDataPin("B", PropertyType::Input, MakeRef<IPropertyT<T>>());
-		AddDataPin("Out", PropertyType::Output, MakeRef<IPropertyT<T>>());
-		AddExecutionPin(ImNodesAttributeType_Input);
-		AddExecutionPin(ImNodesAttributeType_Output);
+		AddExecutionPin("", ed::PinKind::Input);
+		AddExecutionPin("", ed::PinKind::Output);
+		AddDataPin("A", ed::PinKind::Input,  MakeRef<IPropertyT<T>>());
+		AddDataPin("B", ed::PinKind::Input,  MakeRef<IPropertyT<T>>());
+		AddDataPin("Out", ed::PinKind::Output,  MakeRef<IPropertyT<T>>());
 	}
 
 	void OnExecute() override
 	{
-		auto a = GetParameter("A");
-		auto b = GetParameter("B");
-		auto c = GetParameter("Out");
+		/*auto a = GetPin("A");
+		auto b = GetPin("B");
+		auto c = GetPin("Out");
 
 		typename IPropertyT<T>* aprop = Cast<IPropertyT<T>>(a->m_Property.get());
 		typename IPropertyT<T>* bprop = Cast<IPropertyT<T>>(b->m_Property.get());
@@ -31,13 +33,15 @@ public:
 			T bref = bprop->GetConstRef();
 			cprop->Set(aref * bref);
 			std::cout << cprop->GetConstRef() << "\n";
-		}
+		}*/
 	}
 
 	DEFINE_NODE_CLASS(MultiplyNode, "Math|", "Multiply", true)
 
 	static Node* CreateMethod() { return new MultiplyNode(); }
 };
+
+#undef TYPENAME
 
 template<>
 std::string MultiplyNode<int>::GetFactoryName() { return "Multiply(Int)"; }

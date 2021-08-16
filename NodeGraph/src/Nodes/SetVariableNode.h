@@ -3,6 +3,8 @@
 #include "Node.h"
 #include "VariableNodeInterface/VariableNodeInterface.h"
 
+#define TYPENAME "Set"
+
 template<typename T>
 class SetVariableNode : public VariableNodeInterface<T>
 {
@@ -10,10 +12,16 @@ public:
 	SetVariableNode(Ref<IProperty> prop)
 		:VariableNodeInterface(prop)
 	{
-		AddDataPin("In", PropertyType::Input, prop);
-		AddDataPin("Out", PropertyType::Output, prop);
-		AddExecutionPin(ImNodesAttributeType_Input);
-		AddExecutionPin(ImNodesAttributeType_Output);
+		
+		AddExecutionPin("", ed::PinKind::Input);
+		AddExecutionPin("", ed::PinKind::Output);
+		auto pinIn = AddDataPin("In", ed::PinKind::Input, prop);
+		auto pinOut = AddDataPin("Out", ed::PinKind::Output, prop);
+
+		prop->OnDestroyed.AddBinding([this, pinIn, pinOut](NodeEditorObject* obj) {
+				pinIn->m_Property = nullptr;
+				pinOut->m_Property = nullptr;
+		});
 	}
 
 	virtual void OnExecute() override 
@@ -21,17 +29,14 @@ public:
 	
 	};
 
-	virtual void CustomDraw() override
-	{
-		ImGui::TextUnformatted(m_Property->GetName().c_str());
-	}
-
 	DEFINE_NODE_CLASS(SetVariableNode,"", "", false)
 
 	static Node* CreateMethod(Ref<IProperty> prop) { return new SetVariableNode(prop); }
 
 
 };
+
+#undef TYPENAME
 
 template<>
 std::string SetVariableNode<int>::GetFactoryName()

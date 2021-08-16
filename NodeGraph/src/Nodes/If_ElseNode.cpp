@@ -3,11 +3,11 @@
 
 If_ElseNode::If_ElseNode()
 {
-	AddDataPin("Condition", PropertyType::Input, MakeRef<IPropertyT<bool>>());
-	AddExecutionPin(ImNodesAttributeType_Input);
-	AddExecutionPin(ImNodesAttributeType_Output);
+	AddDataPin("Condition", ed::PinKind::Input, MakeRef<IPropertyT<bool>>());
+	AddExecutionPin("True",ed::PinKind::Output);
+	AddExecutionPin("False",ed::PinKind::Output);
 	
-	m_TitleColor = {1, 0, 0, 1};
+	m_TitleColor = ImGuiExtras::DarkRed;
 	m_Color = {.2f, .2f, .2f, .5f};
 
 }

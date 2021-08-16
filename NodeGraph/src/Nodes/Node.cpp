@@ -1,210 +1,53 @@
 #include "PCH.h"
 #include "Node.h"
-#include "ImNodes/imnodes.h"
-#include "ImNodes/imnodes_internal.h"
+
 
 Node::Node()
 {
 	m_Color = { .4f, .4f, .4f, .5f };
 	m_TitleColor = {.6f, .6f, .6f, .5f};
-	m_TitleStyle = ETitleStyle_::Default;
-	m_Rounding = ImNodes::GetStyle().NodeCornerRounding;
-	m_DefaultSize = {150.0f, 50.0f};
+	m_Rounding = 5.0f;
+	m_NumInputs = 0;
+	m_NumOutputs = 0;
 }
 
-PropertyWrapper* Node::GetParameter(const std::string& name)
+Pin* Node::FindPin(ImGuiID id) const
 {
-	return m_Parameters[name].get();
-}
-
-PropertyWrapper* Node::GetParameterWithID(ImGuiID id)
-{
-	auto& pair = std::find_if(m_Parameters.begin(), m_Parameters.end(), [id](const auto& p)
+	auto it = std::find_if(m_Pins.begin(), m_Pins.end(), [id](const Ref<Pin> pin)
 	{
-		return p.second->m_Property->GetID() == id;
+		return pin->GetID() == id;
 	});
 
-	return pair->second.get();
+	return it != m_Pins.end() ? it->get() : nullptr;
 }
 
-std::vector<ExecutionPin*> Node::GetExecutionPinsByType(ImNodesAttributeType_ type) const
+DataPin* Node::AddDataPin(const std::string& name, ed::PinKind pinkind,Ref<IProperty> prop)
 {
-	std::vector<ExecutionPin*> matches;
-	for (auto& exexpin : m_ExecPins)
+	auto pin = MakeRef<DataPin>();
+	pin->pinKind = pinkind;
+	pin->m_Property = prop;
+	pin->SetName(name);
+
+	//add lambda to change map key when prop name changes
+	prop->OnNameChanged.AddBinding([pin](const std::string& name)
 	{
-		if (exexpin->m_Type == type)
-		{
-			auto pin = exexpin.get();
-			matches.push_back(pin);
-		}
-	}
+		pin->SetName(name);
+	});
 
-	return matches;
+	m_Pins.push_back(pin);
+
+	if(pinkind == ed::PinKind::Input)	{m_Inputs.push_back(pin); m_NumInputs++;	}
+	if(pinkind == ed::PinKind::Output)	{m_Outputs.push_back(pin); m_NumOutputs++;	}
+	return pin.get();
 }
 
-void Node::AddExecutionPin(ImNodesAttributeType_ type)
+void Node::AddExecutionPin(const std::string& name, ed::PinKind pinkind)
 {
-	auto expin = MakeRef<ExecutionPin>(type, this);
-	m_ExecPins.push_back(expin);
+	auto pin = MakeRef<ExecutionPin>();
+	pin->pinKind = pinkind;
+	pin->SetName(name);
+
+	m_Pins.push_back(pin);
+	if (pinkind == ed::PinKind::Input)	{m_Inputs.push_back(pin); m_NumInputs++;	}
+	if (pinkind == ed::PinKind::Output) {m_Outputs.push_back(pin);	m_NumOutputs++;	}
 }
-
-void Node::OnDraw()
-{
-	BeginDraw();
-	CustomDraw();
-	EndDraw();
-}
-
-void Node::OnDrawDetails()
-{
-	for (auto input : m_InputParameters)
-	{
-		
-		input.second->m_Property->Draw(); ImGui::SameLine();
-		ImGui::Text(input.first.c_str()); 
-	}
-}
-
-void Node::Execute()
-{
-	OnExecute();
-
-	auto pins = GetExecutionPinsByType(ImNodesAttributeType_Output);
-	auto next = pins[0]->m_Next;
-	if (next)
-		next->Execute();
-}
-
-void Node::BeginDraw()
-{
-	auto bordercolor = m_IsSelected ? ImVec4(1, 1, 0, 1) : ImVec4(1, 1, 1, 1);
-
-	ImNodes::PushColorStyle(ImNodesCol_TitleBar, ImGui::GetColorU32(m_TitleColor));
-	ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, ImGui::GetColorU32(m_TitleColor));
-	ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, ImGui::GetColorU32(m_TitleColor));
-	ImNodes::PushColorStyle(ImNodesCol_NodeBackground, ImGui::GetColorU32(m_Color));
-	ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundHovered, ImGui::GetColorU32(m_Color));
-	ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundSelected, ImGui::GetColorU32(m_Color));
-	ImNodes::PushColorStyle(ImNodesCol_NodeOutline, ImGui::GetColorU32(bordercolor));
-	ImNodes::PushStyleVar(ImNodesStyleVar_NodeCornerRounding, m_Rounding);
-
-	ImNodes::BeginNode(GetID());
-	
-	if (m_TitleStyle == ETitleStyle_::Default)
-	{
-		ImNodes::BeginNodeTitleBar();
-		ImGui::TextUnformatted(GetTypeName().c_str());
-		ImNodes::EndNodeTitleBar();
-		
-	}
-}
-
-void Node::EndDraw()
-{
-	DrawDataPins();
-
-	if (GetParameters().size() == 0)
-	{
-		ImGui::Dummy(m_DefaultSize);
-	}
-
-	ImNodes::EndNode();
-
-	m_IsSelected = ImNodes::IsNodeSelected(GetID());
-
-	if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && ImGui::IsItemHovered())
-	{
-		OnSelected.Broadcast(this);
-	}
-
-	if (ImGui::BeginPopupContextItem("Actions"))
-	{
-		if (ImGui::Selectable("Delete"))
-		{
-			Destroy();
-		}
-		if (ImGui::Selectable("Execute"))
-		{
-			Execute();
-		}
-
-		ImGui::EndPopup();
-	}
-
-	ImNodes::PopColorStyle();
-	ImNodes::PopColorStyle();
-	ImNodes::PopColorStyle();
-	ImNodes::PopColorStyle();
-	ImNodes::PopColorStyle();
-	ImNodes::PopColorStyle();
-	ImNodes::PopColorStyle();
-	ImNodes::PopStyleVar();
-
-}
-
-void Node::DrawDataPins()
-{
-	std::string next = "";
-	ImNodes::PushColorStyle(ImNodesCol_Pin, ImGui::GetColorU32(ImVec4(.5f, .5f, .5f, 1)));
-	for (Ref<ExecutionPin>& pin : m_ExecPins)
-	{
-		ImGui::SetWindowFontScale(3.0f);
-		ImVec2 pos = ImNodes::GetNodeScreenSpacePos(GetID());
-		ImGui::SetCursorScreenPos(pos);
-		next = pin->m_Next ? std::to_string(pin->m_Next->GetID()) : "";
-		auto drawlist = ImGui::GetWindowDrawList();
-		ImGui::TextUnformatted(next.c_str());
-		ImGui::SetWindowFontScale(1.0f);
-
-		if (pin->m_Type == ImNodesAttributeType_Input)
-		{
-			ImNodes::BeginInputAttribute(pin->GetID());
-			ImNodes::EndInputAttribute();
-		}
-		else if (pin->m_Type == ImNodesAttributeType_Output)
-		{
-			ImNodes::BeginOutputAttribute(pin->GetID());
-			ImNodes::EndOutputAttribute();
-		}
-	}
-	ImNodes::PopColorStyle();
-
-	for (auto& output : GetParameters())
-	{
-
-		auto prop = output.second->m_Property;
-		ImNodes::PushColorStyle(ImNodesCol_Pin, ImGui::GetColorU32(prop->GetColor()));
-
-		if (output.second->m_PropertyType == PropertyType::Output)
-		{
-			ImNodes::BeginOutputAttribute(prop->GetID());
-			ImGui::TextUnformatted(output.first.c_str());
-			ImNodes::EndOutputAttribute();
-		}
-		else if (output.second->m_PropertyType == PropertyType::Input)
-		{
-
-			ImNodes::BeginInputAttribute(prop->GetID());
-			ImGui::TextUnformatted(output.first.c_str()); ImGui::SameLine();
-
-			if (!output.second->IsConnected())
-			{
-				ImGui::SetNextItemWidth(80.0f);
-				prop->Draw();
-			}
-
-			ImNodes::EndInputAttribute();
-		}
-
-		ImNodes::PopColorStyle();
-	}
-}
-
-void Node::CustomDraw()
-{
-	
-
-	
-}
-
-

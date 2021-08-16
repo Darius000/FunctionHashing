@@ -2,6 +2,8 @@
 
 #include "Node.h"
 
+#define TYPENAME "Comment"
+
 class Comment : public Node
 {
 
@@ -12,11 +14,12 @@ public:
 
 	static Node* CreateMethod() { return new Comment(); }
 
+	const ENodeType GetNodeType() { return ENodeType::Comment;}
+
 	//Actual comment string
 	std::string m_Comment;
-protected:
-	void CustomDraw() override;
-	void OnDrawDetails() override;
 
-	void DrawResizeButton();
+	ImVec2 m_Size;
 };
+
+#undef TYPENAME

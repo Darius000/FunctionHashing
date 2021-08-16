@@ -4,51 +4,112 @@
 #include "DataTypes/TypeTraits.h"
 
 
-struct FunctionWrapper
+struct Function
 {
-	template<typename ... Args>
-	void* Invoke(Args&&... args) { throw "Not Supported!"; };
-
-	template<typename T, typename ... Args>
-	Scope<class Node> InvokeObj(T* obj, Args&&... args) { throw "Not Supported!"; };
-
-	virtual ~FunctionWrapper() {};
-
-protected:
-	FunctionWrapper() {}
+	virtual ~Function() = default;
 };
 
-//for static and loose functions
-template<typename ReturnType, typename ...Args>
-struct FunctionWrapperT : public FunctionWrapper
+template<typename ReturnType, typename... Args>
+struct FunctionWrapperBase : public Function
 {
-	using TFunc = ReturnType(*)(Args... args);
+	using R = ReturnType;
 
-	FunctionWrapperT(TFunc func) : m_func(func) {}
-
-	template<typename ... Args>
-	Scope<class Node> Invoke(Args&&... args) { return m_func(std::forward<Args>(args)...); }
-
-private:
-	TFunc m_func;
 };
 
-//for class methods
-template<typename T, typename ReturnType, typename ...Args>
-struct ClassMethodWrapperT : public FunctionWrapper
-{
-	using TFunc = ReturnType(T::*)(Args... args);
+template<typename F> struct FunctionWrapper{
 
-	ClassMethodWrapperT(TFunc func) : m_Func(func) {}
-
-	template<typename ... Args>
-	Scope<class Node> InvokeObj(T* obj, Args... args) { (obj->*m_Func)(std::forward<Args>(args)...); }
-
-	TFunc m_Func;
 };
 
-template<typename ... Args>
-Scope<class Node> Invoke(FunctionWrapper* obj, Args&&... args)
-{
-	return obj->InvokeObj(obj, args...);
+
+//free floating or static function
+template<typename ReturnType, typename... Args>
+struct FunctionWrapper<ReturnType(*)(Args...)> :
+	FunctionWrapperBase<ReturnType, Args...>
+{	
+	using Pointer = ReturnType(*)(Args...);
+
+	explicit FunctionWrapper(Pointer func)
+	{
+		m_Func = func;
+	}
+
+	FunctionWrapper(const FunctionWrapper& other)
+	{
+		m_Func = other.m_Func;
+	}
+
+	FunctionWrapper& operator=(const FunctionWrapper& rhs)
+	{
+		m_Func = rhs.m_Func;
+	}
+	
+	R operator()(Args... args){return std::invoke(m_Func, args...); }
+
+	Pointer m_Func;
 };
+
+//non method const version
+template<typename T, typename ReturnType, typename... Args>
+struct FunctionWrapper<ReturnType(T::*)(Args...)> :
+	FunctionWrapperBase<ReturnType, Args...>
+{
+	using Pointer = ReturnType(T::*)(Args...);
+
+	explicit FunctionWrapper(Pointer func)
+	{
+		m_Func = func;
+	}
+
+	FunctionWrapper(const FunctionWrapper& other)
+	{
+		m_Func = other.m_Func;
+	}
+
+	FunctionWrapper& operator=(const FunctionWrapper& rhs)
+	{
+		m_Func = rhs.m_Func;
+	}
+
+	typename FunctionWrapperBase::R operator()(T& obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+	typename FunctionWrapperBase::R operator()(T* obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+
+	Pointer m_Func;
+};
+
+//const method version
+template<typename T, typename ReturnType, typename... Args>
+struct FunctionWrapper<ReturnType(T::*)(Args...) const> :
+	FunctionWrapperBase<ReturnType, Args...>
+{
+	using Pointer = ReturnType(T::*)(Args...) const;
+
+	explicit FunctionWrapper(Pointer func)
+	{
+		m_Func = func;
+	}
+
+	FunctionWrapper(const FunctionWrapper& other)
+	{
+		m_Func = other.m_Func;
+	}
+
+	FunctionWrapper& operator=(const FunctionWrapper& rhs)
+	{
+		m_Func = rhs.m_Func;
+	}
+
+	
+	typename FunctionWrapperBase::R operator()(const T& obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+	typename FunctionWrapperBase::R operator()(const T* obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+
+	Pointer m_Func;
+};
+
+
+#define DEFINE_FUNCTION_WRAPPER(name, x)\
+	namespace name\
+	{\
+		using Type = decltype(&x);\
+		static FunctionWrapper<decltype(&x)> ptr(&x);\
+	}
+	

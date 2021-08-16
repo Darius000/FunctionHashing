@@ -2,6 +2,8 @@
 
 #include "Node.h"
 
+#define TYPENAME "Cast"
+
 template<typename From, typename To>
 class CastTo : public Node
 {
@@ -10,8 +12,8 @@ public:
 	{
 		m_Color = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
 
-		AddDataPin("In", PropertyType::Input, MakeRef<IPropertyT<From>>());
-		AddDataPin("Out", PropertyType::Output, MakeRef<IPropertyT<To>>());
+		AddDataPin("In", ed::PinKind::Input, MakeRef<IPropertyT<From>>());
+		AddDataPin("Out", ed::PinKind::Output, MakeRef<IPropertyT<To>>());
 	}
 
 	DEFINE_NODE_CLASS(CastTo, "Casting|", "Casting", true);
@@ -22,6 +24,8 @@ public:
 	}
 
 };
+
+#undef TYPENAME
 
 
 template<>

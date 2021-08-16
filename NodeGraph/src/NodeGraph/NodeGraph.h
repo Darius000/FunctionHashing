@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "NodeLink/NodeLink.h"
+#include "NodeLink/Link.h"
 #include "Nodes/Node.h"
 
 class NodeGraph
 {
 	using NodeList = typename std::map<ImGuiID, Scope<class Node>>;
 	using NodesSelected = typename std::vector<ImGuiID>;
-	using NodeLinks = typename std::unordered_map<ImGuiID, Scope<class NodeLink>>;
+	using NodeLinks = typename std::unordered_map<ImGuiID, Scope<struct Link>>;
 	using PropertyList = std::vector<Ref<struct IProperty>>;
 
 public:
@@ -26,22 +26,10 @@ public:
 
 		assert(newNode != nullptr);
 
-		last_added_node = newNode->GetID();
 		m_Nodes.emplace(newNode->GetID(), Scope<class Node>(newNode));
 	}
 
 	void Draw();
-
-
-	//remove a node with the id
-	void RemoveNode(typename ImGuiID id);
-
-	void RemoveLinks(typename ImGuiID id);
-
-	typename inline const ImGuiID& GetID() const { return m_ID; }
-
-protected:
-	//void RemoveVariable(Ref<class Property> var);
 
 private:
 	//Draws the window that displays the node menu
@@ -62,30 +50,30 @@ private:
 
 	void DrawNodes();
 
+	void DrawNode(class Node* node);
+
+	void DrawPin(ImGuiID id, EPinType pintype = EPinType::DataPin,
+		float size = 6.0f, const ImVec4& color = ImGuiExtras::White, 
+		const ImVec4& innercolor = ImGuiExtras::Black);
+
+	void DrawPinTriangle(ImGuiID id, float size = 6.0f, const ImVec4& color = ImGuiExtras::White,
+		const ImVec4& innercolor = ImGuiExtras::Black, const ImVec2& offset = ImVec2());
+
+	void DrawInputs(class Node* node);
+
+	void DrawOutputs(class Node* node);
+
+	void DrawCommentResizeButton(class Comment* commentNode);
+
 	void DrawNodeLinks();
 
 	//Creates the category hierarchy, returns when an item is clicked
 	void DrawCategory(const struct CategoryList& list, bool* selected = 0);
 
-	const bool IsEditorHovered() const;
-
-	const bool IsAnyItemHovered() const;
-
-private:
-
-	//Check if node attrs are the same type float, boo, etc
-	bool CanPinsConnect(struct Pin* s_attr, struct Pin* e_attr);
-
-	void DeleteSelectedNodes();
-	void DeleteSelectedLinks();
-	void OnDestroyedLink(const int link_id);
+	Pin* FindPind(ImGuiID id);
 
 private:
 	static class NodeEditorObject* m_SelectedObject;
-
-	bool m_Item_Hovered = false;
-
-	typename ImGuiID last_added_node = 0;
 
 	NodeList m_Nodes;
 
@@ -93,9 +81,6 @@ private:
 
 	NodeLinks m_NodeLinks;
 
-	struct ImDrawListSplitter splitter;
+	float m_LinkThickness;
 
-	typename ImGuiID m_ID;
-
-	static ImGuiID s_ID;
 };

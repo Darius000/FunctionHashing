@@ -4,74 +4,24 @@
 #include "Node.h"
 
 
-Pin::Pin(ImNodesAttributeType_ type, Node* parent)
-	:m_Parent(parent)
+Pin::Pin()
 {
-	m_Type = type;
+	m_Connections = 0;
 }
 
-EPinType Pin::GetPinType()
+bool Pin::IsValidConnection(const Pin& pin) const
 {
-	return EPinType::None;
+	bool is_not_connected = pinKind == ed::PinKind::Input ? m_Connections == 0 : true;
+	bool same_kind = pinKind != pin.pinKind;
+	bool same_type = GetPinType() == pin.GetPinType();
+	return same_kind && same_type && is_not_connected;
 }
 
-bool Pin::CanConnect(Pin* other)
+bool DataPin::IsValidConnection(const Pin& pin) const
 {
-	return other && GetPinType() == other->GetPinType();
-}
+	if(Pin::IsValidConnection(pin) == false) return false;
+	if(m_Property == nullptr || pin.GetProperty() == nullptr) return false;
+	if(m_Property->GetTypeName() != pin.GetProperty()->GetTypeName()) return false;
 
-void Pin::OnConnected(Pin* other)
-{
-	m_IsConnected = true;
-}
-
-void Pin::OnDisConnected()
-{
-	m_IsConnected = false;
-}
-
-bool Pin::IsConnected() const
-{
-	return m_IsConnected;
-}
-
-ExecutionPin::ExecutionPin(ImNodesAttributeType_ type, Node* parent) 
-	:Pin(type, parent), m_Next(nullptr)
-{
-	m_Type = type;
-}
-
-bool ExecutionPin::CanConnect(Pin* other)
-{
-	return Pin::CanConnect(other);
-}
-
-void ExecutionPin::OnConnected(Pin* other)
-{
-	Pin::OnConnected(other);
-
-	if (m_Type == ImNodesAttributeType_Output)
-	{
-		m_Next = other->m_Parent;
-	}
-	else
-	{
-		if (auto execpin = Cast<ExecutionPin>(other))
-		{
-			execpin->m_Next = m_Parent;
-		}
-	}
-	
-}
-
-void ExecutionPin::OnDisConnected()
-{
-	Pin::OnDisConnected();
-
-	m_Next = nullptr;
-}
-
-EPinType ExecutionPin::GetPinType()
-{
-	return EPinType::ExecutionPin;
+	return true;
 }

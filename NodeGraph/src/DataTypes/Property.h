@@ -22,10 +22,11 @@ public:
 
 
 public:
-	virtual void OnDraw() override {};
-	virtual void OnDrawDetails() override;
-
 	virtual ImVec4 GetColor() { return ImVec4(.3f, .3f, .3f, 1.0f); }
+
+	const EObjectType GetObjectType() { return EObjectType::Property; }
+
+	virtual void DrawDetails() {};
 
 	virtual void SetPtr(IProperty* other) {};
 	virtual void Reset(){};
@@ -85,9 +86,8 @@ struct IPropertyT : public IProperty
 
 	virtual void Reset() override { m_Prop = m_DefaultProp; }
 
-	virtual void OnDraw() override;
 
-	virtual void OnDrawDetails() override { IProperty::OnDrawDetails(); OnDraw(); }
+	virtual void DrawDetails() override;
 
 	virtual ImVec4 GetColor() override;
 
@@ -119,56 +119,7 @@ struct IPropertyT : public IProperty
 	Type* m_DefaultProp;
 };
 
-enum class PropertyType
-{
-	Input,
-	Output
-};
 
-
-struct PropertyWrapper
-{	
-	PropertyWrapper( PropertyType type, Ref<IProperty> property)
-		:m_PropertyType(type) , m_Property(property), m_Connected(false)
-	{
-
-	}
-
-	
-	bool CanConnect(const PropertyWrapper* other) 
-		{ return !m_Connected && other->m_Property->GetTypeName() == m_Property->GetTypeName();}
-
-	void OnConnected(const PropertyWrapper* other)
-	{
-		if (CanConnect(other))
-		{
-			if (m_PropertyType == PropertyType::Input)
-			{
-				m_Property->SetPtr(other->m_Property.get());
-			}
-
-			m_Connected = true;
-		}
-	}
-
-	void OnDisConnected()
-	{
-		if (m_PropertyType == PropertyType::Input)
-		{
-			m_Property->Reset();
-		}
-
-		m_Connected = false;
-	}
-
-	bool IsConnected() const {return m_Connected; }
-
-	PropertyType m_PropertyType;
-	Ref<IProperty> m_Property;
-
-private:
-	bool m_Connected;
-};
 
 #define REGISTER_TYPE(x)\
 namespace Type##x\

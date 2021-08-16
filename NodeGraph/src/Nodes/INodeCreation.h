@@ -62,8 +62,9 @@ struct NodeCreationMethod
 				Class::GetFactoryDescription()));\
 	}
 
-#define DEFINE_NODE_CLASS(Class, Category, Description, DisplayCategory )\
-	virtual std::string GetTypeName() const override { return #Class;}\
+
+#define DEFINE_NODE_CLASS(Class, Category, Description, DisplayCategory)\
+	virtual std::string GetTypeName() const override { return TYPENAME; }\
 	static std::string GetFactoryName() { return #Class; };\
 	static bool GetVisibleInCategories()  { return DisplayCategory; }\
 	static std::string GetFactoryCategory() { return std::string(Category) + Class::GetFactoryName();}\

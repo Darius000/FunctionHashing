@@ -24,14 +24,21 @@ public:
 	VariableNodeInterface(Ref<struct IProperty> prop)
 		:m_Property(prop)
 	{
-		
-		m_TitleStyle = ETitleStyle_::Custom;
 
 		m_PropertyName = prop->GetName();
 		m_Property->AddRef(GetID());
 		m_Color = prop->GetColor();
 		m_Color.w = .5f;
+
+		prop->OnDestroyed.AddBinding([this](NodeEditorObject* obj) {
+
+			m_Property = nullptr;
+			m_Color = ImGuiExtras::Grey;
+			m_PropertyName = "UnReferenced Property!";
+		});
 	}
+
+	const ENodeType GetNodeType() override { return ENodeType::Simple; }
 
 	Ref<struct IProperty> m_Property;
 	std::string m_PropertyName;

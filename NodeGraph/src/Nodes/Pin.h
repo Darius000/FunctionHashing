@@ -2,9 +2,10 @@
 
 #include "Core/Core.h"
 #include "NodeEditorObject.h"
-#include "ImNodes/imnodes.h"
-#include "ImNodes/imnodes_internal.h"
 #include "DataTypes/Property.h"
+#include "NodeEditor/imgui_node_editor.h"
+
+namespace ed = ax::NodeEditor;
 
 enum class EPinType
 {
@@ -15,126 +16,36 @@ enum class EPinType
 
 struct Pin : public NodeEditorObject
 {
-	Pin(ImNodesAttributeType_ type, class Node* parent);
+	Pin();
+	virtual ~Pin() = default;
 
-	virtual EPinType GetPinType();
+	virtual const EPinType GetPinType() const { return EPinType::None; }
 
-	virtual bool CanConnect(Pin* other);
-	virtual void OnConnected(Pin* other);
-	virtual void OnDisConnected();
+	virtual bool IsValidConnection(const Pin& pin) const;
 
-	bool IsConnected() const;
+	virtual IProperty* GetProperty() { return nullptr; };
 
-	ImNodesAttributeType_ m_Type = ImNodesAttributeType_None;
+	virtual IProperty* GetProperty() const { return nullptr; };
 
-	class Node* m_Parent;
-	
-protected:
-	bool m_IsConnected = false;
+	ed::PinKind pinKind;
+
+	int m_Connections;
 };
 
-struct DataPin : public Pin
+struct ExecutionPin : public Pin 
 {
-protected:
-	DataPin(const std::string& name, ImNodesAttributeType_ type, Node* parent) 
-		:Pin(type, parent)
-	{
-		m_Type = type;
-		m_Name = name;
-	}
-
-public:
-	EPinType GetPinType() override
-	{
-		return EPinType::DataPin;
-	}
-
-	bool CanConnect(Pin* other) override
-	{
-		return Pin::CanConnect(other);
-	}
-
-	void OnConnected(Pin* other) override
-	{
-		Pin::OnConnected(other);
-	}
-
-	void OnDisConnected() override
-	{
-		Pin::OnDisConnected();
-	}
-
-	virtual IProperty* GetProperty() = 0;
-
-	std::string m_Name = "";
+	virtual const EPinType GetPinType() const override{ return EPinType::ExecutionPin; }
 };
 
-template<typename T>
-struct DataPinT : public DataPin
+struct DataPin : public Pin 
 {
-	DataPinT(const std::string& name, ImNodesAttributeType_ type, Ref<IProperty> prop, Node* parent)
-		:DataPin(name, type, parent), m_Property(prop) {}
+	virtual const EPinType GetPinType() const override { return EPinType::DataPin; }
 
-	bool CanConnect(Pin* other) override
-	{
-		bool same_type = false;
+	bool IsValidConnection(const Pin& pin) const override;
 
-		if (auto casted = Cast<DataPinT>(other))
-		{
-			same_type = true;
-		}
+	virtual IProperty* GetProperty() override { return m_Property.get(); };
 
-		return DataPin::CanConnect(other) && same_type;
-	}
+	virtual IProperty* GetProperty() const override { return m_Property.get(); };
 
-	void OnConnected(Pin* other) override
-	{
-		DataPin::OnConnected(other);
-
-		if (DataPinT* datapin = Cast<DataPinT>(other))
-		{
-			if (m_Type == ImNodesAttributeType_Input)
-			{
-				auto a = Cast<IPropertyT<T>>(m_Property.get());
-				auto b = Cast<IPropertyT<T>>(datapin->m_Property.get());
-
-				if (a && b)
-				{
-					a->m_Prop = b->m_Prop;
-				}
-				
-
-			}
-		}
-	}
-
-	IProperty* GetProperty() override
-	{
-		return m_Property.get();
-	}
-
-	void OnDisConnected() override
-	{
-		DataPin::OnDisConnected();
-
-		if (m_Type == ImNodesAttributeType_Input)
-		{
-			m_Property->Reset();
-		}
-	}
-
-	Ref<IProperty> m_Property;
-};
-
-struct ExecutionPin : public Pin
-{
-	ExecutionPin(ImNodesAttributeType_ type, class Node* parent);
-
-	virtual bool CanConnect(Pin* other);
-	virtual void OnConnected(Pin* other) override;
-	virtual void OnDisConnected() override;
-
-	virtual EPinType GetPinType();
-
-	class Node* m_Next;
+	Ref<struct IProperty> m_Property ;
 };

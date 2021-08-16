@@ -3,6 +3,8 @@
 #include "Core/Core.h"
 #include "Node.h"
 
+#define TYPENAME "Branch"
+
 class If_ElseNode :public Node
 {
 public:
@@ -15,3 +17,4 @@ public:
 	static Node* CreateMethod() { return new If_ElseNode(); }
 };	
 
+#undef TYPENAME

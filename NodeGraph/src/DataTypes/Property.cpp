@@ -1,36 +1,22 @@
 #include "PCH.h"
 #include "Property.h"
 
-void IProperty::OnDrawDetails()
-{
-	std::string str = GetName();
-	if (ImGui::InputText("Name", &str, ImGuiInputTextFlags_EnterReturnsTrue))
-	{
-		OnNameChanged.Broadcast(str);
-		SetName(str);
-	}
-	
-	auto tooltip = GetToolTip();
-	if (ImGui::InputText("Tooltip", &tooltip))
-	{
-		SetToolTip(tooltip);
-	}
-}
+
 
 template<>
-void IPropertyT<int>::OnDraw()
+void IPropertyT<int>::DrawDetails()
 {
 	ImGui::DragInt("##Value", m_Prop);
 }
 
 template<>
-void IPropertyT<float>::OnDraw()
+void IPropertyT<float>::DrawDetails()
 {
 	ImGui::DragFloat("##Value", m_Prop, 1.0f, 0.0f, 0.0f, "%.3f");
 }
 
 template<>
-void IPropertyT<bool>::OnDraw()
+void IPropertyT<bool>::DrawDetails()
 {
 	ImGui::Checkbox("##Value", m_Prop);
 }

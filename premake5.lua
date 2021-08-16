@@ -9,6 +9,7 @@ IncludeDirs["GLFW"] = "NodeGraph/vendor/GLFW/include"
 IncludeDirs["GLAD"] = "NodeGraph/vendor/GLAD/include"
 IncludeDirs["IMGUI"] = "NodeGraph/vendor/IMGUI"
 IncludeDirs["HeaderParser"] = "HeaderParser/generated"
+IncludeDirs["NodeEditor"] = "NodeGraph/src/NodeEditor"
 
 group "Dependencies"
 	include "NodeGraph/vendor/GLFW"
@@ -27,6 +28,8 @@ project "NodeGraph"
 	targetdir ("bin/" ..outputdir.. "/%{prj.name}")
     objdir ("bin-int/" ..outputdir.. "/%{prj.name}")
 	
+	
+	
 	pchheader "PCH.h"
 	pchsource "NodeGraph/src/PCH.cpp"
 	
@@ -34,8 +37,11 @@ project "NodeGraph"
 	{
 	"%{prj.name}/src/**.h", 
 	"%{prj.name}/src/**.cpp", 
-	"%{prj.name}/src/**.hpp"
+	"%{prj.name}/src/**.hpp",
+	"%{prj.name}/src/**.inl"
 	}
+	
+	
 	
 	includedirs
 	{
@@ -77,3 +83,12 @@ project "NodeGraph"
 	  runtime "Release"
       optimize "On"
 	  
+
+	filter {"files:crude_json.cpp"}
+		flags { "NoPCH" }		
+	filter {"files:imgui_canvas.cpp"}
+		flags { "NoPCH" }
+	filter {"files:imgui_node_editor.cpp"}
+		flags { "NoPCH" }
+	filter {"files:imgui_node_editor_api.cpp"}
+		flags { "NoPCH" }
