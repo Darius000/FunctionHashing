@@ -10,6 +10,7 @@ IncludeDirs["GLAD"] = "NodeGraph/vendor/GLAD/include"
 IncludeDirs["IMGUI"] = "NodeGraph/vendor/IMGUI"
 IncludeDirs["HeaderParser"] = "HeaderParser/generated"
 IncludeDirs["NodeEditor"] = "NodeGraph/src/NodeEditor"
+IncludeDirs["STB_IMAGE"] = "NodeGraph/vendor/STB_IMAGE"
 
 group "Dependencies"
 	include "NodeGraph/vendor/GLFW"
@@ -49,7 +50,8 @@ project "NodeGraph"
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.IMGUI}",
-		"%{IncludeDirs.HeaderParser}"
+		"%{IncludeDirs.HeaderParser}",
+		"%{IncludeDirs.STB_IMAGE}"
 	}
 	
 	links

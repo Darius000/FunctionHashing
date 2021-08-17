@@ -68,11 +68,19 @@ private:
 	void DrawNodeLinks();
 
 	//Creates the category hierarchy, returns when an item is clicked
-	void DrawCategory(const struct CategoryList& list, bool* selected = 0);
+
+	void DrawCategory(const std::string& id, const struct CategoryList& list);
+
+	template<typename Pred>
+	void DrawCategory(const std::string& id, const struct CategoryList& list, Pred pred);
 
 	Pin* FindPind(ImGuiID id);
 
+	
 private:
+
+	bool m_OpenNodePopup;
+
 	static class NodeEditorObject* m_SelectedObject;
 
 	NodeList m_Nodes;
@@ -82,5 +90,9 @@ private:
 	NodeLinks m_NodeLinks;
 
 	float m_LinkThickness;
+
+	float m_PinPadding;
+
+	Ref<class Texture> m_HeaderTexture;
 
 };

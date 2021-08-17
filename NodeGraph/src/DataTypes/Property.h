@@ -76,7 +76,8 @@ struct IPropertyT : public IProperty
 
 	virtual ~IPropertyT()
 	{
-
+		delete m_Prop;
+		m_DefaultProp = nullptr;
 	}
 
 	virtual void SetPtr(IProperty* other)

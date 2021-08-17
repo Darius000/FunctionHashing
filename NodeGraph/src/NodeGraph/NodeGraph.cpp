@@ -13,12 +13,16 @@
 #include "NodeEditor/imgui_node_editor.h"
 #include "imgui.h"
 #include "Nodes\CommentNode.h"
+#include "Core/Texture/Texture.h"
 
 namespace ed = ax::NodeEditor;
 
 NodeGraph::NodeGraph()
 {
 	m_LinkThickness = 3.0f;
+	m_PinPadding = 5.0f;
+	m_HeaderTexture = MakeRef<Texture>("resources/raw_perlin.png");
+	m_OpenNodePopup = false;
 }
 
 void NodeGraph::Draw()
@@ -104,14 +108,11 @@ void NodeGraph::Draw()
 		if (ed::QueryNewNode(&pinId))
 		{
 			//TODO: SHow node list add new node from pin
-			//DrawNodeList();
-			//if (ed::AcceptNewItem())
-			//{
-
-			//	//ed::Suspend();
-			//	
-			//	//ed::Resume();
-			//}
+			
+			if (ed::AcceptNewItem())
+			{
+				m_OpenNodePopup = true;
+			}
 		}
 	}
 	ed::EndCreate();
@@ -161,15 +162,31 @@ void NodeGraph::Draw()
 
 	ed::End();
 	ed::PopStyleVar(3);
+
+	if(m_OpenNodePopup) ImGui::OpenPopup("Create Node");
+	
+	if (ImGui::BeginPopup("Create Node"))
+	{
+		auto& list = NodeCatgeories::GetCategoryList();
+
+		DrawCategory("Create Node Popup", list, [this](){
+			ImGui::CloseCurrentPopup();
+			m_OpenNodePopup = false;
+		});
+
+		ImGui::EndPopup();
+
+	}
 }
 
 
-void NodeGraph::DrawCategory(const CategoryList& list, bool* selected)
+void NodeGraph::DrawCategory(const std::string& id, const CategoryList& list)
 {
 	float width = ImGui::GetWindowContentRegionWidth();
 	for (auto& leaf : list.m_Leafs)
 	{	
-		if (ImGui::TreeNodeEx(leaf.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf))
+		auto name = leaf + "##" + id;
+		if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf))
 		{
 			ImGui::TreePop();
 		}
@@ -177,8 +194,6 @@ void NodeGraph::DrawCategory(const CategoryList& list, bool* selected)
 		if (ImGui::IsItemClicked((int)EMouseButton::Left))
 		{
 			Instantiate(leaf);
-
-			if(selected) *selected = true;
 		}
 		
 		if (ImGui::IsItemHovered())
@@ -194,11 +209,53 @@ void NodeGraph::DrawCategory(const CategoryList& list, bool* selected)
 	{
 		if (ImGui::TreeNodeEx(cat.first.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			DrawCategory(*cat.second, selected);
+			DrawCategory(id, *cat.second);
 			ImGui::TreePop();
+			
 		}
 	}
 }
+
+
+template<typename Pred>
+void NodeGraph::DrawCategory(const std::string& id, const struct CategoryList& list, Pred pred)
+{
+	float width = ImGui::GetWindowContentRegionWidth();
+	for (auto& leaf : list.m_Leafs)
+	{
+		auto name = leaf + "##" + id;
+		if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf))
+		{
+			ImGui::TreePop();
+		}
+
+		if (ImGui::IsItemClicked((int)EMouseButton::Left))
+		{
+			Instantiate(leaf);
+
+			pred();
+		}
+
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text(leaf.c_str());
+			ImGui::EndTooltip();
+		}
+
+	}
+
+	for (auto& cat : list.m_SubCategories)
+	{
+		if (ImGui::TreeNodeEx(cat.first.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			DrawCategory(id, *cat.second, pred);
+			ImGui::TreePop();
+
+		}
+	}
+}
+
 
 Pin* NodeGraph::FindPind(ImGuiID id)
 {
@@ -217,7 +274,7 @@ void NodeGraph::DrawNodeList()
 	auto& list = NodeCatgeories::GetCategoryList();
 
 	ImGui::BeginGroup();
-	DrawCategory(list);
+	DrawCategory("Node List", list);
 	ImGui::EndGroup();
 }
 
@@ -286,12 +343,11 @@ void NodeGraph::DrawAddNewProperty()
 
 void NodeGraph::DrawNodeListContextMenu()
 {
-	bool selected = false;
 
 	if (ImGui::BeginPopupContextItem("Nodes"))
 	{
 		const ImVec2 click_pos = ImGui::GetMousePosOnOpeningCurrentPopup();
-		DrawCategory(NodeCatgeories::GetCategoryList(), &selected);
+		DrawCategory("Node Context Menu", NodeCatgeories::GetCategoryList());
 
 		ImGui::EndPopup();
 	}
@@ -547,7 +603,15 @@ void NodeGraph::DrawNode(class Node* node)
 		auto drawlist = ed::GetNodeBackgroundDrawList(id);
 		auto pos = ed::GetNodePosition(id);
 		auto size = ed::GetNodeSize(id);
-		drawlist->AddRectFilled(pos, pos + ImVec2(size.x, 28.0f), ImColor(node->m_TitleColor), node->m_Rounding, ImDrawCornerFlags_Top);
+		auto node_border_width = ed::GetStyle().NodeBorderWidth;
+		drawlist->AddRectFilled(pos + ImVec2(node_border_width, node_border_width), 
+			pos - ImVec2(node_border_width, node_border_width)
+			+ ImVec2(size.x, 28.0f), ImColor(node->m_TitleColor), node->m_Rounding, ImDrawCornerFlags_Top);
+		drawlist->AddImageRounded((void*)m_HeaderTexture->GetRenderID(), 
+			pos + ImVec2(node_border_width, node_border_width),
+			pos - ImVec2(node_border_width, node_border_width)
+			+ ImVec2(size.x, 28.0f), ImVec2(0,0), ImVec2(1, .1f) , 
+			ImColor(node->m_TitleColor), node->m_Rounding, ImDrawCornerFlags_Top);
 
 	}
 
@@ -664,6 +728,9 @@ void NodeGraph::DrawInputs(class Node* node)
 
 		auto txt = input->GetName();
 
+		auto posy = ImGui::GetCursorPosY();
+		ImGui::SetCursorPosY(posy + m_PinPadding);
+
 		ImGui::BeginHorizontal(id);
 
 		ed::BeginPin(id, input->pinKind);		
@@ -715,6 +782,9 @@ void NodeGraph::DrawOutputs(class Node* node)
 		auto innercolor = input->m_Connections > 0 ? prop ? prop->GetColor() : ImGuiExtras::White : ImGuiExtras::Black;
 
 		auto txt = input->GetName();
+
+		auto posy = ImGui::GetCursorPosY();
+		ImGui::SetCursorPosY(posy + m_PinPadding);
 
 		ImGui::BeginHorizontal(id);
 

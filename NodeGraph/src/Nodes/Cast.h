@@ -10,7 +10,6 @@ class CastTo : public Node
 public:
 	CastTo()
 	{
-		m_Color = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 		AddDataPin("In", ed::PinKind::Input, MakeRef<IPropertyT<From>>());
 		AddDataPin("Out", ed::PinKind::Output, MakeRef<IPropertyT<To>>());
