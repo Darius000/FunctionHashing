@@ -128,7 +128,7 @@ Window::~Window()
 	delete m_Context;
 	glfwDestroyWindow(m_Window);
 
-	fprintf_s(stderr, "Destroyed Window : %s", m_WindowSpecs.title);
+	LOG("Destroyed Window : %s", m_WindowSpecs.title);
 }
 
 void Window::Update()
@@ -158,6 +158,6 @@ void Window::SetVSync(bool enabled)
 
 void Window::glfwErrorCallback(int error, const char* description)
 {
-	fprintf_s(stderr, "Error : %s\n", description);
+	LOG("Error : %s", description)
 }
 

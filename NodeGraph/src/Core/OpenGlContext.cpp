@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Log/Log.h"
+
 
 OpenGlContext::OpenGlContext(GLFWwindow* windowHandle)
 	:m_WindowHandle(windowHandle)
@@ -17,7 +19,7 @@ void OpenGlContext::Init()
 
 	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-	fprintf_s(stdout, "GL status = %d \n", status);
+	LOG("GL status = %d", status)
 
 	glLineWidth(1.0f);
 	glEnable(GL_LINE_SMOOTH);
