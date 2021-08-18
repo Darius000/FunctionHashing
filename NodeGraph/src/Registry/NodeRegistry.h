@@ -25,7 +25,8 @@ public:
 			if (CN.m_Category.size() > 0 && CN.m_PlaceInCategories)
 				NodeCatgeories::AddCategory(CN.m_Category, CN.m_Description);
 
-			std::cout << "Registered Node Class: " << name << "\n";
+			LOG("Registered Node Class: %s", name.c_str());
+
 			return true;
 		}
 		return false;

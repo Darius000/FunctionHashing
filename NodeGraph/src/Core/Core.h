@@ -2,6 +2,7 @@
 
 #include "ImGuiOperators.h"
 #include "ImguiExtras.h"
+#include "Log/Log.h"
 
 #include <memory>
 

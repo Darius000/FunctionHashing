@@ -598,19 +598,22 @@ void NodeGraph::DrawNode(class Node* node)
 	ed::PopStyleVar(2);
 	ed::PopStyleColor();
 
+	//Draw header
 	if (hasheader)
 	{
 		auto drawlist = ed::GetNodeBackgroundDrawList(id);
 		auto pos = ed::GetNodePosition(id);
 		auto size = ed::GetNodeSize(id);
 		auto node_border_width = ed::GetStyle().NodeBorderWidth;
-		drawlist->AddRectFilled(pos + ImVec2(node_border_width, node_border_width), 
+
+		drawlist->AddLine(pos + ImVec2(0.0f, 28.0f) + ImVec2(node_border_width, -node_border_width),
 			pos - ImVec2(node_border_width, node_border_width)
-			+ ImVec2(size.x, 28.0f), ImColor(node->m_TitleColor), node->m_Rounding, ImDrawCornerFlags_Top);
+			+ ImVec2(size.x, 28.0f), ImColor(ImGuiExtras::White));
+
 		drawlist->AddImageRounded((void*)m_HeaderTexture->GetRenderID(), 
 			pos + ImVec2(node_border_width, node_border_width),
 			pos - ImVec2(node_border_width, node_border_width)
-			+ ImVec2(size.x, 28.0f), ImVec2(0,0), ImVec2(1, .1f) , 
+			+ ImVec2(size.x, 28.0f), ImVec2(0,0), ImVec2(1, .2f) , 
 			ImColor(node->m_TitleColor), node->m_Rounding, ImDrawCornerFlags_Top);
 
 	}

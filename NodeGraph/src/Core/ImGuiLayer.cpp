@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "WindowGUI/NodeGraphPanel.h"
 #include "NodeEditor/imgui_node_editor.h"
+#include "WindowGUI/LogPanel.h"
 
 namespace ed = ax::NodeEditor;
 static ed::EditorContext* g_Context = nullptr;
@@ -41,7 +42,8 @@ void ImGuiLayer::OnAttach()
 	ImGui_ImplGlfw_InitForOpenGL(nativeWindow, true);
 	ImGui_ImplOpenGL3_Init("#version 410");
 
-	auto graph = m_WindowStack.OpenPanel<NodeGraphPanel>("Node Graph", ImGuiWindowFlags_::ImGuiWindowFlags_None);
+	auto graph = m_WindowStack.OpenPanel<NodeGraphPanel>("Node Graph", ImGuiWindowFlags_None);
+	auto log = m_WindowStack.OpenPanel<LogPanel>("Log", ImGuiWindowFlags_None);
 }
 
 void ImGuiLayer::OnUpdate(float deltaTime)

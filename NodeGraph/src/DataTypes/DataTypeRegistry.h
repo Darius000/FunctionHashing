@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 
+
 class DataTypeRegistry
 {
 public:
@@ -17,7 +18,9 @@ public:
 
 			RegisteredTypes().push_back(name);
 
-			std::cout << "Registered Data Type: " << name << "\n";
+			//std::cout <<  << name << "\n";
+			LOG("Registered Data Type: %s", name.c_str());
+
 			return true;
 		}
 
