@@ -30,7 +30,7 @@ public:
 
 	virtual void OnExecute() {};
 
-	const EObjectType GetObjectType() { return EObjectType::None; }
+	const EObjectType GetObjectType() { return EObjectType::Node; }
 	virtual const ENodeType GetNodeType() { return ENodeType::Blueprint; }
 	Pin* FindPin(ImGuiID id) const;
 

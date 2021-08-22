@@ -1,9 +1,12 @@
 #include "PCH.h"
 #include "Application.h"
 #include "ImGuiLayer.h"
+#include "Debug/Instrumentor.h"
 
 Application::Application()
 {
+	PROFILE_FUNCTION();
+
 	s_Instance = this;
 
 	m_Window = MakeScope<Window>();
@@ -16,6 +19,8 @@ Application::Application()
 
 Application::~Application()
 {
+	PROFILE_FUNCTION();
+
 	Shutdown();
 }
 
@@ -34,6 +39,8 @@ void Application::PopLayer(class Layer* layer)
 
 void Application::Run()
 {
+	PROFILE_FUNCTION();
+
 	while (m_Running)
 	{
 		m_Time = (float)glfwGetTime();
@@ -60,8 +67,7 @@ void Application::Run()
 
 void Application::Shutdown()
 {
-	//release glfw resources and closes all windows
-	glfwTerminate();
+
 }
 
 void Application::OnEvent(Event& e)

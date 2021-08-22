@@ -127,6 +127,7 @@ Window::~Window()
 {
 	delete m_Context;
 	glfwDestroyWindow(m_Window);
+	glfwTerminate();
 
 	LOG("Destroyed Window : %s", m_WindowSpecs.title);
 }

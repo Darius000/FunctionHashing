@@ -6,19 +6,19 @@
 template<>
 void IPropertyT<int>::DrawDetails()
 {
-	ImGui::DragInt("##Value", m_Prop);
+	ImGui::DragInt("##Value", &m_Prop);
 }
 
 template<>
 void IPropertyT<float>::DrawDetails()
 {
-	ImGui::DragFloat("##Value", m_Prop, 1.0f, 0.0f, 0.0f, "%.3f");
+	ImGui::DragFloat("##Value", &m_Prop, 1.0f, 0.0f, 0.0f, "%.3f");
 }
 
 template<>
 void IPropertyT<bool>::DrawDetails()
 {
-	ImGui::Checkbox("##Value", m_Prop);
+	ImGui::Checkbox("##Value", &m_Prop);
 }
 
 template<>

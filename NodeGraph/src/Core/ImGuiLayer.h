@@ -23,4 +23,6 @@ public:
 
 private:
 	WindowStack m_WindowStack;
+
+	bool b_ShowDemoWindow;
 };

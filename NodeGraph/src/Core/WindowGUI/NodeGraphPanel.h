@@ -16,6 +16,8 @@ public:
 	void OnRenderWindow() override;
 
 private:
+	void ShowFileMenu();
+	void ShowActionMenu();
 	
 	bool OnKeyPressed(KeyPressedEvent& e) override;
 	bool OnKeyReleased(KeyReleasedEvent& e) override;

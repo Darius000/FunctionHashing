@@ -26,7 +26,6 @@ public:
 	{
 
 		m_PropertyName = prop->GetName();
-		m_Property->AddRef(GetID());
 		m_Color = prop->GetColor();
 		m_Color.w = .5f;
 

@@ -15,19 +15,7 @@ public:
 	NodeGraph();
 
 	template<typename...Args>
-	void Instantiate(const std::string& name, Args... args)
-	{
-		auto newNode = NodeRegistry::Instaniate(name, args...);
-		newNode->OnSelected.AddBinding([this](NodeEditorObject* obj)
-		{
-			if(m_SelectedObject != obj)
-				m_SelectedObject = obj;
-		});
-
-		assert(newNode != nullptr);
-
-		m_Nodes.emplace(newNode->GetID(), Scope<class Node>(newNode));
-	}
+	void Instantiate(const std::string& name, Args... args);
 
 	void Draw();
 
@@ -49,21 +37,6 @@ private:
 	void DrawSelectedPropertyWidget(class NodeEditorObject* prop);
 
 	void DrawNodes();
-
-	void DrawNode(class Node* node);
-
-	void DrawPin(ImGuiID id, EPinType pintype = EPinType::DataPin,
-		float size = 6.0f, const ImVec4& color = ImGuiExtras::White, 
-		const ImVec4& innercolor = ImGuiExtras::Black);
-
-	void DrawPinTriangle(ImGuiID id, float size = 6.0f, const ImVec4& color = ImGuiExtras::White,
-		const ImVec4& innercolor = ImGuiExtras::Black, const ImVec2& offset = ImVec2());
-
-	void DrawInputs(class Node* node);
-
-	void DrawOutputs(class Node* node);
-
-	void DrawCommentResizeButton(class Comment* commentNode);
 
 	void DrawNodeLinks();
 
@@ -88,11 +61,18 @@ private:
 	PropertyList m_Properties;
 
 	NodeLinks m_NodeLinks;
-
-	float m_LinkThickness;
-
-	float m_PinPadding;
-
-	Ref<class Texture> m_HeaderTexture;
-
 };
+
+template<typename... Args>
+void NodeGraph::Instantiate(const std::string& name, Args... args)
+{
+	auto newNode = NodeRegistry::Instaniate(name, args...);
+
+	assert(newNode != nullptr);
+
+	auto id = newNode->GetID();
+
+	m_Nodes.emplace(id, Scope<class Node>(newNode));
+
+	ed::CenterNodeOnScreen(id);
+}

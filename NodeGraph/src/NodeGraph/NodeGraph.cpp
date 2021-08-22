@@ -12,21 +12,23 @@
 #include "Core/Events/MouseEvent.h"
 #include "NodeEditor/imgui_node_editor.h"
 #include "imgui.h"
-#include "Nodes\CommentNode.h"
+#include "Nodes/CommentNode.h"
 #include "Core/Texture/Texture.h"
+#include "Core\Debug\Instrumentor.h"
+#include "NodeBuilder.h"
 
 namespace ed = ax::NodeEditor;
 
 NodeGraph::NodeGraph()
 {
-	m_LinkThickness = 3.0f;
-	m_PinPadding = 5.0f;
-	m_HeaderTexture = MakeRef<Texture>("resources/raw_perlin.png");
+	PROFILE_FUNCTION();
 	m_OpenNodePopup = false;
 }
 
 void NodeGraph::Draw()
 {
+	PROFILE_FUNCTION();
+
 	if (ImGui::Begin("Nodes"))
 	{
 		DrawNodeList();
@@ -97,7 +99,7 @@ void NodeGraph::Draw()
 					{
 						
 						show_label();
-						ed::RejectNewItem({1, 0, 0 ,1}, m_LinkThickness);
+						ed::RejectNewItem({1, 0, 0 ,1}, LinkBuilder::m_LinkThickness);
 					}
 				}
 				
@@ -107,11 +109,9 @@ void NodeGraph::Draw()
 		ed::PinId pinId = 0;
 		if (ed::QueryNewNode(&pinId))
 		{
-			//TODO: SHow node list add new node from pin
-			
 			if (ed::AcceptNewItem())
 			{
-				m_OpenNodePopup = true;
+				ImGui::OpenPopup("Node Context menu");
 			}
 		}
 	}
@@ -160,23 +160,48 @@ void NodeGraph::Draw()
 	}
 	ed::EndDelete();
 
-	ed::End();
-	ed::PopStyleVar(3);
+	if (ed::ShowBackgroundContextMenu())
+	{
+		ImGui::OpenPopup("Node Context menu");
+	}
 
-	if(m_OpenNodePopup) ImGui::OpenPopup("Create Node");
-	
-	if (ImGui::BeginPopup("Create Node"))
+	if (ImGui::BeginPopup("Node Context menu"))
 	{
 		auto& list = NodeCatgeories::GetCategoryList();
 
-		DrawCategory("Create Node Popup", list, [this](){
+		DrawCategory("Create Node Popup", list, [this]() {
 			ImGui::CloseCurrentPopup();
 			m_OpenNodePopup = false;
 		});
 
 		ImGui::EndPopup();
-
 	}
+
+	ed::NodeId selectednode;
+	ed::GetSelectedNodes(&selectednode, 1);
+
+	if (selectednode != ed::NodeId::Invalid)
+	{
+		m_SelectedObject = m_Nodes[(ImGuiID)selectednode.Get()].get();
+	}
+
+	ed::End();
+	ed::PopStyleVar(3);
+
+	if (ImGui::BeginPopupContextItem("Context Menu"))
+	{
+		auto& list = NodeCatgeories::GetCategoryList();
+
+		DrawCategory("Create Node Popup", list, [this]() {
+			ImGui::CloseCurrentPopup();
+			m_OpenNodePopup = false;
+		});
+
+		ImGui::EndPopup();
+	}
+
+
+
 }
 
 
@@ -216,7 +241,6 @@ void NodeGraph::DrawCategory(const std::string& id, const CategoryList& list)
 	}
 }
 
-
 template<typename Pred>
 void NodeGraph::DrawCategory(const std::string& id, const struct CategoryList& list, Pred pred)
 {
@@ -255,7 +279,6 @@ void NodeGraph::DrawCategory(const std::string& id, const struct CategoryList& l
 		}
 	}
 }
-
 
 Pin* NodeGraph::FindPind(ImGuiID id)
 {
@@ -327,11 +350,7 @@ void NodeGraph::DrawAddNewProperty()
 			if (ImGui::Selectable(registeredtype.c_str()))
 			{
 				auto type = DataTypeRegistry::Instaniate(registeredtype);
-				type->OnSelected.AddBinding([this](NodeEditorObject* obj)
-				{
-					if (m_SelectedObject != obj)
-						m_SelectedObject = obj;
-				});
+				
 				m_Properties.emplace_back(type);
 			}
 		}
@@ -377,7 +396,16 @@ void NodeGraph::DrawVariableListProp(Ref<IProperty> prop)
 
 	if (ImGui::Button(prop->GetName().c_str(), textSize + ImVec2(5, 5)))
 	{
-		prop->OnSelected.Broadcast(prop.get());
+		if (m_SelectedObject && m_SelectedObject->GetObjectType() == EObjectType::Node)
+		{
+			ed::NodeId selectedNodes;
+			while (ed::GetSelectedNodes(&selectedNodes, 1))
+			{
+				ed::DeselectNode(selectedNodes);
+			}
+		}
+
+		m_SelectedObject = prop.get();
 	}
 	
 	ImGui::PopStyleColor(2);
@@ -433,8 +461,6 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 
 			switch (obj->GetObjectType())
 			{
-			default:
-				break;
 			case EObjectType::None:
 				break;
 			case EObjectType::Node:
@@ -471,6 +497,8 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 					ImGui::EndHorizontal();
 				}
 				break;
+			default:
+				break;
 			}
 			
 			ImGui::EndVertical();
@@ -497,364 +525,14 @@ void NodeGraph::DrawNodes()
 		else
 		{
 			auto& node = it->second;
-			DrawNode(node.get());
-		
+			NodeBuilder builder(node.get());
+			builder.DrawNode();
 			++it;
 		}
 
 	}
 }
 
-void NodeGraph::DrawNode(class Node* node)
-{
-	auto id = node->GetID();
-	
-
-	ed::PushStyleColor(ed::StyleColor_NodeBg, node->m_Color);
-	ed::PushStyleVar(ed::StyleVar_NodeRounding, node->m_Rounding);
-	ed::PushStyleVar(ed::StyleVar_PinBorderWidth, 3.0f);
-	
-	bool hasheader = node->GetNodeType() != ENodeType::Simple;
-	bool hasInputs = node->m_NumInputs > 0;
-	bool hasOutputs = node->m_NumOutputs > 0;
-	
-	ed::BeginNode(id);
-
-	
-	ImGui::PushID(id);
-
-	ImGui::BeginVertical("node");
-
-	if (hasheader)
-	{
-		ImGui::BeginHorizontal("header");
-
-		if (node->GetNodeType() != ENodeType::Comment)
-		{
-			ImGui::TextUnformatted(node->GetTypeName().c_str());
-		}
-		else
-		{
-			auto comment = Cast<Comment>(node);
-			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGuiExtras::Grey);
-			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImGuiExtras::Grey);
-			ImGui::SetNextItemWidth(comment->m_Size.x);
-			
-			auto& str  = comment->m_Comment;
-			if (ImGui::InputText("", &str))
-			{
-				comment->m_Comment = str;
-			}
-			ImGui::PopStyleColor(2);
-		}
-		
-		ImGui::EndHorizontal();
-		
-	}
-	
-	ImGui::BeginHorizontal("content");
-	if (node->GetNodeType() != ENodeType::Comment)
-	{
-		
-		if (hasInputs)
-		{
-			DrawInputs(node);
-		}
-		else
-		{
-			ImGui::Spring();
-		}
-
-		if (!hasheader)
-		{
-			ImGui::BeginVertical("custom");
-			ImGui::Spring();
-			ImGui::TextUnformatted(node->GetTypeName().c_str());
-			ImGui::Spring();
-			ImGui::EndVertical();
-		}
-
-		if (hasOutputs)
-		{
-			DrawOutputs(node);
-		}
-	}
-	else
-	{
-		auto comment = Cast<Comment>(node);
-		ImGui::Dummy(comment->m_Size);
-	}
-	
-
-	ImGui::EndHorizontal();
-	
-	ImGui::EndVertical();
-
-	ImGui::PopID();
-
-
-	ed::EndNode();
-
-	ed::PopStyleVar(2);
-	ed::PopStyleColor();
-
-	//Draw header
-	if (hasheader)
-	{
-		auto drawlist = ed::GetNodeBackgroundDrawList(id);
-		auto pos = ed::GetNodePosition(id);
-		auto size = ed::GetNodeSize(id);
-		auto node_border_width = ed::GetStyle().NodeBorderWidth;
-
-		drawlist->AddLine(pos + ImVec2(0.0f, 28.0f) + ImVec2(node_border_width, -node_border_width),
-			pos - ImVec2(node_border_width, node_border_width)
-			+ ImVec2(size.x, 28.0f), ImColor(ImGuiExtras::White));
-
-		drawlist->AddImageRounded((void*)m_HeaderTexture->GetRenderID(), 
-			pos + ImVec2(node_border_width, node_border_width),
-			pos - ImVec2(node_border_width, node_border_width)
-			+ ImVec2(size.x, 28.0f), ImVec2(0,0), ImVec2(1, .2f) , 
-			ImColor(node->m_TitleColor), node->m_Rounding, ImDrawCornerFlags_Top);
-
-	}
-
-	if (node->GetNodeType() == ENodeType::Comment)
-	{
-		auto comment = Cast<Comment>(node);
-		DrawCommentResizeButton(comment);
-	}
-}
-
-void NodeGraph::DrawPin(ImGuiID id, EPinType pintype, float size , const ImVec4& color, const ImVec4& innercolor)
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-	if (window->SkipItems)
-		return;
-
-	ImGuiContext& g = *ImGui::GetCurrentContext();
-	ImDrawList* drawlist = ImGui::GetWindowDrawList();
-	auto pos = ImGui::GetCursorScreenPos();
-	ImRect bounds;
-
-	auto TotalSize = ImVec2(size, size) * 2;
-	ImVec2 offset = ImVec2(size * 2.0f, 0.0f);
-	auto borderwidth = ed::GetStyle().PinBorderWidth;
-
-	switch (pintype)
-	{
-	case EPinType::None:
-		break;
-	case EPinType::DataPin:
-	{
-		
-		drawlist->AddCircle(pos + TotalSize , size / 2.0f, ImColor(color), 0, borderwidth);
-		drawlist->AddCircleFilled(pos + TotalSize, size / 2.0f, ImColor(innercolor));
-		bounds = ImRect(pos, pos + TotalSize * 2.0f);
-	}
-	break;
-	case EPinType::ExecutionPin:
-	{
-		auto pinpos = pos;
-		float halfsize = size / 2.0f;
-		ImVec2 points[] = {
-			pinpos + TotalSize + ImVec2(-halfsize, halfsize),
-			pinpos + TotalSize + ImVec2(0.0f, halfsize),
-			pinpos + TotalSize + ImVec2(halfsize, 0.0f),
-			pinpos + TotalSize + ImVec2(0.0f, -halfsize),
-			pinpos + TotalSize + ImVec2(-halfsize, -halfsize)
-		};
-
-		drawlist->AddPolyline(points, 5,	ImColor(color), true, borderwidth);
-		drawlist->AddConvexPolyFilled(points, 5, ImColor(innercolor));
-
-		bounds = ImRect(pinpos, pinpos + TotalSize * 2.0f);
-	}
-	break;
-	default:
-		break;
-	}
-
-	ImGui::ItemSize(bounds);
-	if(!ImGui::ItemAdd(bounds, id))
-		return;
-
-}
-
-void NodeGraph::DrawPinTriangle(ImGuiID id, float size ,const ImVec4& color, const ImVec4& innercolor,
-	const ImVec2& offset)
-{
-	ImGuiContext& g = *ImGui::GetCurrentContext();
-	ImDrawList* drawlist = ImGui::GetWindowDrawList();
-	auto pos = ImGui::GetCursorScreenPos();
-	ImRect bounds;
-
-	auto TotalSize = ImVec2(size, size) ;
-
-
-	ImVec2 points[] =
-	{
-		pos + offset + ImVec2(0, 0),
-		pos + offset + ImVec2(size , size / 2.0f),
-		pos + offset + ImVec2(0.0f, size)
-	};
-
-	auto borderwidth = ed::GetStyle().PinBorderWidth;
-	drawlist->AddTriangleFilled(points[0], points[1], points[2], ImColor(innercolor));
-	drawlist->AddTriangle(points[0], points[1], points[2], ImColor(color), borderwidth);
-	bounds = ImRect(pos + offset, pos + offset + TotalSize);
-
-	//drawlist->AddRectFilled(bounds.Min, bounds.Max, ImColor(color)); //[DEBUG]
-
-	ImGui::ItemSize(bounds);
-	if(!ImGui::ItemAdd(bounds, id))
-		return;
-
-
-}
-
-void NodeGraph::DrawInputs(class Node* node)
-{
-
-	auto style = ed::GetStyle();
-
-	ImGui::BeginVertical("inputs");
-
-	for (int i = 0; i < node->m_NumInputs; i++)
-	{
-		auto input = node->m_Inputs[i];
-		auto id = input->GetID();
-
-		IProperty* prop = input->GetProperty();
-
-		auto color = prop ? prop->GetColor() : ImGuiExtras::Grey;
-		auto innercolor = input->m_Connections > 0 ? prop ? prop->GetColor() : ImGuiExtras::White : ImGuiExtras::Black;
-
-		auto txt = input->GetName();
-
-		auto posy = ImGui::GetCursorPosY();
-		ImGui::SetCursorPosY(posy + m_PinPadding);
-
-		ImGui::BeginHorizontal(id);
-
-		ed::BeginPin(id, input->pinKind);		
-		DrawPin(id, input->GetPinType(), style.PinRadius, color , innercolor);
-		ed::EndPin();
-
-		if (input->GetPinType() == EPinType::DataPin)
-		{
-			ImGui::Spring(0,0);
-			DrawPinTriangle(id, style.PinRadius,  color, innercolor, { -style.PinRadius, 0 });
-			
-			
-		}
-	
-		if (!txt.empty()) {ImGui::Spring(); ImGui::TextUnformatted(txt.c_str()); ImGui::Spring();}
-
-		if (prop && input->m_Connections == 0)
-		{
-			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGuiExtras::Grey);
-			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImGuiExtras::Grey);
-			ImGui::Spring();
-			ImGui::SetNextItemWidth(50.0f);
-			prop->DrawDetails();
-			ImGui::PopStyleColor(2);
-		}
-
-		ImGui::EndHorizontal();
-	}
-
-	ImGui::EndVertical();
-}
-
-void NodeGraph::DrawOutputs(class Node* node)
-{
-	auto style = ed::GetStyle();
-
-	ImGui::BeginVertical("outputs");
-
-	for (int i = 0; i < node->m_NumOutputs; i++)
-	{
-		auto input = node->m_Outputs[i];
-		auto id = input->GetID();
-
-		
-
-		IProperty* prop = input->GetProperty();
-		auto color = prop ? prop->GetColor() : ImGuiExtras::Grey;
-
-		auto innercolor = input->m_Connections > 0 ? prop ? prop->GetColor() : ImGuiExtras::White : ImGuiExtras::Black;
-
-		auto txt = input->GetName();
-
-		auto posy = ImGui::GetCursorPosY();
-		ImGui::SetCursorPosY(posy + m_PinPadding);
-
-		ImGui::BeginHorizontal(id);
-
-		ImGui::Spring();
-
-		if (!txt.empty()) {  ImGui::TextUnformatted(txt.c_str()); ImGui::Spring(0.0f);}
-
-		
-		ed::BeginPin(id, input->pinKind);
-			
-		DrawPin(id, input->GetPinType(), style.PinRadius, color, innercolor );
-		
-		ed::EndPin();
-
-		if (input->GetPinType() == EPinType::DataPin)
-		{
-			ImGui::Spring(0,0);
-
-			DrawPinTriangle(id, style.PinRadius,  color, innercolor, {-style.PinRadius, 0});
-
-		}
-
-
-		ImGui::EndHorizontal();
-
-	}
-
-	ImGui::EndVertical();
-}
-
-void NodeGraph::DrawCommentResizeButton(class Comment* commentNode)
-{
-	auto id = commentNode->GetID();
-
-	
-	//Add Resize Button
-	ImDrawList* drawlist = ed::GetNodeBackgroundDrawList(id);
-	auto pos = ed::GetNodePosition(id);
-	auto size = ed::GetNodeSize(id);
-
-	ImVec2 buttonsize = { 30, 30 };
-	ImRect rect = { pos + size - buttonsize, pos + size};
-	drawlist->AddRectFilled(rect.Min, rect.Max, ImGui::GetColorU32({ .1f, .1f , .1f , .1f }));
-
-	ImGui::ItemSize(rect);
-	ImGui::ItemAdd(rect, id);
-
-	bool hovered = ImGui::ItemHoverable(rect, id);
-	hovered = ImGui::IsMouseHoveringRect(rect.Min, rect.Max, false);
-
-	if (hovered)
-	{
-		auto window = ImGui::GetCurrentWindow();
-		ImGui::SetHoveredID(id);
-		ImGui::SetActiveID(id, window);
-		ImGui::SetFocusID(id, window);
-
-		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNWSE);
-
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
-		{
-			auto deltaPos = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left, 0.01f);
-			commentNode->m_Size += deltaPos;
-			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Left);
-		}
-	}
-}
 
 void NodeGraph::DrawNodeLinks()
 {
@@ -863,7 +541,8 @@ void NodeGraph::DrawNodeLinks()
 		if (!(*it).second->IsPendingDestroy())
 		{
 			auto& link = it->second;
-			ed::Link(link->GetID(), link->m_StartPin, link->m_EndPin, ImGuiExtras::White, m_LinkThickness);
+			LinkBuilder builder(link.get());
+			builder.Draw();
 			++it;
 		}
 		else

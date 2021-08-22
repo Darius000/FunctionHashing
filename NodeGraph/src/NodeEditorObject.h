@@ -5,7 +5,6 @@
 #include "imgui_internal.h"
 #include "imgui_stdlib.h"
 
-DECLARE_ONE_PARAMETER_EVENT(OnSelected, class NodeEditorObject*, obj)
 DECLARE_ONE_PARAMETER_EVENT(OnDestroyed, class NodeEditorObject*, obj)
 
 enum class EObjectType
@@ -27,7 +26,6 @@ public:
 	void SetName(const std::string& str);
 	void SetToolTip(const std::string& tooltip);
 
-	FOnSelectedEvent OnSelected;
 	FOnDestroyedEvent OnDestroyed;
 	
 	inline std::string& GetToolTip() { return m_ToolTip; }

@@ -57,5 +57,8 @@ struct is_convertible
 
 #define  BIT(x) (1 << x)
 
+#define CLASS()
+#define GENERATE_NODE()
+
 #include "Events/EventDelegate.h"
 #include "Event.h"

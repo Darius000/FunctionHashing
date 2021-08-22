@@ -14,7 +14,7 @@ static ed::EditorContext* g_Context = nullptr;
 ImGuiLayer::ImGuiLayer()
 	:Layer("ImGui")
 {
-
+	b_ShowDemoWindow = false;
 }
 
 void ImGuiLayer::OnAttach()
@@ -42,12 +42,13 @@ void ImGuiLayer::OnAttach()
 	ImGui_ImplGlfw_InitForOpenGL(nativeWindow, true);
 	ImGui_ImplOpenGL3_Init("#version 410");
 
-	auto graph = m_WindowStack.OpenPanel<NodeGraphPanel>("Node Graph", ImGuiWindowFlags_None);
+	auto graph = m_WindowStack.OpenPanel<NodeGraphPanel>("Node Graph", ImGuiWindowFlags_MenuBar);
 	auto log = m_WindowStack.OpenPanel<LogPanel>("Log", ImGuiWindowFlags_None);
 }
 
 void ImGuiLayer::OnUpdate(float deltaTime)
 {
+
 	OnBegin();
 
 	static bool dockSpaceOpen = true;
@@ -88,9 +89,16 @@ void ImGuiLayer::OnUpdate(float deltaTime)
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), opt_flags);
 	}
 
+	if (ImGui::BeginMainMenuBar())
+	{
+		if(ImGui::MenuItem("Show ImGui Demo Window")) b_ShowDemoWindow = true;
+		ImGui::EndMainMenuBar();
+	}
+
+	//DEMO WINDOW IMGUI 
+	if(b_ShowDemoWindow) ImGui::ShowDemoWindow(&b_ShowDemoWindow);
 
 	m_WindowStack.Update();
-
 
 	ImGui::End();
 

@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 
 
+
 class NodeRegistry;
 
 class INodeCreation
@@ -69,3 +70,4 @@ struct NodeCreationMethod
 	static bool GetVisibleInCategories()  { return DisplayCategory; }\
 	static std::string GetFactoryCategory() { return std::string(Category) + Class::GetFactoryName();}\
 	static std::string GetFactoryDescription() { return Description; }
+

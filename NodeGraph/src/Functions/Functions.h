@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "DataTypes/TypeTraits.h"
 
 
 struct Function
@@ -13,7 +12,10 @@ template<typename ReturnType, typename... Args>
 struct FunctionWrapperBase : public Function
 {
 	using R = ReturnType;
-
+	using ArgTypes =  std::tuple<Args...>;
+	static constexpr size_t ArgCount = sizeof...(Args);
+	template<size_t N>
+	using NthArg = std::tuple_element_t<N, ArgTypes>;
 };
 
 template<typename F> struct FunctionWrapper{
@@ -23,7 +25,7 @@ template<typename F> struct FunctionWrapper{
 
 //free floating or static function
 template<typename ReturnType, typename... Args>
-struct FunctionWrapper<ReturnType(*)(Args...)> :
+struct FunctionWrapper<ReturnType(*)(Args...)> : public
 	FunctionWrapperBase<ReturnType, Args...>
 {	
 	using Pointer = ReturnType(*)(Args...);
@@ -50,7 +52,7 @@ struct FunctionWrapper<ReturnType(*)(Args...)> :
 
 //non method const version
 template<typename T, typename ReturnType, typename... Args>
-struct FunctionWrapper<ReturnType(T::*)(Args...)> :
+struct FunctionWrapper<ReturnType(T::*)(Args...)> : public
 	FunctionWrapperBase<ReturnType, Args...>
 {
 	using Pointer = ReturnType(T::*)(Args...);
@@ -78,7 +80,7 @@ struct FunctionWrapper<ReturnType(T::*)(Args...)> :
 
 //const method version
 template<typename T, typename ReturnType, typename... Args>
-struct FunctionWrapper<ReturnType(T::*)(Args...) const> :
+struct FunctionWrapper<ReturnType(T::*)(Args...) const> : public
 	FunctionWrapperBase<ReturnType, Args...>
 {
 	using Pointer = ReturnType(T::*)(Args...) const;
@@ -109,7 +111,7 @@ struct FunctionWrapper<ReturnType(T::*)(Args...) const> :
 #define DEFINE_FUNCTION_WRAPPER(name, x)\
 	namespace name\
 	{\
-		using Type = decltype(&x);\
+		using Type = FunctionWrapper<decltype(&x)>;\
 		static FunctionWrapper<decltype(&x)> ptr(&x);\
 	}
 	

@@ -12,6 +12,14 @@ NodeGraphPanel::NodeGraphPanel(const std::string& label, ImGuiWindowFlags flags,
 void NodeGraphPanel::OnRenderMenuBar()
 {
 	
+	if (ImGui::BeginMenu("File"))
+	{
+		ShowFileMenu();
+		ImGui::EndMenu();
+	}
+
+	ShowActionMenu();
+	
 }
 
 
@@ -20,6 +28,19 @@ void NodeGraphPanel::OnRenderWindow()
 	m_Nodegraph->Draw();
 }
 
+
+void NodeGraphPanel::ShowFileMenu()
+{
+	if (ImGui::MenuItem("Load")){}
+	if (ImGui::MenuItem("Save")){}
+}
+
+void NodeGraphPanel::ShowActionMenu()
+{
+	if (ImGui::MenuItem("Play"))	{}
+	if (ImGui::MenuItem("Stop"))	{}
+	if (ImGui::MenuItem("Pause"))	{}
+}
 
 bool NodeGraphPanel::OnKeyPressed(KeyPressedEvent& e)
 {

@@ -11,4 +11,5 @@ namespace ImGuiExtras
 	inline const ImVec4 Black = { 0.0f, 0.0f, 0.0f, 1.0f };
 	inline const ImVec4 Red = { 1.0f, 0.0f, 0.0f, 0.0f };
 	inline const ImVec4 Grey = {.5f, .5f, .5f, 1.0f};
+	inline const ImVec4 Clear = {0, 0, 0, 0};
 }

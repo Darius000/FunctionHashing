@@ -9,5 +9,4 @@ Comment::Comment()
 	m_Size = ImVec2(100, 100);
 }
 
-
 DEFINE_REGISTER_NODE(Comment)

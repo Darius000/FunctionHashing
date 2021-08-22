@@ -39,7 +39,9 @@ project "NodeGraph"
 	"%{prj.name}/src/**.h", 
 	"%{prj.name}/src/**.cpp", 
 	"%{prj.name}/src/**.hpp",
-	"%{prj.name}/src/**.inl"
+	"%{prj.name}/src/**.inl",
+	"%{prj.name}/generated/**h",
+	"%{prj.name}/generated/**cpp"
 	}
 	
 	
