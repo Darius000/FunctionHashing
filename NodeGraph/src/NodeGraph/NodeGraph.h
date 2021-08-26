@@ -4,7 +4,8 @@
 #include "NodeLink/Link.h"
 #include "Nodes/Node.h"
 
-class NodeGraph
+
+class NodeGraph 
 {
 	using NodeList = typename std::map<ImGuiID, Scope<class Node>>;
 	using NodesSelected = typename std::vector<ImGuiID>;
@@ -50,17 +51,18 @@ private:
 	Pin* FindPind(ImGuiID id);
 
 	
-private:
-
+protected:
 	bool m_OpenNodePopup;
 
-	static class NodeEditorObject* m_SelectedObject;
+	class NodeEditorObject* m_SelectedObject = nullptr;
 
 	NodeList m_Nodes;
 
 	PropertyList m_Properties;
 
 	NodeLinks m_NodeLinks;
+
+	friend class GraphSerializer;
 };
 
 template<typename... Args>

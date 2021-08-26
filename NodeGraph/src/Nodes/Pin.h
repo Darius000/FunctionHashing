@@ -43,6 +43,10 @@ struct Pin : public NodeEditorObject
 
 	virtual IProperty* GetProperty() const { return nullptr; };
 
+	virtual void Serialize(YAML::Emitter& out);
+
+	virtual void DeSerialize(YAML::detail::iterator_value& value);
+
 	ed::PinKind pinKind;
 
 	int m_Connections;
@@ -64,4 +68,8 @@ struct DataPin : public Pin
 	virtual IProperty* GetProperty() const override { return m_Property.get(); };
 
 	Ref<struct IProperty> m_Property ;
+
+	virtual void Serialize(YAML::Emitter& out);
+
+	virtual void DeSerialize(YAML::detail::iterator_value& value);
 };

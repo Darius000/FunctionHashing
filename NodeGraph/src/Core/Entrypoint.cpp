@@ -7,6 +7,7 @@ int main(int argc, char* argv[])
 
    Application* app = new Application();
 
+
    PROFILE_END_SESSION();
 
    PROFILE_BEGIN_SESSION("Update", "Update.json");
@@ -16,7 +17,6 @@ int main(int argc, char* argv[])
    PROFILE_END_SESSION();
 
    PROFILE_BEGIN_SESSION("End", "End.json");
-
 
    delete app;
 

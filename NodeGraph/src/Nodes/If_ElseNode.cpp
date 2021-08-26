@@ -3,6 +3,7 @@
 
 If_ElseNode::If_ElseNode()
 {
+	AddExecutionPin("", ed::PinKind::Input);
 	AddDataPin("Condition", ed::PinKind::Input, MakeRef<IPropertyT<bool>>());
 	AddExecutionPin("True",ed::PinKind::Output);
 	AddExecutionPin("False",ed::PinKind::Output);

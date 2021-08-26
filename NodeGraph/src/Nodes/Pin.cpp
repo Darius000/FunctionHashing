@@ -21,6 +21,21 @@ bool Pin::IsValidConnection(const Pin& pin, TEnum<EPinRejectReason>& reason) con
 	return same_kind && same_type && is_not_connected;
 }
 
+void Pin::Serialize(YAML::Emitter& out)
+{
+	NodeEditorObject::Serialize(out);
+
+	out << YAML::Key << "Connections";
+	out << YAML::Value << m_Connections;
+}
+
+void Pin::DeSerialize(YAML::detail::iterator_value& value)
+{
+	NodeEditorObject::DeSerialize(value);
+
+	m_Connections = value["Connections"].as<int>();
+}
+
 bool DataPin::IsValidConnection(const Pin& pin, TEnum<EPinRejectReason>& reason) const
 {
 	if(Pin::IsValidConnection(pin, reason) == false) return false;
@@ -31,4 +46,18 @@ bool DataPin::IsValidConnection(const Pin& pin, TEnum<EPinRejectReason>& reason)
 	else if(!same_data_type) reason = EPinRejectReason::DifferentDataTypes;
 
 	return valid_property && same_data_type;
+}
+
+void DataPin::Serialize(YAML::Emitter& out)
+{
+	Pin::Serialize(out);
+
+	m_Property->Serialize(out);
+}
+
+void DataPin::DeSerialize(YAML::detail::iterator_value& value)
+{
+	Pin::DeSerialize(value);
+
+	m_Property->DeSerialize(value);
 }

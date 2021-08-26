@@ -67,7 +67,7 @@ namespace Register##func\
 	bool registered = FunctionRegistry::Registrate(#func, new FunctionWrapper<decltype(&func)>(&func)); \
 };\
 template<>\
-std::string FunctionNode<decltype(&func), Register##func::name>::GetFactoryName() { return #func; };\
+std::string FunctionNode<decltype(&func), Register##func::name>::GetStaticFactoryName() { return #func; };\
 \
 template<>\
 std::string FunctionNode<decltype(&func), Register##func::name>::GetTypeName()  const override { return #func; };\

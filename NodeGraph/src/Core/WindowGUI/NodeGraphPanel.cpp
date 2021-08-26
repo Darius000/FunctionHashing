@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "NodeGraphPanel.h"
+#include "NodeGraph/Serializer/GraphSerializer.h"
 
 NodeGraphPanel::NodeGraphPanel(const std::string& label, ImGuiWindowFlags flags, ImGuiID id, bool runtimecreated)
 	:ImGuiPanel(label, flags, id, runtimecreated)
@@ -31,8 +32,23 @@ void NodeGraphPanel::OnRenderWindow()
 
 void NodeGraphPanel::ShowFileMenu()
 {
-	if (ImGui::MenuItem("Load")){}
-	if (ImGui::MenuItem("Save")){}
+	std::string filename = ("Nodegraph.ini");
+
+	if (ImGui::MenuItem("New"))
+	{
+		m_Nodegraph.reset();
+		m_Nodegraph = MakeRef<NodeGraph>();
+	}
+
+	if (ImGui::MenuItem("Load")) {
+		GraphSerializer serializer(m_Nodegraph);
+		serializer.DeSerialize(filename);	
+	}
+
+	if (ImGui::MenuItem("Save")) {
+		GraphSerializer serializer(m_Nodegraph);
+		serializer.Serialize(filename);
+	}
 }
 
 void NodeGraphPanel::ShowActionMenu()

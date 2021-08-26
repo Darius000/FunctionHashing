@@ -1,19 +1,13 @@
 #include "PCH.h"
 #include "NodeGraph.h"
-#include "Core\Events\KeyCodes.h"
 #include "Registry\NodeRegistry.h"
-#include "imgui.h"
-#include "imgui_internal.h"
 #include "DataTypes/Property.h"
 #include "DataTypes/TypeDescriptor.h"
 #include "DataTypes/DataTypeRegistry.h"
 #include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
-#include "Core/Events/KeyEvents.h"
 #include "Core/Events/MouseEvent.h"
 #include "NodeEditor/imgui_node_editor.h"
 #include "imgui.h"
-#include "Nodes/CommentNode.h"
-#include "Core/Texture/Texture.h"
 #include "Core\Debug\Instrumentor.h"
 #include "NodeBuilder.h"
 
@@ -485,7 +479,7 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 					ImGui::BeginHorizontal("prop");
 
 					ImGui::SetNextItemWidth(item_width / 2.0f);
-					auto& str = prop->GetName();
+					auto str = prop->GetName();
 					if (ImGui::InputText("##propertyname", & str))
 					{
 						prop->SetName(str);
@@ -552,6 +546,3 @@ void NodeGraph::DrawNodeLinks()
 		}
 	}
 }
-
-
-NodeEditorObject* NodeGraph::m_SelectedObject = nullptr;

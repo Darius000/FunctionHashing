@@ -39,21 +39,21 @@ public:
 #undef TYPENAME
 
 template<>
-std::string SetVariableNode<int>::GetFactoryName()
+std::string SetVariableNode<int>::GetStaticFactoryName()
 {
 	return "Setint";
 }
 
 
 template<>
-std::string SetVariableNode<float>::GetFactoryName()
+std::string SetVariableNode<float>::GetStaticFactoryName()
 {
 	return "Setfloat";
 }
 
 
 template<>
-std::string SetVariableNode<bool>::GetFactoryName()
+std::string SetVariableNode<bool>::GetStaticFactoryName()
 {
 	return "Setbool";
 }

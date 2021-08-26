@@ -24,6 +24,7 @@ public:
 	virtual ~Node() = default;
 
 	virtual std::string GetTypeName() const { return "Node"; }
+	virtual std::string GetFactoryName() const { return ""; }
 
 	//Execute a function
 	void Execute();
@@ -31,8 +32,14 @@ public:
 	virtual void OnExecute() {};
 
 	const EObjectType GetObjectType() { return EObjectType::Node; }
+
 	virtual const ENodeType GetNodeType() { return ENodeType::Blueprint; }
+
 	Pin* FindPin(ImGuiID id) const;
+
+	virtual void Serialize(YAML::Emitter& out);
+
+	virtual void DeSerialize(YAML::detail::iterator_value& value);
 
 	Pins m_Pins;
 	Pins m_Inputs;

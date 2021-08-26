@@ -35,21 +35,21 @@ protected:
 #undef TYPENAME
 
 template<>
-inline std::string GetVariableNode<int>::GetFactoryName()
+inline std::string GetVariableNode<int>::GetStaticFactoryName() 
 {
 	return "Getint";
 }
 
 
 template<>
-inline std::string GetVariableNode<float>::GetFactoryName()
+inline std::string GetVariableNode<float>::GetStaticFactoryName() 
 {
 	return "Getfloat";
 }
 
 
 template<>
-inline std::string GetVariableNode<bool>::GetFactoryName()
+inline std::string GetVariableNode<bool>::GetStaticFactoryName() 
 {
 	return "Getbool";
 }

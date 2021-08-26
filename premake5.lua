@@ -8,15 +8,14 @@ IncludeDirs = {}
 IncludeDirs["GLFW"] = "NodeGraph/vendor/GLFW/include"
 IncludeDirs["GLAD"] = "NodeGraph/vendor/GLAD/include"
 IncludeDirs["IMGUI"] = "NodeGraph/vendor/IMGUI"
-IncludeDirs["HeaderParser"] = "HeaderParser/generated"
-IncludeDirs["NodeEditor"] = "NodeGraph/src/NodeEditor"
 IncludeDirs["STB_IMAGE"] = "NodeGraph/vendor/STB_IMAGE"
+IncludeDirs["YAML"] = "NodeGraph/vendor/yaml-cpp"
 
 group "Dependencies"
 	include "NodeGraph/vendor/GLFW"
 	include "NodeGraph/vendor/GLAD"
 	include "NodeGraph/vendor/IMGUI"
-	include "HeaderParser"
+	include "NodeGraph/vendor/yaml-cpp"
 group ""
 	
 project "NodeGraph"
@@ -29,10 +28,9 @@ project "NodeGraph"
 	targetdir ("bin/" ..outputdir.. "/%{prj.name}")
     objdir ("bin-int/" ..outputdir.. "/%{prj.name}")
 	
-	
-	
 	pchheader "PCH.h"
 	pchsource "NodeGraph/src/PCH.cpp"
+	
 	
 	files 
 	{
@@ -40,11 +38,7 @@ project "NodeGraph"
 	"%{prj.name}/src/**.cpp", 
 	"%{prj.name}/src/**.hpp",
 	"%{prj.name}/src/**.inl",
-	"%{prj.name}/generated/**h",
-	"%{prj.name}/generated/**cpp"
 	}
-	
-	
 	
 	includedirs
 	{
@@ -52,8 +46,8 @@ project "NodeGraph"
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.IMGUI}",
-		"%{IncludeDirs.HeaderParser}",
-		"%{IncludeDirs.STB_IMAGE}"
+		"%{IncludeDirs.STB_IMAGE}",
+		"%{IncludeDirs.YAML}"
 	}
 	
 	links
@@ -61,6 +55,7 @@ project "NodeGraph"
 		"GLFW",
 		"GLAD",
 		"IMGUI",
+		"yaml-cpp",
 		 "opengl32.lib"
 	}
 	
@@ -88,11 +83,4 @@ project "NodeGraph"
       optimize "On"
 	  
 
-	filter {"files:crude_json.cpp"}
-		flags { "NoPCH" }		
-	filter {"files:imgui_canvas.cpp"}
-		flags { "NoPCH" }
-	filter {"files:imgui_node_editor.cpp"}
-		flags { "NoPCH" }
-	filter {"files:imgui_node_editor_api.cpp"}
-		flags { "NoPCH" }
+

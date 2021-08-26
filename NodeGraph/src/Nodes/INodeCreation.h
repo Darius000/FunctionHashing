@@ -13,6 +13,7 @@ public:
 	virtual ~INodeCreation() = default;
 
 	virtual std::string GetTypeName() const = 0;
+	virtual std::string GetFactoryName() const = 0;
 };
 
 template<typename R, typename ... Args>
@@ -57,7 +58,7 @@ struct NodeCreationMethod
 #define DEFINE_REGISTER_NODE(Class)\
 	namespace Register##Class\
 	{\
-		bool registered = NodeRegistry::Registrate(Class::GetFactoryName(), \
+		bool registered = NodeRegistry::Registrate(Class::GetStaticFactoryName(), \
 				NodeCreationMethod(Class::CreateMethod, Class::GetFactoryCategory(),\
 				Class::GetVisibleInCategories(),\
 				Class::GetFactoryDescription()));\
@@ -66,8 +67,9 @@ struct NodeCreationMethod
 
 #define DEFINE_NODE_CLASS(Class, Category, Description, DisplayCategory)\
 	virtual std::string GetTypeName() const override { return TYPENAME; }\
-	static std::string GetFactoryName() { return #Class; };\
+	virtual std::string GetFactoryName() const override { return GetStaticFactoryName(); }\
+	static std::string GetStaticFactoryName() { return #Class;};\
 	static bool GetVisibleInCategories()  { return DisplayCategory; }\
-	static std::string GetFactoryCategory() { return std::string(Category) + Class::GetFactoryName();}\
+	static std::string GetFactoryCategory() { return std::string(Category) + Class::GetStaticFactoryName();}\
 	static std::string GetFactoryDescription() { return Description; }
 

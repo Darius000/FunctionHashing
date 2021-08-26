@@ -45,6 +45,33 @@ ImGuiID NodeEditorObject::GetID() const
 	return m_ID;
 }
 
+
+void NodeEditorObject::Serialize(YAML::Emitter& out)
+{
+	
+	out << YAML::Key << "Identifier";
+	out << YAML::Value << m_ID;
+	
+	out << YAML::Key << "Name";
+	out << YAML::Value << m_Name;
+
+	out << YAML::Key << "ToolTip";
+	out << YAML::Value << m_ToolTip;
+
+}
+
+void NodeEditorObject::DeSerialize(YAML::detail::iterator_value& value)
+{
+	auto name = value["Name"].as<std::string>();
+	auto id =	value["Identifier"].as<ImGuiID>();
+	auto tooltip = value["ToolTip"].as<std::string>();
+
+	m_Name = name;
+	m_ID = id;
+	m_ToolTip = tooltip;
+}
+
+
 NodeEditorObject& NodeEditorObject::operator=(const NodeEditorObject& obj)
 {
 	m_Name = obj.m_Name;

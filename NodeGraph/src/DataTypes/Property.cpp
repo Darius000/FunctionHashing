@@ -40,20 +40,20 @@ ImVec4 IPropertyT<bool>::GetColor()
 }
 
 template<>
-std::string IPropertyT<int>::GetStaticTypeName()
+const std::string IPropertyT<int>::GetStaticTypeName()
 {
 	return "int";
 }
 
 template<>
-std::string IPropertyT<float>::GetStaticTypeName()
+const std::string IPropertyT<float>::GetStaticTypeName()
 {
 	return "float";
 }
 
 
 template<>
-std::string IPropertyT<bool>::GetStaticTypeName()
+const std::string IPropertyT<bool>::GetStaticTypeName()
 {
 	return "bool";
 }
@@ -62,5 +62,3 @@ std::string IPropertyT<bool>::GetStaticTypeName()
 REGISTER_TYPE(int);
 REGISTER_TYPE(float)
 REGISTER_TYPE(bool)
-
-

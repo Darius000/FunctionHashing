@@ -10,10 +10,9 @@ class DataTypeRegistry;
 
 struct IProperty : public NodeEditorObject
 {
-protected:
+
 	IProperty() {};
 
-public:
 	virtual ~IProperty() = default;
 
 	FOnNameChangedEvent OnNameChanged;
@@ -68,9 +67,13 @@ struct IPropertyT : public IProperty
 
 	virtual ImVec4 GetColor() override;
 
-	static std::string GetStaticTypeName();
+	static const std::string GetStaticTypeName();
 
-	virtual std::string GetTypeName() { return GetStaticTypeName(); }
+	virtual const std::string GetTypeName() const { return GetStaticTypeName(); }
+
+	virtual void Serialize(YAML::Emitter& out) override;
+
+	virtual void DeSerialize(YAML::detail::iterator_value& value) override;
 
 	inline static IProperty* Create()
 	{
@@ -79,13 +82,14 @@ struct IPropertyT : public IProperty
 
 	//operators
 	IPropertyT& operator=(const IPropertyT& p) { m_Prop = p.m_Prop; return *this; }
-	IPropertyT& operator=(IPropertyT&& p) { m_Prop = p.m_Prop; return *this; }
+
 	const bool operator==(const Type& t) const { return m_Prop == t; }
 	const bool operator!=(const Type& t) const { return m_Prop != t; }
 	const bool operator<=(const Type& t) const { return m_Prop <= t; }
 	const bool operator<(const Type& t) const { return m_Prop < t; }
 	const bool operator>(const Type& t) const { return m_Prop > t; }
 	const bool operator>=(const Type& t) const { return m_Prop >= t; }
+
 
 	Type& Set(const Type& t) { return m_Prop = t; }
 	Type& Get() { return m_Prop; }
@@ -96,7 +100,29 @@ struct IPropertyT : public IProperty
 	Type m_DefaultProp;
 };
 
+template<typename T>
+void IPropertyT<T>::DeSerialize(YAML::detail::iterator_value& value)
+{
+	NodeEditorObject::DeSerialize(value);
 
+	m_DefaultProp = value["Default Value"].as<T>();
+	m_Prop = value["Value"].as<T>();
+}
+
+template<typename T>
+void IPropertyT<T>::Serialize(YAML::Emitter& out)
+{
+	NodeEditorObject::Serialize(out);
+
+	out << YAML::Key << "Property Type";
+	out << YAML::Value << GetTypeName();
+
+	out << YAML::Key << "Default Value";
+	out << YAML::Value << m_DefaultProp;
+
+	out << YAML::Key << "Value";
+	out << YAML::Value << m_Prop;
+}
 
 #define REGISTER_TYPE(x)\
 namespace Type##x\

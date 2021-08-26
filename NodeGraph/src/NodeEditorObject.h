@@ -4,6 +4,8 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_stdlib.h"
+#include "yaml-cpp/yaml.h"
+
 
 DECLARE_ONE_PARAMETER_EVENT(OnDestroyed, class NodeEditorObject*, obj)
 
@@ -14,7 +16,7 @@ enum class EObjectType
 	Property
 };
 
-class NodeEditorObject
+class NodeEditorObject 
 {
 public:
 	NodeEditorObject();
@@ -23,20 +25,33 @@ public:
 	virtual ~NodeEditorObject();
 
 	void Destroy();
+
 	void SetName(const std::string& str);
+
 	void SetToolTip(const std::string& tooltip);
 
 	FOnDestroyedEvent OnDestroyed;
 	
-	inline std::string& GetToolTip() { return m_ToolTip; }
-	inline std::string& GetName() { return m_Name; }
+	inline const std::string& GetToolTip() const { return m_ToolTip; }
+
+	inline const std::string& GetName() const { return m_Name; }
+
 	const bool HasToolTip() const { return m_ToolTip.size() > 0; }
+
 	inline const bool IsPendingDestroy() const { return m_PendingDestroy; }
+
 	ImGuiID GetID() const;
 
 	const bool operator==(const NodeEditorObject& obj);
+
 	NodeEditorObject& operator=(const NodeEditorObject& obj);
+
 	virtual const EObjectType GetObjectType() { return EObjectType::None; };
+
+	virtual void Serialize(YAML::Emitter& out);
+
+	virtual void DeSerialize(YAML::detail::iterator_value& value);
+
 
 private:
 	static ImGuiID GetNextAvialableID();
@@ -52,5 +67,7 @@ private:
 	bool m_PendingDestroy;
 	static ImGuiID s_ID;
 	static std::vector<ImGuiID> s_DeletedIDs;
+
+	friend class GraphSerializer;
 };
 

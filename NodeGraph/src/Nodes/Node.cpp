@@ -21,6 +21,43 @@ Pin* Node::FindPin(ImGuiID id) const
 	return it != m_Pins.end() ? it->get() : nullptr;
 }
 
+void Node::Serialize(YAML::Emitter& out)
+{
+	NodeEditorObject::Serialize(out);
+
+	out << YAML::Key << "FactoryName";
+	out << YAML::Value << GetFactoryName();
+
+	out << YAML::Key << "Pins";
+	out << YAML::Value << YAML::BeginSeq;
+
+	for (auto pin : m_Pins)
+	{
+		out << YAML::BeginMap;
+		pin->Serialize(out);
+		out << YAML::EndMap;
+	}
+
+	out << YAML::EndSeq;
+}
+
+void Node::DeSerialize(YAML::detail::iterator_value& value)
+{
+	NodeEditorObject::DeSerialize(value);
+
+	auto pins = value["Pins"];
+
+	if (pins)
+	{
+		size_t i = 0;
+		for (auto d : pins)
+		{
+			m_Pins[i++]->DeSerialize(d);
+		}
+	}
+
+}
+
 DataPin* Node::AddDataPin(const std::string& name, ed::PinKind pinkind,Ref<IProperty> prop)
 {
 	auto pin = MakeRef<DataPin>();
