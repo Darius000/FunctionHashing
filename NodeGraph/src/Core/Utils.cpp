@@ -18,7 +18,7 @@ std::string FileDialog::OpenFile(const char* filter)
 	ofn.lpstrFile = szFile;
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFilter = filter;
-	ofn.lpstrDefExt = "ini";
+	ofn.lpstrDefExt = "sav";
 	ofn.nFileExtension = true;
 	ofn.nFilterIndex = 1;
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
@@ -40,7 +40,7 @@ std::string FileDialog::SaveFile(const char* filter)
 	ofn.lpstrFile = szFile;
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFilter = filter;
-	ofn.lpstrDefExt = "ini";
+	ofn.lpstrDefExt = "sav";
 	ofn.nFileExtension = true;
 	ofn.nFilterIndex = 1;
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;

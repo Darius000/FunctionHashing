@@ -36,4 +36,6 @@ private:
 	std::string m_LastFileUsed = "";
 	std::vector<std::string> m_RecentFiles;
 	bool m_OpenSaveModalPopup = false;
+
+	std::string m_FileSaveFormat = "sav file (*.sav)|*.sav";
 };

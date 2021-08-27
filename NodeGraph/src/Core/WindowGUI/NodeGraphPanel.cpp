@@ -45,7 +45,7 @@ void NodeGraphPanel::OnRenderWindow()
 	{
 		if (ImGui::Selectable("Yes"))
 		{
-			std::string filename = FileDialog::SaveFile("ini file (*.ini)|*.ini");	
+			std::string filename = FileDialog::SaveFile(m_FileSaveFormat.c_str());	
 			
 			if (!filename.empty())
 			{
@@ -86,7 +86,7 @@ void NodeGraphPanel::ShowFileMenu()
 	}
 
 	if (ImGui::MenuItem("Load")) {
-		filename = FileDialog::OpenFile("ini file (*.ini)|*.ini");
+		filename = FileDialog::OpenFile(m_FileSaveFormat.c_str());
 
 		if (!filename.empty())
 		{
@@ -96,7 +96,7 @@ void NodeGraphPanel::ShowFileMenu()
 	}
 
 	if (ImGui::MenuItem("Save As...")) {
-		filename = FileDialog::SaveFile("ini file (*.ini)|*.ini");
+		filename = FileDialog::SaveFile(m_FileSaveFormat.c_str());
 
 		if (!filename.empty())
 		{
@@ -113,7 +113,7 @@ void NodeGraphPanel::ShowFileMenu()
 		}
 		else
 		{
-			filename = FileDialog::SaveFile("ini file (*.ini)|*.ini");
+			filename = FileDialog::SaveFile(m_FileSaveFormat.c_str());
 			if (!filename.empty())
 			{
 				SaveGraph(filename);
