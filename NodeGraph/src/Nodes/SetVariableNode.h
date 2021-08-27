@@ -18,10 +18,14 @@ public:
 		auto pinIn = AddDataPin("In", ed::PinKind::Input, prop);
 		auto pinOut = AddDataPin("Out", ed::PinKind::Output, prop);
 
-		prop->OnDestroyed.AddBinding([this, pinIn, pinOut](NodeEditorObject* obj) {
+		if (prop)
+		{
+			prop->OnDestroyed.AddBinding([this, pinIn, pinOut](NodeEditorObject* obj) {
 				pinIn->m_Property = nullptr;
 				pinOut->m_Property = nullptr;
-		});
+			});
+		}
+		
 	}
 
 	virtual void OnExecute() override 

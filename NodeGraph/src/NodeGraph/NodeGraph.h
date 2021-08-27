@@ -50,7 +50,9 @@ private:
 
 	Pin* FindPind(ImGuiID id);
 
-	
+	Ref<IProperty> FindProperty(ImGuiID id);
+
+
 protected:
 	bool m_OpenNodePopup;
 

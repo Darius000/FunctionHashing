@@ -105,7 +105,7 @@ void NodeGraph::Draw()
 		{
 			if (ed::AcceptNewItem())
 			{
-				ImGui::OpenPopup("Node Context menu");
+				
 			}
 		}
 	}
@@ -154,23 +154,6 @@ void NodeGraph::Draw()
 	}
 	ed::EndDelete();
 
-	if (ed::ShowBackgroundContextMenu())
-	{
-		ImGui::OpenPopup("Node Context menu");
-	}
-
-	if (ImGui::BeginPopup("Node Context menu"))
-	{
-		auto& list = NodeCatgeories::GetCategoryList();
-
-		DrawCategory("Create Node Popup", list, [this]() {
-			ImGui::CloseCurrentPopup();
-			m_OpenNodePopup = false;
-		});
-
-		ImGui::EndPopup();
-	}
-
 	ed::NodeId selectednode;
 	ed::GetSelectedNodes(&selectednode, 1);
 
@@ -181,21 +164,6 @@ void NodeGraph::Draw()
 
 	ed::End();
 	ed::PopStyleVar(3);
-
-	if (ImGui::BeginPopupContextItem("Context Menu"))
-	{
-		auto& list = NodeCatgeories::GetCategoryList();
-
-		DrawCategory("Create Node Popup", list, [this]() {
-			ImGui::CloseCurrentPopup();
-			m_OpenNodePopup = false;
-		});
-
-		ImGui::EndPopup();
-	}
-
-
-
 }
 
 
@@ -284,6 +252,16 @@ Pin* NodeGraph::FindPind(ImGuiID id)
 	}
 
 	return pin;
+}
+
+Ref<IProperty> NodeGraph::FindProperty(ImGuiID id)
+{
+	auto it = std::find_if(m_Properties.begin(), m_Properties.end(), [id](Ref<IProperty>& prop)
+	{
+		return prop->GetID() == id;
+	});
+
+	return it != m_Properties.end() ? *it : nullptr;
 }
 
 void NodeGraph::DrawNodeList()
@@ -466,7 +444,7 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 						{
 							ImGui::BeginHorizontal(pin->GetID());
 							ImGui::TextUnformatted(pin->GetName().c_str());
-							pin->GetProperty()->DrawDetails();
+							if(pin->GetProperty() && pin->m_Connections == 0) pin->GetProperty()->DrawDetails();
 							ImGui::EndHorizontal();
 						}
 					}
@@ -510,6 +488,8 @@ void NodeGraph::DrawNodes()
 {
 	for (auto it = m_Nodes.begin(); it != m_Nodes.end();)
 	{
+		if(!it->second) continue;
+
 		if (it->second->IsPendingDestroy())
 		{
 			if (m_SelectedObject == it->second.get()) m_SelectedObject = nullptr;

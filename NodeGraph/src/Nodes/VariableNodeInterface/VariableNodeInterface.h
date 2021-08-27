@@ -25,20 +25,48 @@ public:
 		:m_Property(prop)
 	{
 
-		m_PropertyName = prop->GetName();
-		m_Color = prop->GetColor();
-		m_Color.w = .5f;
+		if (prop)
+		{
+			m_PropertyName = prop->GetName();
+			m_Color = prop->GetColor();
+			m_Color.w = .5f;
 
-		prop->OnDestroyed.AddBinding([this](NodeEditorObject* obj) {
+			prop->OnDestroyed.AddBinding([this](NodeEditorObject* obj) {
 
+				m_Property = nullptr;
+				m_Color = ImGuiExtras::Grey;
+				m_PropertyName = "UnReferenced Property!";
+			});
+		}
+		else
+		{
 			m_Property = nullptr;
 			m_Color = ImGuiExtras::Grey;
 			m_PropertyName = "UnReferenced Property!";
-		});
+		}
+		
+
+
 	}
+
+	virtual void Serialize(YAML::Emitter& out);
 
 	const ENodeType GetNodeType() override { return ENodeType::Simple; }
 
 	Ref<struct IProperty> m_Property;
 	std::string m_PropertyName;
 };
+
+
+template<typename T>
+void VariableNodeInterface<T>::Serialize(YAML::Emitter& out)
+{
+	Node::Serialize(out);
+
+	if (m_Property)
+	{
+		out << YAML::Key << "PropertyID";
+		out << YAML::Value << m_Property->GetID();
+	}
+	
+}

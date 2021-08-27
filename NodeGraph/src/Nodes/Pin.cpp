@@ -52,12 +52,25 @@ void DataPin::Serialize(YAML::Emitter& out)
 {
 	Pin::Serialize(out);
 
-	m_Property->Serialize(out);
+	out << YAML::Key << "Property";
+	out << YAML::Value << YAML::BeginSeq << YAML::BeginMap;
+
+	if(m_Property) m_Property->Serialize(out);
+
+	out << YAML::EndMap << YAML::EndSeq;
 }
 
 void DataPin::DeSerialize(YAML::detail::iterator_value& value)
 {
 	Pin::DeSerialize(value);
 
-	m_Property->DeSerialize(value);
+	auto property = value["Property"];
+
+	if (property && m_Property)
+	{
+		for (auto d : property)
+		{
+			m_Property->DeSerialize(d);
+		}
+	}
 }

@@ -10,6 +10,7 @@ class NodeGraphPanel : public ImGuiPanel
 
 public:
 	NodeGraphPanel(const std::string& label, ImGuiWindowFlags flags, ImGuiID id = 1, bool runtimecreated = false);
+	~NodeGraphPanel();
 
 	void OnRenderMenuBar() override;
 
@@ -18,6 +19,11 @@ public:
 private:
 	void ShowFileMenu();
 	void ShowActionMenu();
+	void SaveToRecentFiles(const std::string& filename);
+	void SaveGraph(const std::string& filename);
+	void LoadGraph(const std::string& filename);
+	void SavePrefs();
+	void LoadPrefs();
 	
 	bool OnKeyPressed(KeyPressedEvent& e) override;
 	bool OnKeyReleased(KeyReleasedEvent& e) override;
@@ -27,5 +33,7 @@ private:
 	bool OnMouseScrolled(MouseScrolledEvent& e) override;
 
 	Ref<class NodeGraph> m_Nodegraph;
-
+	std::string m_LastFileUsed = "";
+	std::vector<std::string> m_RecentFiles;
+	bool m_OpenSaveModalPopup = false;
 };

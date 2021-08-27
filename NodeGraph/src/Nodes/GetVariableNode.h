@@ -15,11 +15,15 @@ public:
 		m_Rounding = 30.0f;
 		auto pin = AddDataPin(m_PropertyName, ed::PinKind::Output, prop);
 
-		prop->OnDestroyed.AddBinding([pin](NodeEditorObject* obj) {
+		if (prop)
+		{
+			prop->OnDestroyed.AddBinding([pin](NodeEditorObject* obj) {
 
-			pin->SetName("UnReferenced Property!");
-			pin->m_Property = nullptr;
-		});
+				pin->SetName("UnReferenced Property!");
+				pin->m_Property = nullptr;
+			});
+		}
+		
 	}
 	
 	DEFINE_NODE_CLASS(GetVariableNode, "", "", false)

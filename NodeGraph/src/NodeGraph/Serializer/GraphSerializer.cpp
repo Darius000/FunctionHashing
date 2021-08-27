@@ -4,6 +4,35 @@
 #include "NodeGraph/NodeGraph.h"
 #include <fstream>
 
+YAML::Emitter& operator<<(YAML::Emitter& out, const ImVec2& vec)
+{
+	out << YAML::BeginSeq;
+	out << vec.x;
+	out << vec.y;
+	out << YAML::EndSeq;
+	return out;
+}
+
+template<>
+struct YAML::convert<ImVec2>
+{
+	static YAML::Node encode(const ImVec2& rhs)
+	{
+		Node node;
+		node.push_back(rhs.x);
+		node.push_back(rhs.y);
+		return node;
+	}
+
+	static bool decode(const Node& node, ImVec2& rhs)
+	{
+		if(!node.IsSequence() && node.size() != 2) return false;
+
+		rhs.x = node[0].as<float>();
+		rhs.y = node[1].as<float>();
+		return true;
+	}
+};
 
 GraphSerializer::GraphSerializer(const Ref<class NodeGraph>& graph)
 	:m_Graph(graph)
@@ -50,8 +79,11 @@ void GraphSerializer::Serialize(const std::string& filepath)
 	for (auto& node : m_Graph->m_Nodes)
 	{
 		out << YAML::BeginMap;
-
+	
 		node.second->Serialize(out);
+
+		out << YAML::Key << "Position";
+		out << YAML::Value << ed::GetNodePosition(node.first);
 
 		out << YAML::EndMap;
 	}
@@ -96,9 +128,27 @@ void GraphSerializer::DeSerialize(const std::string& filepath)
 	{
 		for (auto node : nodes)
 		{	auto factoryname = node["FactoryName"].as<std::string>();
-			auto newnode = NodeRegistry::Instaniate(factoryname);
+
+			bool hasPropertyNode = node["PropertyID"].IsDefined();
+
+			Node* newnode = nullptr;
+
+			if (hasPropertyNode)
+			{
+				auto id = node["PropertyID"].as<ImGuiID>();
+
+				auto& property = m_Graph->FindProperty(id);
+
+				newnode = NodeRegistry::Instaniate(factoryname, property);
+			}			
+			else
+				newnode = NodeRegistry::Instaniate(factoryname);
+
 			newnode->DeSerialize(node);
 			m_Graph->m_Nodes.emplace(newnode->GetID(), Scope<Node>(newnode));
+
+			auto position = node["Position"].as<ImVec2>();
+			ed::SetNodePosition(newnode->GetID(), position);
 		}
 	}
 

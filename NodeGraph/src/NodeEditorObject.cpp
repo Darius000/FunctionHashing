@@ -62,13 +62,9 @@ void NodeEditorObject::Serialize(YAML::Emitter& out)
 
 void NodeEditorObject::DeSerialize(YAML::detail::iterator_value& value)
 {
-	auto name = value["Name"].as<std::string>();
-	auto id =	value["Identifier"].as<ImGuiID>();
-	auto tooltip = value["ToolTip"].as<std::string>();
-
-	m_Name = name;
-	m_ID = id;
-	m_ToolTip = tooltip;
+	m_Name = value["Name"].as<std::string>();
+	m_ID =	value["Identifier"].as<ImGuiID>();
+	m_ToolTip = value["ToolTip"].as<std::string>();
 }
 
 

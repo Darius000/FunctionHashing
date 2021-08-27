@@ -27,7 +27,7 @@ struct IProperty : public NodeEditorObject
 
 	virtual void Reset(){};
 
-	virtual std::string GetTypeName() { return ""; }
+	virtual std::string GetTypeName() const { return ""; }
 };
 
 template<typename T>
@@ -69,7 +69,7 @@ struct IPropertyT : public IProperty
 
 	static const std::string GetStaticTypeName();
 
-	virtual const std::string GetTypeName() const { return GetStaticTypeName(); }
+	virtual std::string GetTypeName() const override { return GetStaticTypeName(); }
 
 	virtual void Serialize(YAML::Emitter& out) override;
 

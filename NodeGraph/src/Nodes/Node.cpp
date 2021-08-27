@@ -65,12 +65,15 @@ DataPin* Node::AddDataPin(const std::string& name, ed::PinKind pinkind,Ref<IProp
 	pin->m_Property = prop;
 	pin->SetName(name);
 
-	//add lambda to change map key when prop name changes
-	prop->OnNameChanged.AddBinding([pin](const std::string& name)
+	if (prop)
 	{
-		pin->SetName(name);
-	});
-
+		//add lambda to change map key when prop name changes
+		prop->OnNameChanged.AddBinding([pin](const std::string& name)
+		{
+			pin->SetName(name);
+		});
+	}
+	
 	m_Pins.push_back(pin);
 
 	if(pinkind == ed::PinKind::Input)	{m_Inputs.push_back(pin); m_NumInputs++;	}
