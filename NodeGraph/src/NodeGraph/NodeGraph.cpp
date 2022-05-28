@@ -1,15 +1,16 @@
-#include "PCH.h"
 #include "NodeGraph.h"
 #include "Registry\NodeRegistry.h"
 #include "DataTypes/Property.h"
-#include "DataTypes/TypeDescriptor.h"
 #include "DataTypes/DataTypeRegistry.h"
 #include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
 #include "Core/Events/MouseEvent.h"
 #include "NodeEditor/imgui_node_editor.h"
+#include "NodeEditor/imgui_node_editor_internal.h"
 #include "imgui.h"
 #include "Core\Debug\Instrumentor.h"
-#include "NodeBuilder.h"
+#include "Core/Helpers/Vectors/VectorHelper.h"
+#include "UIElements/NodeElement.h"
+#include <Engine.h>
 
 namespace ed = ax::NodeEditor;
 
@@ -40,9 +41,6 @@ void NodeGraph::Draw()
 
 	ed::Begin("Nodes");
 
-	DrawNodes();
-
-	DrawNodeLinks();
 
 	//handle new links
 	if (ed::BeginCreate())
@@ -53,14 +51,13 @@ void NodeGraph::Draw()
 		{
 			if (start && end)//if its valid accept link
 			{
-				Pin* startpin  = FindPind((ImGuiID)start.Get());
-				Pin* endpin = FindPind((ImGuiID)end.Get());
+				Pin* startpin = FindPind((Core::UUID)start.Get());
+				Pin* endpin = FindPind((Core::UUID)end.Get());
 
 				if (startpin && endpin)
 				{
 					TEnum<EPinRejectReason> rejectreason = EPinRejectReason::None;
-					bool valid = startpin->IsValidConnection(*endpin, rejectreason) &&
-					endpin->IsValidConnection(*startpin, rejectreason);
+					bool valid = CanConnectPins(startpin, endpin, rejectreason);
 
 					auto show_label = [rejectreason]() {
 						auto label = rejectreason.ToString().c_str();
@@ -82,18 +79,14 @@ void NodeGraph::Draw()
 						//true when mouse button released
 						if (ed::AcceptNewItem())
 						{
-							startpin->m_Connections++;
-							endpin->m_Connections++;
-
-							auto newlink = new Link(start, end);
-							m_NodeLinks.emplace(newlink->GetID(), Scope<Link>(newlink));
+							m_NodeLinks.push_back(MakeScope<Link>(start, end));
 						}
 					}
 					else
 					{
 						
 						show_label();
-						ed::RejectNewItem({1, 0, 0 ,1}, LinkBuilder::m_LinkThickness);
+						//ed::RejectNewItem({1, 0, 0 ,1}, LinkBuilder::m_LinkThickness);
 					}
 				}
 				
@@ -120,20 +113,16 @@ void NodeGraph::Draw()
 			
 			if (ed::AcceptDeletedItem())
 			{
-				auto& link = m_NodeLinks.find((ImGuiID)deletedlinkid.Get());
-				if ( link != m_NodeLinks.end())
+				for (int i = 0; i < m_NodeLinks.size(); i++)
 				{
-					Pin* startpin = FindPind((ImGuiID)link->second->m_StartPin.Get());
-					Pin* endpin = FindPind((ImGuiID)link->second->m_EndPin.Get());
+					auto& link = m_NodeLinks[i];
+					auto start = link->m_StartPin;
+					auto end = link->m_EndPin;
 
-					if (startpin && endpin)
+					if (start == (ed::PinId)deletedlinkid.Get() || (ed::PinId)deletedlinkid.Get())
 					{
-						startpin->m_Connections--;
-						endpin->m_Connections--;
+						Helpers::Vector::Remove(m_NodeLinks, link);
 					}
-
-					m_NodeLinks[(ImGuiID)deletedlinkid.Get()]->Destroy();
-					break;
 				}
 			}
 		}
@@ -144,11 +133,11 @@ void NodeGraph::Draw()
 			if (ed::AcceptDeletedItem())
 			{
 				ImGuiID id = (ImGuiID)deletednodeid.Get();
-				if (m_Nodes.find(id) != m_Nodes.end())
+				/*if (m_Nodes.find(id) != m_Nodes.end())
 				{
 					m_Nodes[id]->Destroy();
 					break;
-				}
+				}*/
 			}
 		}
 	}
@@ -159,8 +148,13 @@ void NodeGraph::Draw()
 
 	if (selectednode != ed::NodeId::Invalid)
 	{
-		m_SelectedObject = m_Nodes[(ImGuiID)selectednode.Get()].get();
+		//m_SelectedObject = m_Nodes[(ImGuiID)selectednode.Get()]->GetNode();
 	}
+
+	DrawNodes();
+
+	DrawNodeLinks();
+
 
 	ed::End();
 	ed::PopStyleVar(3);
@@ -203,6 +197,25 @@ void NodeGraph::DrawCategory(const std::string& id, const CategoryList& list)
 	}
 }
 
+Pin* NodeGraph::FindPind(Core::UUID id)
+{
+	for (int i = 0; i < m_Nodes.size(); i++)
+	{
+		auto& node = m_Nodes[i];
+		for (auto j = 0; j < node->GetNode()->GetPins().size(); j++)
+		{
+			auto& pin = node->GetNode()->GetPins()[i];
+
+			if (pin->GetID() == id)
+			{
+				return pin.get();
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 template<typename Pred>
 void NodeGraph::DrawCategory(const std::string& id, const struct CategoryList& list, Pred pred)
 {
@@ -242,27 +255,16 @@ void NodeGraph::DrawCategory(const std::string& id, const struct CategoryList& l
 	}
 }
 
-Pin* NodeGraph::FindPind(ImGuiID id)
-{
-	Pin* pin  = nullptr;
-	for (auto& node : m_Nodes)
-	{
-		pin = node.second->FindPin(id);
-		if(pin) break;
-	}
 
-	return pin;
-}
-
-Ref<IProperty> NodeGraph::FindProperty(ImGuiID id)
-{
-	auto it = std::find_if(m_Properties.begin(), m_Properties.end(), [id](Ref<IProperty>& prop)
-	{
-		return prop->GetID() == id;
-	});
-
-	return it != m_Properties.end() ? *it : nullptr;
-}
+//Ref<IProperty> NodeGraph::FindProperty(ImGuiID id)
+//{
+//	auto it = std::find_if(m_Properties.begin(), m_Properties.end(), [id](Ref<IProperty>& prop)
+//	{
+//		return prop->GetID() == id;
+//	});
+//
+//	return it != m_Properties.end() ? *it : nullptr;
+//}
 
 void NodeGraph::DrawNodeList()
 {	
@@ -302,6 +304,17 @@ void NodeGraph::DrawVariableList()
 	ImGui::End();
 
 
+}
+
+bool NodeGraph::CanConnectPins(Pin* start, Pin* end, TEnum<EPinRejectReason>& rejectReason)
+{
+	bool sameTypes = start->GetPinType() == end->GetPinType();
+	bool differentPinKinds = start->pinKind != end->pinKind;
+
+	if (!sameTypes) rejectReason = EPinRejectReason::DifferentDataTypes;
+	if (!differentPinKinds) rejectReason = EPinRejectReason::DifferentPinTypes;
+
+	return sameTypes && differentPinKinds;
 }
 
 void NodeGraph::DrawAddNewProperty()
@@ -438,11 +451,11 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 			case EObjectType::Node:
 				{
 					Node* node = Cast<Node>(obj);
-					for (auto pin : node->m_Pins)
+					for (auto& pin : node->GetPins())
 					{
 						if (pin->GetPinType() == EPinType::DataPin && pin->pinKind == ed::PinKind::Input)
 						{
-							ImGui::BeginHorizontal(pin->GetID());
+							ImGui::BeginHorizontal((ImGuiID)pin->GetID());
 							ImGui::TextUnformatted(pin->GetName().c_str());
 							if(pin->GetProperty() && pin->m_Connections == 0) pin->GetProperty()->DrawDetails();
 							ImGui::EndHorizontal();
@@ -486,43 +499,30 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 
 void NodeGraph::DrawNodes()
 {
-	for (auto it = m_Nodes.begin(); it != m_Nodes.end();)
+	for (size_t i = 0; i < m_Nodes.size(); i++)
 	{
-		if(!it->second) continue;
+		auto& nodeElement = m_Nodes[i];
 
-		if (it->second->IsPendingDestroy())
-		{
-			if (m_SelectedObject == it->second.get()) m_SelectedObject = nullptr;
-
-			it = m_Nodes.erase(it);
-		}
-		else
-		{
-			auto& node = it->second;
-			NodeBuilder builder(node.get());
-			builder.DrawNode();
-			++it;
-		}
-
+		nodeElement->DrawElement(ImGui::GetWindowDrawList());
 	}
 }
 
 
 void NodeGraph::DrawNodeLinks()
 {
-	for (auto& it = m_NodeLinks.begin(); it != m_NodeLinks.end();)
-	{
-		if (!(*it).second->IsPendingDestroy())
-		{
-			auto& link = it->second;
-			LinkBuilder builder(link.get());
-			builder.Draw();
-			++it;
-		}
-		else
-		{
-			
-			it = m_NodeLinks.erase(it);
-		}
-	}
+	//for (auto& it = m_NodeLinks.begin(); it != m_NodeLinks.end();)
+	//{
+	//	//if (!(*it).second->IsPendingDestroy())
+	//	//{
+	//	//	//auto& link = it->second;
+	//	//	//LinkBuilder builder(link.get());
+	//	//	builder.Draw();
+	//	//	++it;
+	//	//}
+	//	//else
+	//	//{
+	//	//	
+	//	//	it = m_NodeLinks.erase(it);
+	//	//}
+	//}
 }

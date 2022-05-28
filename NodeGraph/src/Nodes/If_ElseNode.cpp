@@ -3,10 +3,6 @@
 
 If_ElseNode::If_ElseNode()
 {
-	AddExecutionPin("", ed::PinKind::Input);
-	AddDataPin("Condition", ed::PinKind::Input, MakeRef<IPropertyT<bool>>());
-	AddExecutionPin("True",ed::PinKind::Output);
-	AddExecutionPin("False",ed::PinKind::Output);
 	
 	m_TitleColor = ImGuiExtras::DarkRed;
 	m_Color = {.2f, .2f, .2f, .5f};

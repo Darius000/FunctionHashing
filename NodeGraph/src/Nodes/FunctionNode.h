@@ -3,7 +3,7 @@
 #include "Functions/Functions.h"
 #include "Functions/FunctionRegistry.h"
 #include "Node.h"
-#include "../DataTypes/TypeDescriptor.h"
+#include <Engine.h>
 
 #define  TYPENAME "function"
 
@@ -20,9 +20,7 @@ public:
 	{
 		if (GetNodeType() != ENodeType::Simple)
 		{
-			AddExecutionPin("", ed::PinKind::Input);
-			AddExecutionPin("", ed::PinKind::Output);
-
+		
 		}
 
 		size_t size = FuncType::ArgCount;
@@ -32,11 +30,11 @@ public:
 			using ArgType = FuncType::NthArg<0>;
 			
 			auto name = i < GetParameterNames().size() ? GetParameterNames()[i] : std::to_string(i);
-			AddDataPin(name, ed::PinKind::Input, MakeRef<IPropertyT<ArgType>>());
+			
 		}
 		
 		auto name = GetParameterNames().size() > i ? GetParameterNames()[i] : "Return";
-		AddDataPin(name, ed::PinKind::Output, MakeRef<IPropertyT<FuncType::R>>());
+
 
 		functionwrapper = function;
 	}

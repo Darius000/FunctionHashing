@@ -2,46 +2,45 @@
 
 #include "Core/Core.h"
 #include "DataTypes/Property.h"
+#include "LinkableNode.h"
 #include "INodeCreation.h"
 #include "NodeEditorObject.h"
 #include "Registry/NodeRegistry.h"
-#include "Pin.h"
 
-enum class ENodeType
-{
-	Blueprint,
-	Simple,
-	Comment
-};
 
-using Pins = std::vector<Ref<struct Pin>>;
 
-class Node : public NodeEditorObject, public INodeCreation
+class Node : public LinkableNode
 {
 
 public:
 	Node();
 	virtual ~Node() = default;
 
-	virtual std::string GetTypeName() const { return "Node"; }
-	virtual std::string GetFactoryName() const { return ""; }
 
-	//Execute a function
-	void Execute();
+	template<typename T>
+	T GetPinValue(const std::string name)
+	{
+		Pins::iterator it = std::find_if(m_Inputs.begin(), m_Inputs.end(), [](Ref<Pin>& pin) {
+			return pin->GetName() == name;
+			});
+
+		if (it != m_Inputs.end())
+		{
+			return (*it)->GetProperty()->GetValue<T>();
+		}
+
+		return -1;
+	}
+
+	virtual void* GetValue(const std::string& pinName)
+	{
+		return nullptr;
+	}
 
 	virtual void OnExecute() {};
 
-	const EObjectType GetObjectType() { return EObjectType::Node; }
 
-	virtual const ENodeType GetNodeType() { return ENodeType::Blueprint; }
 
-	Pin* FindPin(ImGuiID id) const;
-
-	virtual void Serialize(YAML::Emitter& out);
-
-	virtual void DeSerialize(YAML::detail::iterator_value& value);
-
-	Pins m_Pins;
 	Pins m_Inputs;
 	Pins m_Outputs;
 	int m_NumInputs;
@@ -52,10 +51,8 @@ public:
 
 protected:
 	
+private:
 
-	DataPin* AddDataPin(const std::string& name, ed::PinKind pinkind, Ref<IProperty> prop);
-
-	void AddExecutionPin(const std::string& name, ed::PinKind pinkind);
 
 };
 

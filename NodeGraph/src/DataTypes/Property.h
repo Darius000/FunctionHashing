@@ -23,6 +23,13 @@ struct IProperty : public NodeEditorObject
 
 	virtual void DrawDetails() {};
 
+	template<typename T>
+	T GetValue()
+	{
+		auto prop = Cast<IPropertyT<T>>(this);
+		return prop->Get();
+	}
+
 	virtual void SetPtr(IProperty* other) {};
 
 	virtual void Reset(){};
@@ -37,6 +44,12 @@ struct IPropertyT : public IProperty
 
 	IPropertyT() 
 		:m_Prop(), m_DefaultProp(m_Prop)
+	{
+
+	}
+
+	IPropertyT(T value)
+		:m_Prop(value)
 	{
 
 	}

@@ -5,6 +5,7 @@
 #include "imgui_internal.h"
 #include "imgui_stdlib.h"
 #include "yaml-cpp/yaml.h"
+#include "Core/UUID/UUID.h"
 
 
 DECLARE_ONE_PARAMETER_EVENT(OnDestroyed, class NodeEditorObject*, obj)
@@ -40,7 +41,7 @@ public:
 
 	inline const bool IsPendingDestroy() const { return m_PendingDestroy; }
 
-	ImGuiID GetID() const;
+	Core::UUID GetID() const;
 
 	const bool operator==(const NodeEditorObject& obj);
 
@@ -54,10 +55,9 @@ public:
 
 
 private:
-	static ImGuiID GetNextAvialableID();
 
 protected:
-	ImGuiID m_ID;
+	Core::UUID m_ID;
 
 protected:
 	std::string m_Name;
@@ -65,8 +65,6 @@ protected:
 
 private:
 	bool m_PendingDestroy;
-	static ImGuiID s_ID;
-	static std::vector<ImGuiID> s_DeletedIDs;
 
 	friend class GraphSerializer;
 };

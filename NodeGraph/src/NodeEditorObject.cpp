@@ -3,17 +3,13 @@
 
 NodeEditorObject::NodeEditorObject()
 {	
-	auto id = GetNextAvialableID();
-	m_Name = "Object" + std::to_string(id);
-	m_ID = id;
+	m_Name = "Object";
 	m_PendingDestroy = false;
 }
 
 NodeEditorObject::NodeEditorObject(const NodeEditorObject& obj)
 {
-	auto id = GetNextAvialableID();
 	m_Name = obj.m_Name;
-	m_ID = id;
 	m_PendingDestroy = false;
 }
 
@@ -26,7 +22,6 @@ NodeEditorObject::~NodeEditorObject()
 void NodeEditorObject::Destroy()
 {
 	m_PendingDestroy = true;
-	s_DeletedIDs.push_back(m_ID);
 	OnDestroyed.Broadcast(this);
 }
 
@@ -40,7 +35,7 @@ void NodeEditorObject::SetToolTip(const std::string& tooltip)
 	m_ToolTip = tooltip;
 }
 
-ImGuiID NodeEditorObject::GetID() const
+Core::UUID NodeEditorObject::GetID() const
 {
 	return m_ID;
 }
@@ -63,7 +58,7 @@ void NodeEditorObject::Serialize(YAML::Emitter& out)
 void NodeEditorObject::DeSerialize(YAML::detail::iterator_value& value)
 {
 	m_Name = value["Name"].as<std::string>();
-	m_ID =	value["Identifier"].as<ImGuiID>();
+	m_ID =	value["Identifier"].as<Core::UUID>();
 	m_ToolTip = value["ToolTip"].as<std::string>();
 }
 
@@ -78,22 +73,3 @@ const bool NodeEditorObject::operator==(const NodeEditorObject& obj)
 {
 	return m_Name == obj.m_Name && m_ID == obj.m_ID;
 }
-
-ImGuiID NodeEditorObject::GetNextAvialableID()
-{	
-	ImGuiID id = 0;
-
-	if (s_DeletedIDs.size() > 0)
-	{
-		id = s_DeletedIDs[0];
-		s_DeletedIDs.erase(s_DeletedIDs.begin());
-		return id;
-	}
-
-	return id = ++s_ID;
-}
-
-ImGuiID NodeEditorObject::s_ID = 0;
-
-std::vector<ImGuiID> NodeEditorObject::s_DeletedIDs;
-

@@ -13,19 +13,6 @@ public:
 		:VariableNodeInterface(prop)
 	{
 		
-		AddExecutionPin("", ed::PinKind::Input);
-		AddExecutionPin("", ed::PinKind::Output);
-		auto pinIn = AddDataPin("In", ed::PinKind::Input, prop);
-		auto pinOut = AddDataPin("Out", ed::PinKind::Output, prop);
-
-		if (prop)
-		{
-			prop->OnDestroyed.AddBinding([this, pinIn, pinOut](NodeEditorObject* obj) {
-				pinIn->m_Property = nullptr;
-				pinOut->m_Property = nullptr;
-			});
-		}
-		
 	}
 
 	virtual void OnExecute() override 

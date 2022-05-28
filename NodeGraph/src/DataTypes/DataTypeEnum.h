@@ -1,7 +1,6 @@
 #pragma once
 
-#include "PCH.h"
-#include "Enum.h"
+#include <Engine.h>
 
 enum class EDataType : uint8_t
 {

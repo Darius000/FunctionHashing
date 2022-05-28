@@ -6,7 +6,7 @@
 
 namespace ed = ax::NodeEditor;
 
-struct Link : public NodeEditorObject
+struct Link
 {
 public:
 	Link() {};
@@ -14,8 +14,4 @@ public:
 
 	ed::PinId m_StartPin;
 	ed::PinId m_EndPin;
-
-	virtual void Serialize(YAML::Emitter& out) override;
-
-	virtual void DeSerialize(YAML::detail::iterator_value& value) override;
 };

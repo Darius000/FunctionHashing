@@ -1,7 +1,4 @@
-#include "PCH.h"
 #include "Property.h"
-
-
 
 template<>
 void IPropertyT<int>::DrawDetails()

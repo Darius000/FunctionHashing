@@ -13,16 +13,7 @@ public:
 		:VariableNodeInterface(prop)
 	{
 		m_Rounding = 30.0f;
-		auto pin = AddDataPin(m_PropertyName, ed::PinKind::Output, prop);
-
-		if (prop)
-		{
-			prop->OnDestroyed.AddBinding([pin](NodeEditorObject* obj) {
-
-				pin->SetName("UnReferenced Property!");
-				pin->m_Property = nullptr;
-			});
-		}
+	
 		
 	}
 	

@@ -11,8 +11,7 @@ public:
 	CastTo()
 	{
 
-		AddDataPin("In", ed::PinKind::Input, MakeRef<IPropertyT<From>>());
-		AddDataPin("Out", ed::PinKind::Output, MakeRef<IPropertyT<To>>());
+		
 	}
 
 	DEFINE_NODE_CLASS(CastTo, "Casting|", "Casting", true);

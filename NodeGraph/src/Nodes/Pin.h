@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Core/Core.h"
 #include "NodeEditorObject.h"
 #include "DataTypes/Property.h"
 #include "NodeEditor/imgui_node_editor.h"
-#include "DataTypes/Enum.h"
+#include <Engine.h>
 
 namespace ed = ax::NodeEditor;
 
