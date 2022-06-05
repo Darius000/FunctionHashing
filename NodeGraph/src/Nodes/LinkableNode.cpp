@@ -39,9 +39,6 @@ void LinkableNode::Serialize(YAML::Emitter& out)
 {
 	BaseNode::Serialize(out);
 
-	out << YAML::Key << "FactoryName";
-	out << YAML::Value << GetFactoryName();
-
 	out << YAML::Key << "LinkData" << YAML::Value << GetLinkData();
 }
 
@@ -54,4 +51,9 @@ void LinkableNode::DeSerialize(YAML::detail::iterator_value& value)
 	{
 		m_LinkData.push_back(link);
 	}
+}
+
+RTTR_REGISTRATION
+{
+	registration::class_<LinkableNode>("LinkableNode")(policy::ctor::as_raw_ptr);
 }

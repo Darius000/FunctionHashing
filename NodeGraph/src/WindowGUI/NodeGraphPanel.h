@@ -14,6 +14,8 @@ public:
 
 	void OnRenderWindow() override;
 
+	Ref<NodeGraph>& GetGraph() { return m_Nodegraph; }
+
 private:
 	void ShowFileMenu();
 	void ShowActionMenu();

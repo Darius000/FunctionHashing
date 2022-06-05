@@ -15,14 +15,16 @@ class NodeGraph
 public:
 	NodeGraph();
 
-	template<typename...Args>
-	void Instantiate(const std::string& name, Args... args);
+	void Instantiate(std::string_view name);
 
 	void Draw();
 
+	class NodeEditorObject* GetSelectedObject() { return m_SelectedObject; }
+
+
 private:
-	//Draws the window that displays the node menu
-	void DrawNodeList();
+
+	class NodeEditorObject* FindNodeByID(ImGuiID id) const;
 
 	void DrawVariableList();
 
@@ -45,10 +47,6 @@ private:
 
 	//Creates the category hierarchy, returns when an item is clicked
 
-	void DrawCategory(const std::string& id, const struct CategoryList& list);
-
-	template<typename Pred>
-	void DrawCategory(const std::string& id, const struct CategoryList& list, Pred pred);
 
 	Pin* FindPind(Core::UUID id);
 
@@ -69,16 +67,3 @@ protected:
 	friend class GraphSerializer;
 };
 
-template<typename... Args>
-void NodeGraph::Instantiate(const std::string& name, Args... args)
-{
-	auto newNode = NodeRegistry::Instaniate(name, args...);
-
-	assert(newNode != nullptr);
-
-	auto id = newNode->GetID();
-
-	m_Nodes.push_back(MakeScope<class NodeElement>(newNode));
-
-	ed::CenterNodeOnScreen((UINT64)id);
-}

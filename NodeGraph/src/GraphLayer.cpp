@@ -2,6 +2,8 @@
 #include "NodeEditor/imgui_node_editor.h"
 #include "WindowGUI/NodeGraphPanel.h"
 #include "Core/ImGui/LogPanel.h"
+#include "WindowGUI/NodeListPanel.h"
+#include "WindowGUI/ObjectDetailsPanel.h"
 
 
 
@@ -21,6 +23,12 @@ void GraphLayer::OnAttach()
 
 	auto log = m_WindowStack.OpenPanel<LogPanel>("Log", ImGuiWindowFlags_None);
 	auto graph = m_WindowStack.OpenPanel<NodeGraphPanel>("Node Graph", ImGuiWindowFlags_MenuBar);
+	auto nodelist = m_WindowStack.OpenPanel<NodeListPanel>(ImGuiWindowFlags_None);
+	auto details = m_WindowStack.OpenPanel<ObjectDetailsPanel>();
+	auto nodeGraph = graph->GetGraph();
+
+	nodelist->OnMenuItemSelected.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::Instantiate));
+	details->OnGetSelectedObject.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::GetSelectedObject));
 }
 
 void GraphLayer::OnDetach()
@@ -86,6 +94,8 @@ void GraphLayer::OnImGuiRender()
 	if (b_ShowDemoWindow) ImGui::ShowDemoWindow(&b_ShowDemoWindow);
 
 	m_WindowStack.Update();
+
+	ed::SetCurrentEditor(nullptr);
 }
 
 void GraphLayer::ProcessEvents(Event& e)

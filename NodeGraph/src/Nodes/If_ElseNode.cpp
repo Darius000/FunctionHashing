@@ -1,12 +1,9 @@
-#include "PCH.h"
 #include "If_ElseNode.h"
+#include <rttr/registration>
 
 If_ElseNode::If_ElseNode()
 {
-	
-	m_TitleColor = ImGuiExtras::DarkRed;
-	m_Color = {.2f, .2f, .2f, .5f};
-
+	m_Name = "If Else";
 }
 
 void If_ElseNode::OnExecute()
@@ -15,4 +12,12 @@ void If_ElseNode::OnExecute()
 }
 
 
-DEFINE_REGISTER_NODE(If_ElseNode)
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	registration::class_<If_ElseNode>("IfElse")(metadata("Category", "Branching | "), metadata("Description", "Condition determines next node path"))
+	.constructor<>()(policy::ctor::as_raw_ptr)
+	.property("Condition", &If_ElseNode::m_InCondition);
+
+}

@@ -8,9 +8,23 @@ using BoolToFloat = CastTo<bool, float>;
 using IntToFloat = CastTo<int, float>;
 using FloatToInt = CastTo<float, int>;
 
-DEFINE_REGISTER_NODE(IntToBool)
-DEFINE_REGISTER_NODE(FloatToBool)
-DEFINE_REGISTER_NODE(BoolToInt)
-DEFINE_REGISTER_NODE(BoolToFloat)
-DEFINE_REGISTER_NODE(IntToFloat)
-DEFINE_REGISTER_NODE(FloatToInt)
+RTTR_REGISTRATION
+{
+	auto ib = registration::class_<IntToBool>("Cast<int,bool>")(metadata("Category", "Casts | "))
+	.constructor<>()(rttr::policy::ctor::as_raw_ptr);
+
+	auto tb = registration::class_<FloatToBool>("Cast<float,bool>")(metadata("Category", "Casts | "))
+	.constructor<>()(rttr::policy::ctor::as_raw_ptr);
+
+	auto bi = registration::class_<BoolToInt>("Cast<bool,int>")(metadata("Category", "Casts | "))
+	.constructor<>()(rttr::policy::ctor::as_raw_ptr);
+
+	auto bf = registration::class_<BoolToFloat>("Cast<bool,float>")(metadata("Category", "Casts | "))
+	.constructor<>()(rttr::policy::ctor::as_raw_ptr);
+
+	auto IF = registration::class_<IntToFloat>("Cast<int,float>")(metadata("Category", "Casts | "))
+	.constructor<>()(rttr::policy::ctor::as_raw_ptr);
+
+	auto FI = registration::class_<FloatToInt>("Cast<float,int>")(metadata("Category", "Casts | "))
+	.constructor<>()(rttr::policy::ctor::as_raw_ptr);
+}

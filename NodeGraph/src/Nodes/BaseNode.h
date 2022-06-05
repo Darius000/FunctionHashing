@@ -1,10 +1,9 @@
 #pragma once
 
-#include "PCH.h"
 #include "NodeEditorObject.h"
-#include "INodeCreation.h"
 #include "LinkInfo.h"
 #include "Pin.h"
+
 
 enum class ENodeType
 {
@@ -13,7 +12,7 @@ enum class ENodeType
 	Comment
 };
 
-class BaseNode : public NodeEditorObject, public INodeCreation
+class BaseNode : public NodeEditorObject
 {
 public:
 	using Children = std::vector<BaseNode*>;
@@ -40,13 +39,11 @@ public:
 
 	void Execute();
 
-	virtual std::string GetTypeName() const { return "Node"; }
-
-	virtual std::string GetFactoryName() const { return ""; }
-
-	const EObjectType GetObjectType() { return EObjectType::Node; }
-
 	virtual const ENodeType GetNodeType() { return ENodeType::Blueprint; }
+
+	virtual ImVec4 GetHeaderColor() const { return ImVec4{ .4f, .4f, .4f, 1.0f }; }
+
+	virtual ImVec4 GetColor() const { return ImVec4{.2f, .2f, .2f, 1.0f}; }
 
 	virtual void Serialize(YAML::Emitter& out);
 
@@ -65,4 +62,7 @@ private:
 	Pins m_Pins;
 
 	bool m_BeginExecution = false;
+
+	RTTR_REGISTRATION_FRIEND
+	RTTR_ENABLE(NodeEditorObject)
 };

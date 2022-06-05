@@ -25,6 +25,7 @@ project "NodeGraph"
 		"%{IncludeDirs.IMGUI}",
 		"%{IncludeDirs.YAML}",
 		"%{IncludeDirs.GLM}",
+		"%{IncludeDirs.Reflection}",
 		"%{wks.location}/Engine/src",
 		"%{wks.location}/Engine/src/Core",
 		"%{wks.location}/NodeEditor/src"
@@ -38,7 +39,8 @@ project "NodeGraph"
 	
 	defines
     {
-        "_CRT_SECURE_NO_WARNINGS"
+        "_CRT_SECURE_NO_WARNINGS",
+		"NOMINMAX"
     }
 
 

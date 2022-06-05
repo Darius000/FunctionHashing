@@ -5,6 +5,12 @@
 #include <unordered_map>
 #include <memory>
 
+struct Leaf
+{
+	std::string m_Name;
+	std::string m_Description;
+};
+
 struct CategoryList
 {
 	CategoryList() = default;
@@ -14,7 +20,7 @@ struct CategoryList
 		m_SubCategories = std::move(other.m_SubCategories);
 	}
 
-	std::vector<std::string> m_Leafs;
+	std::vector<Leaf> m_Leafs;
 
 	std::unordered_map<std::string, std::unique_ptr<CategoryList>> m_SubCategories;
 };
@@ -26,8 +32,7 @@ struct NodeCatgeories
 	static const CategoryList& GetCategoryList() { return NodeTypes(); }
 
 private:
-	static void SplitString(const std::string& str,
-		const std::string& delimiter, std::vector<std::string>& out);
+
 private:
 	static CategoryList& NodeTypes();
 

@@ -11,7 +11,7 @@ class ImGuiPanel
 {
 public:
 	ImGuiPanel() = default;
-	ImGuiPanel(const std::string& label, ImGuiWindowFlags flags, ImGuiID id = 1 ,bool runtimecreated  = false);
+	ImGuiPanel(const std::string& label, ImGuiWindowFlags flags = ImGuiWindowFlags_None, ImGuiID id = 1 ,bool runtimecreated  = false);
 	virtual ~ImGuiPanel();
 
 	void OnBeginWindow();

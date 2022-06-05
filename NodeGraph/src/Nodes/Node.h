@@ -3,11 +3,7 @@
 #include "Core/Core.h"
 #include "DataTypes/Property.h"
 #include "LinkableNode.h"
-#include "INodeCreation.h"
 #include "NodeEditorObject.h"
-#include "Registry/NodeRegistry.h"
-
-
 
 class Node : public LinkableNode
 {
@@ -45,15 +41,11 @@ public:
 	Pins m_Outputs;
 	int m_NumInputs;
 	int m_NumOutputs;
-	ImVec4 m_Color;
-	ImVec4 m_TitleColor;
-	float m_Rounding;
-
 protected:
 	
 private:
 
-
+	RTTR_ENABLE(LinkableNode)
 };
 
 

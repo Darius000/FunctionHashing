@@ -17,7 +17,7 @@ project "Engine"
 		"src/**.h", 
 		"src/**.cpp", 
 		"src/**.hpp",
-		"src/**.inl",
+		"src/**.inl"
 	}
 
 
@@ -31,21 +31,14 @@ project "Engine"
 		"%{IncludeDirs.IMGUI}",
 		"%{IncludeDirs.STB_IMAGE}",
 		"%{IncludeDirs.YAML}",
-		"%{IncludeDirs.GLM}"
-	}
-	
-	links
-	{
-		"GLFW",
-		"GLAD",
-		"IMGUI",
-		"yaml-cpp",
-		"opengl32.lib"
+		"%{IncludeDirs.GLM}",
+		"%{IncludeDirs.Reflection}"
 	}
 	
 	defines
     {
-        "_CRT_SECURE_NO_WARNINGS"
+        "_CRT_SECURE_NO_WARNINGS",
+		"NOMINMAX"
     }
 
 	links
@@ -54,6 +47,7 @@ project "Engine"
 		"GLAD",
 		"IMGUI",
 		"yaml-cpp",
+		"Reflection",
 		 "opengl32.lib"
 	}
 

@@ -3,10 +3,12 @@
 
 CustomEventNode::CustomEventNode()
 {
-	m_TitleColor = {1.0f, 0.0f, 0.0f, 0.3f};
-	m_Color = {0.0f, 0.0f, 0.0f, 1.0f};
+	m_Name = "Custom Event";
 }
 
-DEFINE_REGISTER_NODE(CustomEventNode)
+RTTR_REGISTRATION
+{
+	registration::class_<CustomEventNode>("CustomEvent")(metadata("Category", "Events | "), metadata("Description", "Begin a new Event"))
+	.constructor<>()(policy::ctor::as_raw_ptr);
 
-
+}

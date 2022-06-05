@@ -90,13 +90,13 @@ void GraphSerializer::DeSerialize(const std::string& filepath)
 			BaseNode* newnode = nullptr;
 
 			
-			newnode = NodeRegistry::Instaniate(factoryname);
+			//newnode = NodeRegistry::Instaniate(factoryname);
 
-			newnode->DeSerialize(node);
+			/*newnode->DeSerialize(node);
 			m_Graph->m_Nodes.push_back(MakeScope<NodeElement>(newnode));
 
 			auto position = node["Position"].as<ImVec2>();
-			ed::SetNodePosition((UINT64)newnode->GetID(), position);
+			ed::SetNodePosition((UINT64)newnode->GetID(), position);*/
 		}
 	}
 }

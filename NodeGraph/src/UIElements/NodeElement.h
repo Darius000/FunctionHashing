@@ -2,6 +2,8 @@
 
 
 #include "UIElement.h"
+#include "UI/GenericMenu.h"
+
 
 class NodeElement
 {
@@ -26,5 +28,7 @@ private:
 protected:
 
 	class BaseNode* m_Node = nullptr;
+
+	Ref<class UI::GenericMenu> m_Menu;
 
 };

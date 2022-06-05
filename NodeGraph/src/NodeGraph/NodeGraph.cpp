@@ -1,5 +1,4 @@
 #include "NodeGraph.h"
-#include "Registry\NodeRegistry.h"
 #include "DataTypes/Property.h"
 #include "DataTypes/DataTypeRegistry.h"
 #include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
@@ -11,6 +10,7 @@
 #include "Core/Helpers/Vectors/VectorHelper.h"
 #include "UIElements/NodeElement.h"
 #include <Engine.h>
+#include <rttr/type.h>
 
 namespace ed = ax::NodeEditor;
 
@@ -18,22 +18,32 @@ NodeGraph::NodeGraph()
 {
 	PROFILE_FUNCTION();
 	m_OpenNodePopup = false;
+	
+}
+
+void NodeGraph::Instantiate(std::string_view name)
+{
+	auto nodetype = rttr::type::get_by_name(name.data());
+
+	if (!nodetype.is_valid()) return;
+
+	auto new_variant = nodetype.create();
+	auto new_node = new_variant.get_value<BaseNode*>();
+
+	assert(new_node != nullptr);
+
+	auto id = new_node->GetID();
+
+	m_Nodes.push_back(MakeScope<class NodeElement>(new_node));
+
+	ed::CenterNodeOnScreen((UINT64)id);
 }
 
 void NodeGraph::Draw()
 {
 	PROFILE_FUNCTION();
 
-	if (ImGui::Begin("Nodes"))
-	{
-		DrawNodeList();
-
-		ImGui::End();
-	}
-
 	DrawVariableList();
-
-	DrawSelectedPropertyWidget(m_SelectedObject);
 
 	ed::PushStyleVar(ed::StyleVar_PinRadius, 6.0f);
 	ed::PushStyleVar(ed::StyleVar_PinBorderWidth, 2.0f);
@@ -143,12 +153,14 @@ void NodeGraph::Draw()
 	}
 	ed::EndDelete();
 
-	ed::NodeId selectednode;
-	ed::GetSelectedNodes(&selectednode, 1);
-
-	if (selectednode != ed::NodeId::Invalid)
+	
 	{
-		//m_SelectedObject = m_Nodes[(ImGuiID)selectednode.Get()]->GetNode();
+		ed::NodeId selectednode;
+		ed::GetSelectedNodes(&selectednode, 1);
+
+		auto id = (ImGuiID)selectednode.Get();
+		auto node = FindNodeByID(id);
+		m_SelectedObject = node;
 	}
 
 	DrawNodes();
@@ -160,42 +172,6 @@ void NodeGraph::Draw()
 	ed::PopStyleVar(3);
 }
 
-
-void NodeGraph::DrawCategory(const std::string& id, const CategoryList& list)
-{
-	float width = ImGui::GetWindowContentRegionWidth();
-	for (auto& leaf : list.m_Leafs)
-	{	
-		auto name = leaf + "##" + id;
-		if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf))
-		{
-			ImGui::TreePop();
-		}
-
-		if (ImGui::IsItemClicked((int)EMouseButton::Left))
-		{
-			Instantiate(leaf);
-		}
-		
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(leaf.c_str());
-			ImGui::EndTooltip();
-		}
-		
-	}
-
-	for (auto& cat : list.m_SubCategories)
-	{
-		if (ImGui::TreeNodeEx(cat.first.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			DrawCategory(id, *cat.second);
-			ImGui::TreePop();
-			
-		}
-	}
-}
 
 Pin* NodeGraph::FindPind(Core::UUID id)
 {
@@ -216,44 +192,6 @@ Pin* NodeGraph::FindPind(Core::UUID id)
 	return nullptr;
 }
 
-template<typename Pred>
-void NodeGraph::DrawCategory(const std::string& id, const struct CategoryList& list, Pred pred)
-{
-	float width = ImGui::GetWindowContentRegionWidth();
-	for (auto& leaf : list.m_Leafs)
-	{
-		auto name = leaf + "##" + id;
-		if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf))
-		{
-			ImGui::TreePop();
-		}
-
-		if (ImGui::IsItemClicked((int)EMouseButton::Left))
-		{
-			Instantiate(leaf);
-
-			pred();
-		}
-
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text(leaf.c_str());
-			ImGui::EndTooltip();
-		}
-
-	}
-
-	for (auto& cat : list.m_SubCategories)
-	{
-		if (ImGui::TreeNodeEx(cat.first.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			DrawCategory(id, *cat.second, pred);
-			ImGui::TreePop();
-
-		}
-	}
-}
 
 
 //Ref<IProperty> NodeGraph::FindProperty(ImGuiID id)
@@ -266,13 +204,17 @@ void NodeGraph::DrawCategory(const std::string& id, const struct CategoryList& l
 //	return it != m_Properties.end() ? *it : nullptr;
 //}
 
-void NodeGraph::DrawNodeList()
-{	
-	auto& list = NodeCatgeories::GetCategoryList();
+NodeEditorObject* NodeGraph::FindNodeByID(ImGuiID id) const
+{
+	for (auto& node_element : m_Nodes)
+	{
+		if (auto node = node_element.get()->GetNode(); node && (ImGuiID)node->GetID() == id)
+		{
+			return node;
+		}
+	}
 
-	ImGui::BeginGroup();
-	DrawCategory("Node List", list);
-	ImGui::EndGroup();
+	return nullptr;
 }
 
 void NodeGraph::DrawVariableList()
@@ -351,7 +293,6 @@ void NodeGraph::DrawNodeListContextMenu()
 	if (ImGui::BeginPopupContextItem("Nodes"))
 	{
 		const ImVec2 click_pos = ImGui::GetMousePosOnOpeningCurrentPopup();
-		DrawCategory("Node Context Menu", NodeCatgeories::GetCategoryList());
 
 		ImGui::EndPopup();
 	}
@@ -413,7 +354,7 @@ void NodeGraph::DrawVariableListProp(Ref<IProperty> prop)
 			auto nodecreationtype = TEnum<EVariableNodeType>::GetStrings()[i];
 			if (ImGui::Selectable(nodecreationtype.c_str(), false))
 			{
-				Instantiate(nodecreationtype + prop->GetTypeName(), prop);
+				
 			}
 		}
 	

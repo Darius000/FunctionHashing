@@ -6,9 +6,12 @@
 #include "imgui_stdlib.h"
 #include "yaml-cpp/yaml.h"
 #include "Core/UUID/UUID.h"
+#include <rttr/type>
+#include <rttr/registration.h>
+#include <rttr/registration_friend.h>
 
+using namespace rttr;
 
-DECLARE_ONE_PARAMETER_EVENT(OnDestroyed, class NodeEditorObject*, obj)
 
 enum class EObjectType
 {	
@@ -31,7 +34,7 @@ public:
 
 	void SetToolTip(const std::string& tooltip);
 
-	FOnDestroyedEvent OnDestroyed;
+	EngineEvent<class NodeEditorObject*> OnDestroyed;
 	
 	inline const std::string& GetToolTip() const { return m_ToolTip; }
 
@@ -43,7 +46,7 @@ public:
 
 	Core::UUID GetID() const;
 
-	const bool operator==(const NodeEditorObject& obj);
+	bool operator==(const NodeEditorObject& obj) const; 
 
 	NodeEditorObject& operator=(const NodeEditorObject& obj);
 
@@ -60,12 +63,15 @@ protected:
 	Core::UUID m_ID;
 
 protected:
-	std::string m_Name;
+	std::string m_Name = "";
 	std::string m_ToolTip = "";
 
 private:
-	bool m_PendingDestroy;
+	bool m_PendingDestroy = false;
 
 	friend class GraphSerializer;
+
+	RTTR_REGISTRATION_FRIEND
+	RTTR_ENABLE()
 };
 

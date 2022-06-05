@@ -1,14 +1,13 @@
-#include "PCH.h"
 #include "NodeEditorObject.h"
 
 NodeEditorObject::NodeEditorObject()
 {	
-	m_Name = "Object";
-	m_PendingDestroy = false;
+
 }
 
 NodeEditorObject::NodeEditorObject(const NodeEditorObject& obj)
 {
+	m_ToolTip = obj.m_ToolTip;
 	m_Name = obj.m_Name;
 	m_PendingDestroy = false;
 }
@@ -22,7 +21,7 @@ NodeEditorObject::~NodeEditorObject()
 void NodeEditorObject::Destroy()
 {
 	m_PendingDestroy = true;
-	OnDestroyed.Broadcast(this);
+	OnDestroyed.Invoke(this);
 }
 
 void NodeEditorObject::SetName(const std::string& str)
@@ -69,7 +68,13 @@ NodeEditorObject& NodeEditorObject::operator=(const NodeEditorObject& obj)
 	return *this;
 }
 
-const bool NodeEditorObject::operator==(const NodeEditorObject& obj)
+bool NodeEditorObject::operator==(const NodeEditorObject& obj) const
 {
 	return m_Name == obj.m_Name && m_ID == obj.m_ID;
+}
+
+RTTR_REGISTRATION
+{
+	registration::class_<NodeEditorObject>("NodeEditorObject")(policy::ctor::as_raw_ptr)
+	.constructor<>();
 }

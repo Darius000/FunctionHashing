@@ -39,4 +39,6 @@ private:
 
 	LinkData m_LinkData;
 
+	RTTR_ENABLE(BaseNode)
+
 };

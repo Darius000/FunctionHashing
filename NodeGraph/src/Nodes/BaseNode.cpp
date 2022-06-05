@@ -26,7 +26,7 @@ void BaseNode::Serialize(YAML::Emitter& out)
 	NodeEditorObject::Serialize(out);
 
 	out << YAML::Key << "FactoryName";
-	out << YAML::Value << GetFactoryName();
+	out << YAML::Value << type::get<decltype(this)>().get_name().data();
 
 	out << YAML::Key << "Position" << YAML::Value << m_Position;
 
@@ -37,4 +37,10 @@ void BaseNode::DeSerialize(YAML::detail::iterator_value& value)
 	NodeEditorObject::DeSerialize(value);
 
 	m_Position = value["Position"].as<Vec2>();
+}
+
+
+RTTR_REGISTRATION
+{
+	registration::class_<BaseNode>("BaseNode")(policy::ctor::as_raw_ptr);
 }

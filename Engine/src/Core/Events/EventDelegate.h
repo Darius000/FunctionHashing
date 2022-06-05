@@ -1,6 +1,99 @@
 #pragma once
 
-#include "PCH.h"
+#include <functional>
+
+
+
+template<typename Ret, typename... Args>
+struct EngineEventBase
+{
+	using CFunc = typename Ret(*)(Args...);
+	using Func = std::function<Ret(Args...)>;
+	using FuncList = std::vector<Func>;
+
+public:
+	EngineEventBase() {};
+
+	~EngineEventBase() { UnBindAll(); }
+
+	inline bool IsBound() { return BindedFunctions.size() > 0; }
+
+	void AddBinding(const Func& Function)
+	{
+		BindedFunctions.emplace_back(Function);
+	}
+
+	void RemoveBinding(const Func& function)
+	{
+		auto pred = [&function](const Func& func) { return *function.target<CFunc>() == *func.target<CFunc>(); };
+
+		BindedFunctions.erase(std::remove_if(BindedFunctions.begin(), BindedFunctions.end(), pred), BindedFunctions.end());
+	}
+
+	void ExecuteIfBound()
+	{
+		if (IsBound())
+		{
+			Broadcast();
+		}
+	}
+
+	void UnBindAll()
+	{
+		if (IsBound())
+		{
+			BindedFunctions.clear();
+		}
+	}
+
+	
+
+	EngineEventBase& operator+=(const Func& rhs)
+	{
+		AddBinding(rhs);
+
+		return *this;
+	}
+
+	EngineEventBase& operator-=(const Func& rhs)
+	{
+		RemoveBinding(rhs);
+
+		return *this;
+	}
+
+
+protected:
+	FuncList BindedFunctions;
+};
+
+template<typename... Args>
+struct EngineEvent : public EngineEventBase<void, Args...>
+{
+	void Invoke(Args&&... args) const
+	{
+		for (auto function : BindedFunctions)
+		{
+			function(std::forward<Args>(args)...);
+		}
+	}
+
+};
+
+template<typename Ret, typename... Args>
+struct RetEngineEvent : public EngineEventBase<Ret, Args...>
+{
+	Ret Invoke(Args&&... args) const
+	{
+		for (auto function : BindedFunctions)
+		{
+			return function(std::forward<Args>(args)...);
+		}
+
+		return Ret();
+	}
+};
+
 
 template<typename FunctionSigniture>
 struct FEventDelegate

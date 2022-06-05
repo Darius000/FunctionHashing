@@ -3,20 +3,12 @@
 
 #include "Node.h"
 
-#define TYPENAME "CustomEvent"
-
 class CustomEventNode : public Node
 {
 public:
 	CustomEventNode();
 
-	DEFINE_NODE_CLASS(CustomEventNode, "", "Add An Event", true)
+	ImVec4 GetHeaderColor() const override { return { 1.0f, .4f, .4f, 1.0f }; }
 
-
-	static Node* CreateMethod()
-	{
-		return new CustomEventNode();
-	}
+	RTTR_ENABLE(Node)
 };
-
-#undef TYPENAME

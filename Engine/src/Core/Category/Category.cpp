@@ -1,13 +1,13 @@
 #include "PCH.h"
 #include "Category.h"
-
+#include "Utilities/StringUtilites.h"
 
 
 void NodeCatgeories::AddCategory(const std::string& name, const std::string& description)
 {
 	CategoryList* currentCatgory = &NodeTypes();
 	std::vector<std::string> categories;
-	SplitString(name, "|", categories);
+	StringUtilites::SplitString(name, "|", categories);
 
 	size_t numCategories = categories.size();
 	for (size_t i = 0; i < numCategories; i++)
@@ -30,26 +30,12 @@ void NodeCatgeories::AddCategory(const std::string& name, const std::string& des
 		}
 		else
 		{
-			currentCatgory->m_Leafs.push_back(catname);
+			Leaf leaf{ catname, description };
+			currentCatgory->m_Leafs.push_back(leaf);
 		}
 	}
 }
 
-void NodeCatgeories::SplitString(const std::string& str, const std::string& delimiter, std::vector<std::string>& out)
-{
-	size_t pos = 0;
-	size_t start;
-	std::string token;
-
-	while ((start = str.find_first_not_of(delimiter, pos)) != std::string::npos)
-	{
-		pos = str.find(delimiter, start);
-
-		//add 1 to offset space character
-		token = str.substr(start, pos - start);
-		out.push_back(token);
-	}
-}
 
 CategoryList& NodeCatgeories::NodeTypes()
 {

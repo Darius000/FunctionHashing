@@ -3,7 +3,6 @@
 #include "Core/Core.h"
 #include "Node.h"
 
-#define TYPENAME "Branch"
 
 class If_ElseNode :public Node
 {
@@ -12,9 +11,9 @@ public:
 
 	void OnExecute() override;
 
-	DEFINE_NODE_CLASS(If_ElseNode, "", "Branching", true);
+	ImVec4 GetHeaderColor() const override { return {1.0f, 0.0f, 0.0f, 1.0f}; }
 
-	static Node* CreateMethod() { return new If_ElseNode(); }
+	bool m_InCondition = false;
+
+	RTTR_ENABLE(Node)
 };	
-
-#undef TYPENAME

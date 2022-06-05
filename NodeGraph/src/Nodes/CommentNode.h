@@ -2,24 +2,20 @@
 
 #include "Node.h"
 
-#define TYPENAME "Comment"
-
 class Comment : public Node
 {
 
 public:
 	Comment();
 
-	DEFINE_NODE_CLASS(Comment, "", "Comment", true)
-
-	static Node* CreateMethod() { return new Comment(); }
-
 	const ENodeType GetNodeType() { return ENodeType::Comment;}
+
+	ImVec4 GetHeaderColor() const override { return { 0.f, 0.f, 0.f, .5f }; }
+
+	ImVec4 GetColor() const override { return {.5f, .5f, .5f, .2f}; }
 
 	//Actual comment string
 	std::string m_Comment;
 
-	ImVec2 m_Size;
+	RTTR_ENABLE(Node)
 };
-
-#undef TYPENAME

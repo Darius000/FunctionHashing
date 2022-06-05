@@ -18,11 +18,13 @@ group "Dependencies"
 	include "vendor/GLAD"
 	include "vendor/IMGUI"
 	include "vendor/yaml-cpp"
+	include "vendor/Reflection"
 group ""
 
 include "Engine"
 include "NodeEditor"
 include "NodeGraph"
+
 
 
 
