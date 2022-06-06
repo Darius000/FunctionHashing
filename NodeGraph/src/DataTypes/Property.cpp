@@ -55,7 +55,3 @@ const std::string IPropertyT<bool>::GetStaticTypeName()
 	return "bool";
 }
 
-
-REGISTER_TYPE(int);
-REGISTER_TYPE(float)
-REGISTER_TYPE(bool)

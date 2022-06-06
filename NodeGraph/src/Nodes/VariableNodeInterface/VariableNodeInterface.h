@@ -28,20 +28,16 @@ public:
 		if (prop)
 		{
 			m_PropertyName = prop->GetName();
-			m_Color = prop->GetColor();
-			m_Color.w = .5f;
 
 			prop->OnDestroyed.AddBinding([this](NodeEditorObject* obj) {
 
 				m_Property = nullptr;
-				m_Color = ImGuiExtras::Grey;
 				m_PropertyName = "UnReferenced Property!";
 			});
 		}
 		else
 		{
 			m_Property = nullptr;
-			m_Color = ImGuiExtras::Grey;
 			m_PropertyName = "UnReferenced Property!";
 		}
 		

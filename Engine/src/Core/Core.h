@@ -2,14 +2,7 @@
 
 
 #include "Log/Log.h"
-
 #include <memory>
-
-template<typename T>
-void Print(const T* msg)
-{
-	std::cout << msg << "\n";
-}
 
 template<typename T>
 using Scope = std::unique_ptr<T>;

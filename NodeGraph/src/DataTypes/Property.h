@@ -137,8 +137,3 @@ void IPropertyT<T>::Serialize(YAML::Emitter& out)
 	out << YAML::Value << m_Prop;
 }
 
-#define REGISTER_TYPE(x)\
-namespace Type##x\
-{\
-	bool registered = DataTypeRegistry::Registrate(IPropertyT<x>::GetStaticTypeName(), IPropertyT<x>::Create);\
-};

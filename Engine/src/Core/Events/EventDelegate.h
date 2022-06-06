@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional>
-
+#include <vector>
 
 
 template<typename Ret, typename... Args>
@@ -28,14 +28,6 @@ public:
 		auto pred = [&function](const Func& func) { return *function.target<CFunc>() == *func.target<CFunc>(); };
 
 		BindedFunctions.erase(std::remove_if(BindedFunctions.begin(), BindedFunctions.end(), pred), BindedFunctions.end());
-	}
-
-	void ExecuteIfBound()
-	{
-		if (IsBound())
-		{
-			Broadcast();
-		}
 	}
 
 	void UnBindAll()
@@ -72,7 +64,7 @@ struct EngineEvent : public EngineEventBase<void, Args...>
 {
 	void Invoke(Args&&... args) const
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function(std::forward<Args>(args)...);
 		}
@@ -85,7 +77,7 @@ struct RetEngineEvent : public EngineEventBase<Ret, Args...>
 {
 	Ret Invoke(Args&&... args) const
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			return function(std::forward<Args>(args)...);
 		}
@@ -115,14 +107,6 @@ struct FEventDelegate
 	void RemoveBinding(const std::function<FunctionSigniture>& Function)
 	{
 		if (Contains(Function)) BindedFunctions.erase(Function);
-	}
-
-	void ExecuteIfBound()
-	{
-		if (IsBound())
-		{
-			Broadcast();
-		}
 	}
 
 	void UnBindAll()
@@ -162,7 +146,7 @@ struct FEventDelegateNoParams : public FEventDelegate<FunctionSigniture>
 {
 	void Broadcast()
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function();
 		}
@@ -174,7 +158,7 @@ struct FEventDelegateOneParam : public FEventDelegate<FunctionSigniture>
 {
 	void Broadcast(Var1 Variable)
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function(Variable);
 		}
@@ -186,7 +170,7 @@ struct FEventDelegateTwoParams : public FEventDelegate<FunctionSigniture>
 {
 	void Broadcast(Var1 Variable1, Var2 Variable2)
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function(Variable1, Variable2);
 		}
@@ -198,7 +182,7 @@ struct FEventDelegateThreeParams : public FEventDelegate<FunctionSigniture>
 {
 	void Broadcast(Var1 Variable1, Var2 Variable2, Var3 Variable3)
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function(Variable1, Variable2, Variable3);
 		}
@@ -210,7 +194,7 @@ struct FEventDelegateFourParams : public FEventDelegate<FunctionSigniture>
 {
 	void Broadcast(Var1 Variable1, Var2 Variable2, Var3 Variable3, Var4 Variable4)
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function(Variable1, Variable2, Variable3, Variable4);
 		}
@@ -222,7 +206,7 @@ struct FEventDelegateFiveParams : public FEventDelegate<FunctionSigniture>
 {
 	void Broadcast(Var1 Variable1, Var2 Variable2, Var3 Variable3, Var4 Variable4, Var5 Variable5)
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function(Variable1, Variable2, Variable3, Variable4, Variable5);
 		}
@@ -235,7 +219,7 @@ template<typename FunctionSigniture, typename Var1, typename Var2,
 {
 	void Broadcast(Var1 Variable1, Var2 Variable2, Var3 Variable3, Var4 Variable4, Var5 Variable5, Var6 Variable6)
 	{
-		for (auto function : BindedFunctions)
+		for (auto function : this->BindedFunctions)
 		{
 			function(Variable1, Variable2, Variable3, Variable4, Variable5, Variable6);
 		}

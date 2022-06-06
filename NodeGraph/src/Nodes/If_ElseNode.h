@@ -13,7 +13,7 @@ public:
 
 	ImVec4 GetHeaderColor() const override { return {1.0f, 0.0f, 0.0f, 1.0f}; }
 
-	bool m_InCondition = false;
+	uint32_t m_InCondition = 0;
 
 	RTTR_ENABLE(Node)
 };	

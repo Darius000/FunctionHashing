@@ -7,6 +7,10 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+namespace ImGui
+{
+
+};
 
 struct Inspector
 {
@@ -35,13 +39,13 @@ struct Property_Layout
 
 REFLECT_INLINE(Inspector)
 {
-	auto& r = rttr::registration::class_<Inspector>("Inspector");
+	auto r = rttr::registration::class_<Inspector>("Inspector");
 }
 
 #define INSPECTOR_REFLECT(inspector_type, inspected_type)\
 		REFLECT_INLINE(inspector_type)\
 		{\
-			auto& r = rttr::registration::class_<inspector_type>(#inspector_type)\
+			auto r = rttr::registration::class_<inspector_type>(#inspector_type)\
 			(rttr::metadata("inspected_type", rttr::type::get<inspected_type>()))\
 			.constructor<>()(rttr::policy::ctor::as_std_shared_ptr);\
 		}	

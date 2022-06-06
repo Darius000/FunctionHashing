@@ -13,5 +13,9 @@ public:
 
 	virtual const ENodeType GetNodeType() override { return ENodeType::Simple; }
 
+	From m_Input = From();
+
+	To m_Output = To();
+
 	RTTR_ENABLE(Node)
 };
