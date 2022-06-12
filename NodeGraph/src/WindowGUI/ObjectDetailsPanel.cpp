@@ -26,15 +26,15 @@ void ObjectDetailsPanel::DrawSelectedObj()
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
 		ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(.1f, .1f, .1f, 1.0f));
 
-		auto item_width = ImGui::GetContentRegionAvailWidth() - 20.0f;
+		auto item_width = ImGui::GetContentRegionAvail().x - 20.0f;
 		ImGui::SetCursorPosX(10.0f);
 
-		ImGui::BeginVertical("details");
+		//ImGui::BeginVertical("details");
 
 		rttr::variant var = selected;
 		InspectorRegistry::InspectVar(var);
 
-		ImGui::EndVertical();
+		//ImGui::EndVertical();
 
 		ImGui::PopStyleVar();
 		ImGui::PopStyleColor();

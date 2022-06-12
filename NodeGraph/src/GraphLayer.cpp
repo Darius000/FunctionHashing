@@ -1,5 +1,5 @@
 #include "GraphLayer.h"
-#include "NodeEditor/imgui_node_editor.h"
+#include "imgui-node-editor/imgui_node_editor.h"
 #include "WindowGUI/NodeGraphPanel.h"
 #include "Core/ImGui/LogPanel.h"
 #include "WindowGUI/NodeListPanel.h"

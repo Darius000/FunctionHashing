@@ -4,7 +4,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "UIElementStyle.h"
-#include "NodeEditor/imgui_node_editor.h"
+#include "imgui-node-editor/imgui_node_editor.h"
 #include "Core/UUID/UUID.h"
 
 namespace ed = ax::NodeEditor;

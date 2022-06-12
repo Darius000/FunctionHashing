@@ -1,5 +1,7 @@
 #include "PCH.h"
 #include "LogPanel.h"
+#include "imgui_internal.h"
+#include "imgui.h"
 
 
 LogPanel::LogPanel(const std::string& label, ImGuiWindowFlags flags, ImGuiID id , bool runtimecreated )
@@ -14,7 +16,7 @@ void LogPanel::OnRenderWindow()
 	ImGui::TextUnformatted(Log::GetBuffer().begin());
 
 	if (Log::ScrollToBottom)
-		ImGui::SetScrollHere(1.0f);
+		ImGui::SetScrollHereY(1.0f);
 	Log::ScrollToBottom = false;
 }
 

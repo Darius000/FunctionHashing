@@ -1,10 +1,9 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "Core/Event.h"
 
+struct GLFWWindow;
 
 struct WindowSpecs
 {
@@ -32,7 +31,7 @@ public:
 	void SetVSync(bool enabled);
 	bool VSyncEnabled() const { return m_WindowSpecs.m_VSync; }
 
-	GLFWwindow* GetNativeWindow() const { return m_Window; }
+	struct GLFWwindow* GetNativeWindow() const { return m_Window; }
 	const WindowSpecs& GetSpecs() const { return m_WindowSpecs; }
 
 	static void glfwErrorCallback(int error, const char* description);
@@ -43,7 +42,7 @@ private:
 	
 	class OpenGlContext* m_Context;
 
-	GLFWwindow* m_Window;
+	struct GLFWwindow* m_Window;
 
 	WindowSpecs m_WindowSpecs;
 

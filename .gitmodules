@@ -1,0 +1,27 @@
+[submodule "Parser/external/tclap"]
+	path = Parser/external/tclap
+	url = https://github.com/mirror/tclap.git
+[submodule "Parser/external/rapidjson"]
+	path = Parser/external/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+[submodule "Engine/vendor/imgui"]
+	path = Engine/vendor/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "Engine/vendor/glfw"]
+	path = Engine/vendor/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "Engine/vendor/header-parser"]
+	path = Engine/vendor/header-parser
+	url = https://github.com/baszalmstra/header-parser.git
+[submodule "Engine/vendor/rttr"]
+	path = Engine/vendor/rttr
+	url = https://github.com/rttrorg/rttr.git
+[submodule "Engine/vendor/glm"]
+	path = Engine/vendor/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "Engine/vendor/imgui-node-editor"]
+	path = Engine/vendor/imgui-node-editor
+	url = https://github.com/thedmd/imgui-node-editor.git
+[submodule "Engine/vendor/--force"]
+	path = Engine/vendor/--force
+	url = https://github.com/jbeder/yaml-cpp.git

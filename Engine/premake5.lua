@@ -2,7 +2,7 @@ project "Engine"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 	
 	targetdir ("%{wks.location}/bin/" ..outputdir.. "/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" ..outputdir.. "/%{prj.name}")
@@ -17,7 +17,11 @@ project "Engine"
 		"src/**.h", 
 		"src/**.cpp", 
 		"src/**.hpp",
-		"src/**.inl"
+		"src/**.inl",
+		"vendor/stb_image/**.h",
+		"vendor/stb_image/**.cpp",
+		"vendor/glm/glm/**.inl",
+		"vendor/glm/glm/**.hpp"
 	}
 
 
@@ -25,7 +29,6 @@ project "Engine"
 	{
 		"src",
 		"src/Core",
-		"%{wks.location}/vendor",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.IMGUI}",
@@ -38,6 +41,7 @@ project "Engine"
 	defines
     {
         "_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE",
 		"NOMINMAX"
     }
 
@@ -47,7 +51,8 @@ project "Engine"
 		"GLAD",
 		"IMGUI",
 		"yaml-cpp",
-		"Reflection",
+		"rttr",
+		"imgui-node-editor",
 		 "opengl32.lib"
 	}
 
@@ -56,6 +61,7 @@ project "Engine"
 
 	filter "system:windows"
 		systemversion "latest"
+		staticruntime "On"
 		
 		defines
 		{

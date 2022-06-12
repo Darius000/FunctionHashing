@@ -2,7 +2,7 @@
 
 #include "NodeEditorObject.h"
 #include "DataTypes/Property.h"
-#include "NodeEditor/imgui_node_editor.h"
+#include "imgui-node-editor/imgui_node_editor.h"
 #include <Engine.h>
 
 namespace ed = ax::NodeEditor;

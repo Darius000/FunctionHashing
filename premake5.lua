@@ -14,16 +14,16 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 
 group "Dependencies"
-	include "vendor/GLFW"
-	include "vendor/GLAD"
-	include "vendor/IMGUI"
-	include "vendor/yaml-cpp"
-	include "vendor/Reflection"
-	include "HeaderParser"
+	include "Engine/vendor/glfw"
+	include "Engine/vendor/Glad"
+	include "Engine/vendor/imgui"
+	include "Engine/vendor/yaml-cpp"
+	include "Engine/vendor/rttr"
+	include "Engine/vendor/imgui-node-editor"
+	include "Engine/vendor/header-parser"
 group ""
 
 include "Engine"
-include "NodeEditor"
 include "NodeGraph"
 
 

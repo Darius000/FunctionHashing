@@ -1,10 +1,10 @@
 IncludeDirs = {}
 
  
-IncludeDirs["GLFW"] = "%{wks.location}/vendor/GLFW/include"
-IncludeDirs["GLAD"] = "%{wks.location}/vendor/GLAD/include"
-IncludeDirs["IMGUI"] = "%{wks.location}/vendor/IMGUI"
-IncludeDirs["STB_IMAGE"] = "%{wks.location}/vendor/STB_IMAGE"
-IncludeDirs["YAML"] = "%{wks.location}/vendor/yaml-cpp"
-IncludeDirs["GLM"] = "%{wks.location}/vendor/GLM"
-IncludeDirs["Reflection"] = "%{wks.location}/vendor/Reflection/src"
+IncludeDirs["GLFW"] = "%{wks.location}/Engine/vendor/glfw/include"
+IncludeDirs["GLAD"] = "%{wks.location}/Engine/vendor/Glad/include"
+IncludeDirs["IMGUI"] = "%{wks.location}/Engine/vendor/imgui"
+IncludeDirs["STB_IMAGE"] = "%{wks.location}/Engine/vendor/stb_image"
+IncludeDirs["YAML"] = "%{wks.location}/Engine/vendor/yaml-cpp/include"
+IncludeDirs["GLM"] = "%{wks.location}/Engine/vendor/glm"
+IncludeDirs["Reflection"] = "%{wks.location}/Engine/vendor/rttr/src"

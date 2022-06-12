@@ -3,14 +3,15 @@
 #include "DataTypes/DataTypeRegistry.h"
 #include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
 #include "Core/Events/MouseEvent.h"
-#include "NodeEditor/imgui_node_editor.h"
-#include "NodeEditor/imgui_node_editor_internal.h"
+#include "imgui-node-editor/imgui_node_editor.h"
+#include "imgui-node-editor/imgui_node_editor_internal.h"
 #include "imgui.h"
 #include "Core\Debug\Instrumentor.h"
 #include "Core/Helpers/Vectors/VectorHelper.h"
 #include "UIElements/NodeElement.h"
 #include <Engine.h>
 #include <rttr/type.h>
+#include "imgui_stdlib.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -261,7 +262,7 @@ bool NodeGraph::CanConnectPins(Pin* start, Pin* end, TEnum<EPinRejectReason>& re
 
 void NodeGraph::DrawAddNewProperty()
 {
-	float width = ImGui::GetContentRegionAvailWidth();
+	float width = ImGui::GetContentRegionAvail().x;
 
 	ImGui::BeginGroup();
 
@@ -380,10 +381,10 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
 			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(.1f, .1f, .1f, 1.0f));
 
-			auto item_width = ImGui::GetContentRegionAvailWidth() - 20.0f;
+			auto item_width = ImGui::GetContentRegionAvail().x - 20.0f;
 			ImGui::SetCursorPosX(10.0f);
 
-			ImGui::BeginVertical("details");
+			//ImGui::BeginVertical("details");
 
 			switch (obj->GetObjectType())
 			{
@@ -396,10 +397,10 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 					{
 						if (pin->GetPinType() == EPinType::DataPin && pin->pinKind == ed::PinKind::Input)
 						{
-							ImGui::BeginHorizontal((ImGuiID)pin->GetID());
+							//ImGui::BeginHorizontal((ImGuiID)pin->GetID());
 							ImGui::TextUnformatted(pin->GetName().c_str());
 							if(pin->GetProperty() && pin->m_Connections == 0) pin->GetProperty()->DrawDetails();
-							ImGui::EndHorizontal();
+							//ImGui::EndHorizontal();
 						}
 					}
 				}
@@ -408,7 +409,7 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 				{
 					IProperty* prop = Cast<IProperty>(obj);
 
-					ImGui::BeginHorizontal("prop");
+					//ImGui::BeginHorizontal("prop");
 
 					ImGui::SetNextItemWidth(item_width / 2.0f);
 					auto str = prop->GetName();
@@ -420,14 +421,14 @@ void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
 					ImGui::SetNextItemWidth(item_width / 2.0f);
 					prop->DrawDetails();
 
-					ImGui::EndHorizontal();
+					//ImGui::EndHorizontal();
 				}
 				break;
 			default:
 				break;
 			}
 			
-			ImGui::EndVertical();
+			//ImGui::EndVertical();
 
 			ImGui::PopStyleColor();
 			ImGui::PopStyleVar();

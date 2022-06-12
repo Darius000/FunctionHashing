@@ -9,15 +9,15 @@ project "Reflection"
 
 	files
 	{
-		"src/**.cpp",
-		"src/**.h",
-		"src/**.inl",
-		"src/**.hpp",
+		"src/rttr/**.cpp",
+		"src/rttr/**.h",
+		"src/rttr/**.inl",
+		"src/rttr/**.hpp",
 	}
 
 	includedirs
 	{
-		"src"
+		"src/rttr"
 	}
 
 	defines

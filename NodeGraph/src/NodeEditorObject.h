@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "imgui.h"
-#include "imgui_internal.h"
-#include "imgui_stdlib.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 #include "yaml-cpp/yaml.h"
 #include "Core/UUID/UUID.h"
 #include <rttr/type>

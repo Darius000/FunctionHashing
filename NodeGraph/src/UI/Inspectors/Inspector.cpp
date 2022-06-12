@@ -44,7 +44,7 @@ Property_Layout::Property_Layout(const rttr::property& prop, bool columns)
 	ImGui::NextColumn();
 
 	ImGui::PushID(pretty_name.data());
-	ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 }
 
 Property_Layout::Property_Layout(std::string_view name, bool columns)
@@ -65,7 +65,7 @@ Property_Layout::Property_Layout(std::string_view name, bool columns)
 	ImGui::NextColumn();
 
 	ImGui::PushID(name.data());
-	ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 }
 
 Property_Layout::Property_Layout(std::string_view name, std::string_view tooltip, bool columns)

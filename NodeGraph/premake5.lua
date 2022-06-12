@@ -2,7 +2,7 @@ project "NodeGraph"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "On"
+	staticruntime "off"
 	
 	targetdir ("%{wks.location}/bin/" ..outputdir.. "/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" ..outputdir.. "/%{prj.name}")
@@ -13,7 +13,7 @@ project "NodeGraph"
 		"src/**.h", 
 		"src/**.cpp", 
 		"src/**.hpp",
-		"src/**.inl",	
+		"src/**.inl"
 	}
 
 
@@ -21,21 +21,18 @@ project "NodeGraph"
 	{
 		"Generated",
 		"src",
-		"%{IncludeDirs.GLFW}",
-		"%{IncludeDirs.GLAD}",
-		"%{IncludeDirs.IMGUI}",
-		"%{IncludeDirs.YAML}",
 		"%{IncludeDirs.GLM}",
+		"%{IncludeDirs.YAML}",
 		"%{IncludeDirs.Reflection}",
+		"%{wks.location}/Engine/vendor",
+		"%{IncludeDirs.IMGUI}",
+		"%{IncludeDirs.GLAD}",
 		"%{wks.location}/Engine/src",
-		"%{wks.location}/Engine/src/Core",
-		"%{wks.location}/NodeEditor/src"
+		"%{wks.location}/Engine/src/Core"
 	}
 	
 	links
 	{	
-		"HeaderParser",
-		"NodeEditor",
 		"Engine"
 	}
 	
@@ -45,17 +42,15 @@ project "NodeGraph"
 		"NOMINMAX"
     }
 
-	prebuildcommands
-	{
-		"%{wks.location}scripts/HeaderParser.exe"
-	}
-
 	filter "system:windows"
 		systemversion "latest"
+		cppdialect "C++17"
+		staticruntime "On"
 		
 		defines
 		{
-			"_CRT_SECURE_NO_WARNINGS"
+			"_CRT_SECURE_NO_WARNINGS",
+			"NOMINMAX"
 		}
 
 	filter "configurations:Debug"

@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ImGui/ImGuiLayer.h"
 #include "Debug/Instrumentor.h"
+#include <GLFW/glfw3.h>
 
 Application::Application(const std::string& name , ApplicationCommandLineArgs args)
 {
