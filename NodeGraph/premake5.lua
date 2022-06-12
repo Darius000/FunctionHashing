@@ -1,7 +1,7 @@
 project "NodeGraph"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++20"
+	cppdialect "C++17"
 	staticruntime "off"
 	
 	targetdir ("%{wks.location}/bin/" ..outputdir.. "/%{prj.name}")
@@ -39,13 +39,14 @@ project "NodeGraph"
 	defines
     {
         "_CRT_SECURE_NO_WARNINGS",
-		"NOMINMAX"
+		"NOMINMAX",
+		"YAML_CPP_STATIC_DEFINE",
+		"YAML_CPP_DEPRECATED_NO_EXPORT"
     }
 
 	filter "system:windows"
 		systemversion "latest"
-		cppdialect "C++17"
-		staticruntime "On"
+
 		
 		defines
 		{

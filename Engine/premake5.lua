@@ -42,14 +42,16 @@ project "Engine"
     {
         "_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE",
-		"NOMINMAX"
+		"NOMINMAX",
+		"YAML_CPP_STATIC_DEFINE",
+		"YAML_CPP_DEPRECATED_NO_EXPORT"
     }
 
 	links
 	{
 		"GLFW",
-		"GLAD",
-		"IMGUI",
+		"Glad",
+		"ImGui",
 		"yaml-cpp",
 		"rttr",
 		"imgui-node-editor",
@@ -61,12 +63,7 @@ project "Engine"
 
 	filter "system:windows"
 		systemversion "latest"
-		staticruntime "On"
-		
-		defines
-		{
-			"_CRT_SECURE_NO_WARNINGS"
-		}
+	
 
 	filter "configurations:Debug"
 		defines "DEBUG"
