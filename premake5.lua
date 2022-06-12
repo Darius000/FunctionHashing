@@ -19,6 +19,7 @@ group "Dependencies"
 	include "vendor/IMGUI"
 	include "vendor/yaml-cpp"
 	include "vendor/Reflection"
+	include "HeaderParser"
 group ""
 
 include "Engine"

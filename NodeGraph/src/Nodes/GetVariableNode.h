@@ -9,9 +9,6 @@ public:
 	GetVariableNode(Ref<IProperty> prop)
 		:VariableNodeInterface(prop)
 	{
-		m_Rounding = 30.0f;
-	
-		
 	}
 	
 

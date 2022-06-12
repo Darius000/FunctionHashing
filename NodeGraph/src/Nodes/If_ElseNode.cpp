@@ -10,14 +10,3 @@ void If_ElseNode::OnExecute()
 {
 	
 }
-
-
-using namespace rttr;
-
-RTTR_REGISTRATION
-{
-	registration::class_<If_ElseNode>("IfElse")(metadata("Category", "Branching | "), metadata("Description", "Condition determines next node path"))
-	.constructor<>()(policy::ctor::as_raw_ptr)
-	.property("Condition", &If_ElseNode::m_InCondition);
-
-}

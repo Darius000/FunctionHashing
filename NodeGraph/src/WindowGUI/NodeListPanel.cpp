@@ -11,8 +11,8 @@ NodeListPanel::NodeListPanel(ImGuiWindowFlags flags, ImGuiID id, bool runtimecre
 	{
 		
 		std::string cat, descr;
-		auto md_category = derived_type.get_metadata("Category");
-		auto md_description = derived_type.get_metadata("Description");
+		auto md_category = derived_type.get_metadata(ClassMetaData::Category);
+		auto md_description = derived_type.get_metadata(ClassMetaData::Description);
 
 		cat = (md_category.is_valid() ? md_category.get_value<std::string>()  : "") + derived_type.get_name();
 		descr = md_description.is_valid() ? md_description.get_value<std::string>() : "";

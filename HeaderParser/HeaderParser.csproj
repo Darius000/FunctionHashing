@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>{1B2C6602-078F-F5A6-B014-2E5D9C56C129}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeaderParser</RootNamespace>
+    <AssemblyName>HeaderParser</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug-windows-x86_64\HeaderParser\</OutputPath>
+    <BaseIntermediateOutputPath>..\bin-int\Debug-windows-x86_64\HeaderParser\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <DefineConstants>_CRT_SECURE_NO_WARNINGS;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release-windows-x86_64\HeaderParser\</OutputPath>
+    <BaseIntermediateOutputPath>..\bin-int\Release-windows-x86_64\HeaderParser\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <DefineConstants>_CRT_SECURE_NO_WARNINGS;NDEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Dist-windows-x86_64\HeaderParser\</OutputPath>
+    <BaseIntermediateOutputPath>..\bin-int\Dist-windows-x86_64\HeaderParser\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <DefineConstants>_CRT_SECURE_NO_WARNINGS;DIST</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x64' ">
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\NodeGraph\Build.cs">
+      <Link>NodeGraph\Build.cs</Link>
+    </Compile>
+    <Compile Include="src\BackGroundWorker\ParserBackGroundWorker.cs" />
+    <Compile Include="src\CHeaderParser.cs" />
+    <Compile Include="src\GUI\ProgressForm.cs" />
+    <Compile Include="src\HeaderParserApp.cs" />
+    <Compile Include="src\HeaderStructures\AccessModifier.cs" />
+    <Compile Include="src\HeaderStructures\Arguments.cs" />
+    <Compile Include="src\HeaderStructures\BaseObject.cs" />
+    <Compile Include="src\HeaderStructures\Class.cs" />
+    <Compile Include="src\HeaderStructures\Constructor.cs" />
+    <Compile Include="src\HeaderStructures\Enum.cs" />
+    <Compile Include="src\HeaderStructures\Function.cs" />
+    <Compile Include="src\HeaderStructures\Macros.cs" />
+    <Compile Include="src\HeaderStructures\MetaData.cs" />
+    <Compile Include="src\HeaderStructures\Namespace.cs" />
+    <Compile Include="src\HeaderStructures\Property.cs" />
+    <Compile Include="src\HeaderStructures\Struct.cs" />
+    <Compile Include="src\Log\ParserTraceListener.cs" />
+    <Compile Include="src\Module.cs" />
+    <Compile Include="src\Utilities\HFileParser.cs" />
+    <Compile Include="src\Utilities\ModuleParser.cs" />
+    <Compile Include="src\Utilities\StringUtilities.cs" />
+    <Compile Include="src\Utilities\Writer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>copy "HeaderParser.exe" "$(SolutionDir)scripts"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

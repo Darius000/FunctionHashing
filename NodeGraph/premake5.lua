@@ -19,6 +19,7 @@ project "NodeGraph"
 
 	includedirs
 	{
+		"Generated",
 		"src",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLAD}",
@@ -33,6 +34,7 @@ project "NodeGraph"
 	
 	links
 	{	
+		"HeaderParser",
 		"NodeEditor",
 		"Engine"
 	}
@@ -43,6 +45,10 @@ project "NodeGraph"
 		"NOMINMAX"
     }
 
+	prebuildcommands
+	{
+		"%{wks.location}scripts/HeaderParser.exe"
+	}
 
 	filter "system:windows"
 		systemversion "latest"

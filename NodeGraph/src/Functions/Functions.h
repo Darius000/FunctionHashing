@@ -45,7 +45,7 @@ struct FunctionWrapper<ReturnType(*)(Args...)> : public
 		m_Func = rhs.m_Func;
 	}
 	
-	R operator()(Args... args){return std::invoke(m_Func, args...); }
+	ReturnType operator()(Args... args){return std::invoke(m_Func, args...); }
 
 	Pointer m_Func;
 };
@@ -72,8 +72,8 @@ struct FunctionWrapper<ReturnType(T::*)(Args...)> : public
 		m_Func = rhs.m_Func;
 	}
 
-	typename FunctionWrapperBase::R operator()(T& obj, Args... args) { return std::invoke(m_Func, obj, args...); }
-	typename FunctionWrapperBase::R operator()(T* obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+	typename FunctionWrapperBase<ReturnType, Args...>::R operator()(T& obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+	typename FunctionWrapperBase<ReturnType, Args...>::R operator()(T* obj, Args... args) { return std::invoke(m_Func, obj, args...); }
 
 	Pointer m_Func;
 };
@@ -101,8 +101,8 @@ struct FunctionWrapper<ReturnType(T::*)(Args...) const> : public
 	}
 
 	
-	typename FunctionWrapperBase::R operator()(const T& obj, Args... args) { return std::invoke(m_Func, obj, args...); }
-	typename FunctionWrapperBase::R operator()(const T* obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+	typename FunctionWrapperBase<ReturnType, Args...>::R operator()(const T& obj, Args... args) { return std::invoke(m_Func, obj, args...); }
+	typename FunctionWrapperBase<ReturnType, Args...>::R operator()(const T* obj, Args... args) { return std::invoke(m_Func, obj, args...); }
 
 	Pointer m_Func;
 };

@@ -25,7 +25,7 @@ public:
 		size_t i = 0;
 		for (i; i < size; i++)
 		{
-			using ArgType = FuncType::NthArg<0>;
+			using ArgType = FuncType::NthArg;
 			
 			auto name = i < GetParameterNames().size() ? GetParameterNames()[i] : std::to_string(i);
 			

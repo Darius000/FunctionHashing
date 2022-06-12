@@ -1,0 +1,12 @@
+[submodule "external/rapidjson"]
+	path = external/rapidjson
+	url = ../../miloyip/rapidjson.git
+[submodule "external/cmdline"]
+	path = external/cmdline
+	url = ../../tanakh/cmdline.git
+[submodule "external/cxxopts"]
+	path = external/cxxopts
+	url = ../../jarro2783/cxxopts.git
+[submodule "external/tclap"]
+	path = external/tclap
+	url = ../../mirror/tclap.git

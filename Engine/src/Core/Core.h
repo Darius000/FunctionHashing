@@ -49,8 +49,14 @@ struct is_convertible
 
 #define  BIT(x) (1 << x)
 
-#define CLASS()
-#define GENERATE_NODE()
+#define CLASS(...)
+#define PROPERTY(...)
+#define FUNCTION(...)
+#define ENUM()
+#define VALUE(...)
+#define STRUCT(...)
 
+#include "Specifiers/MetaDataSpecifiers.h"
+#include "Reflection/Reflection.h"
 #include "Events/EventDelegate.h"
 #include "Event.h"
