@@ -22,6 +22,3 @@
 [submodule "Engine/vendor/imgui-node-editor"]
 	path = Engine/vendor/imgui-node-editor
 	url = https://github.com/thedmd/imgui-node-editor.git
-[submodule "Engine/vendor/--force"]
-	path = Engine/vendor/--force
-	url = https://github.com/jbeder/yaml-cpp.git
