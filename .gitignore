@@ -37,6 +37,9 @@
 *.a
 *.lib
 
+#json
+*.json
+
 # Executables
 *.exe
 *.out
