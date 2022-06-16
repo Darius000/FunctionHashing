@@ -13,75 +13,35 @@ UIElement::~UIElement()
 
 }
 
-void UIElement::DrawElement(ImDrawList* drawlist)
+void UIElement::DrawElement()
 {
+	if (m_Enabled == false) return;
 
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-	if (window->SkipItems || !m_Enabled)
-		return;
+	OnBeginDraw();
 
-	//colors
-	ImColor bgColor = !m_Hovered ? (ImVec4)m_Style.m_Color : (ImVec4)m_Style.hoveredStyle.color;
-	ImColor borderColor = (ImVec4)m_Style.m_BorderColor;
-	auto minbb = GetBounds().Min;
-	auto maxbb = GetBounds().Max;
-
-	//draw background
-	drawlist->AddRectFilled(minbb, maxbb, bgColor, m_Style.m_BorderRadius.value);
-
-	//draw border
-	if (m_Style.m_BorderWidth.value > 0.0f)
+	for (auto child : GetChildren())
 	{
-		drawlist->AddRect(minbb, maxbb, borderColor, m_Style.m_BorderRadius.value, ImDrawCornerFlags_All, m_Style.m_BorderWidth.value);
+		child->DrawElement();
 	}
 
-	//draw foreground
-	OnDrawElement(drawlist);
+	OnDrawElement();
 
-	//draw children
+	OnEndDraw();
 
+	bool handled = false;
+	for (auto child : GetChildren())
 	{
-		for (auto it = m_Children.rbegin(); it != m_Children.rend();)
+		handled |= child->HandleEvents();
+		if (handled)
 		{
-			if (*it)
-			{
-				
-				(*it)->DrawElement(drawlist);
-			}
-
-			it++;
+			break;
 		}
 	}
 
-	auto id = GetID();
-	auto bb = GetBounds();
-
-	AddElementItem(bb, id);
-
-	//handle events starting from top most to bottom 
+	if (!handled)
 	{
-		auto handled = false;
-		for (auto it = m_Children.end(); it != m_Children.begin();)
-		{
-			handled = (*--it)->HandleEvents();
-			if (handled)
-			{
-				break;
-			}
-		}
-
-		if (!handled)
-			HandleEvents();
+		HandleEvents();
 	}
-
-	if (m_Hovered && ImGui::GetHoveredID() == GetID())
-	{
-		DrawToolTip();
-	}
-}
-
-void UIElement::OnDrawElement(ImDrawList* drawlist)
-{
 }
 
 void UIElement::AddChild(UIElement* element)
@@ -154,80 +114,5 @@ void UIElement::AddElementItem(const ImRect& bounds, ImGuiID id)
 
 bool UIElement::HandleEvents()
 {
-	auto id = GetID();
-	auto bb = GetBounds();
-	return  HandleEvents(bb, id);
-}
-
-bool UIElement::HandleEvents(const ImRect& bounds, ImGuiID id)
-{
-
-	if (!m_Interactive) return false;
-
-	bool handled = false;
-
-	HandleHoveringEvent(bounds, id, handled);
-
-	HandleClickEvent(bounds , id, handled);
-
-	return handled;
-}
-
-void UIElement::HandleHoveringEvent(const ImRect& bounds, ImGuiID id, bool& handled)
-{
-	bool hoverable = ImGui::ItemHoverable(bounds, id);
-
-	m_Hovered = ImGui::IsItemHovered() && hoverable && IsHoverable();
-
-	if (m_Hovered)
-	{
-		handled |= true;
-
-		ImGui::SetHoveredID(id);
-
-		ImGui::SetMouseCursor(m_Style.hoveredStyle.cursor);
-
-	}
-
-	if (m_Hovered != m_PreviouslyHovered)
-	{
-		if (m_Hovered)
-		{
-			OnHoveredEvent.Broadcast();
-		}
-		else
-		{
-			OnUnHoveredEvent.Broadcast();
-		}
-
-		m_PreviouslyHovered = m_Hovered;
-	}
-}
-
-void UIElement::HandleClickEvent(const ImRect& bounds, ImGuiID id, bool& handled)
-{
-	if (ImGui::IsItemClicked() && ImGui::GetHoveredID() == id)
-	{
-
-		handled |= true;
-
-		ImGui::SetActiveID(id, ImGui::GetCurrentWindow());
-
-		OnClickedEvent.Broadcast();
-
-	}
-}
-
-void UIElement::DrawToolTip()
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-	ImVec2 position = ed::CanvasToScreen(GetPosition());
-	position += ImGui::GetIO().MousePos;
-
-	auto tooltipStyle = m_Style.m_ToolTipStyle;
-	auto fontStyle = tooltipStyle.m_FontStyle;
-
-	ImDrawList* drawlist = ImGui::GetForegroundDrawList(window);
-	drawlist->AddText(fontStyle.font, fontStyle.size.value, position, ImColor(fontStyle.color), m_ToolTip.c_str());
+	return false;
 }

@@ -28,22 +28,26 @@ namespace UI
 		ImGui::OpenPopup(m_Name.c_str());
 	}
 
-	void GenericMenu::ShowAsContext()
+	bool GenericMenu::ShowAsContext()
 	{
-		Context();
+		return Context();
 	}
 
-	void GenericMenu::Context()
+	bool GenericMenu::Context()
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(m_Padding, m_Padding));
-		if (ImGui::BeginPopup(m_Name.c_str()))
+		bool opened = ImGui::BeginPopup(m_Name.c_str());
+		
+		if (opened)
 		{
-			
 			DrawMenuItems();
 
 			ImGui::EndPopup();
 		}
+
 		ImGui::PopStyleVar();
+
+		return opened;
 	}
 	void GenericMenu::DrawMenuItems()
 	{

@@ -35,12 +35,12 @@ namespace UI
 
 		void RemoveMenuItem(const std::string& itemName);
 
-		void ShowAsContext();
+		bool ShowAsContext();
 
 		void OpenMenu();
 
 	protected:
-		void Context();
+		bool Context();
 
 	
 	private:

@@ -17,5 +17,5 @@ public:
 	//Actual comment string
 	std::string m_Comment;
 
-	RTTR_ENABLE(Node)
+	REFLECTABLEV(Node)
 };

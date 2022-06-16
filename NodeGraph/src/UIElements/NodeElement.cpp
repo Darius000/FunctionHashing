@@ -8,6 +8,7 @@ namespace ed = ax::NodeEditor;
 
 NodeElement::NodeElement(class BaseNode* node)
 {
+	m_Name = node->GetName();
 	m_Node = node;
 
 	UI::MenuItem copy{ "Copy", []() {} };
@@ -17,69 +18,94 @@ NodeElement::NodeElement(class BaseNode* node)
 	m_Menu = MakeRef<UI::GenericMenu>("NodeContextMenu");
 	m_Menu->AddMenuItem(copy);
 	m_Menu->AddMenuItem(deleteItem);
+
+	for (auto property : rttr::type::get(*node).get_properties())
+	{
+		auto meta_data = property.get_metadata("Kind");
+		if (meta_data)
+		{
+			auto kind = meta_data.get_value<std::string>() == "Input" ? ed::PinKind::Input : ed::PinKind::Output;
+
+			AddChild(new PinElement(property.get_name().data(), kind, property, rttr::instance(m_Node)));
+		}
+
+	}
 }
 
-void NodeElement::DrawElement(ImDrawList* drawlist)
+void NodeElement::OnBeginDraw()
 {
-	auto id = (ImGuiID)m_Node->GetID();
+	auto id = (uint64_t)GetID();
 
 	ed::PushStyleColor(ed::StyleColor_NodeBg, m_Node->GetColor());
 	ed::BeginNode(id);
 
-	ImGui::Dummy({ 200, 50 });
+	ImGui::Dummy({ m_Node->m_Size.x, m_Node->m_Size.y });
+}
 
+void NodeElement::OnEndDraw()
+{
 	ed::EndNode();
 	ed::PopStyleColor();
 
-	static ed::NodeId contextID = 0;
-	ed::Suspend();
-	if (ed::ShowNodeContextMenu(&contextID))
+	auto id = (uint64_t)GetID();
+	ImDrawList* drawlist = ed::GetNodeBackgroundDrawList((uint64_t)GetID());
+
+	if (ImGui::IsItemVisible())
 	{
-		std::cout << "Context \n";
-		m_Menu->OpenMenu();
+		bool isSelected = ed::IsActive();
+		auto pos = ed::GetNodePosition(id);
+		auto size = ed::GetNodeSize(id);
+		auto node_Border_Width = ed::GetStyle().NodeBorderWidth;
+		auto node_rounding = ed::GetStyle().NodeRounding;
+
+
+		ImVec2 headerSize = { size.x - node_Border_Width * 2.0f, 30.0f };
+		ImRect headerbb{ pos.x + node_Border_Width, pos.y + node_Border_Width , pos.x + headerSize.x, pos.y + headerSize.y };
+
+
+		DrawHeader(headerbb.Min, headerSize, m_Node->GetHeaderColor(), node_rounding, ImDrawCornerFlags_Top, drawlist);
+
+		DrawTitle(m_Node->GetName(), headerbb.Min + ImVec2(node_rounding, 0.0f), {}, drawlist);
+
+		DrawSeperator({ headerbb.Min.x, headerbb.Max.y },
+			{ headerSize.x, 1.0f }, drawlist);
+
+
+
+		SetPosition(pos);
+
+		if (ImGui::IsItemHovered())
+		{
+			DrawToolTip("Tooltip", drawlist);
+		}
 	}
-	ed::Resume();
-
-	bool isSelected = ed::IsActive();
-	auto pos = ed::GetNodePosition(id);
-	auto size = ed::GetNodeSize(id);
-	auto nodeDrawList = ed::GetNodeBackgroundDrawList(id);
-	auto node_Border_Width = ed::GetStyle().NodeBorderWidth;
-	auto node_rounding = ed::GetStyle().NodeRounding ;
-	
-
-	ImVec2 headerSize = { size.x - node_Border_Width * 2.0f, 30.0f };
-	ImRect headerbb{ pos.x  + node_Border_Width, pos.y + node_Border_Width , pos.x + headerSize.x, pos.y + headerSize.y };
-
-
-	DrawHeader(headerbb.Min, headerSize, m_Node->GetHeaderColor(), node_rounding, ImDrawCornerFlags_Top, nodeDrawList);
-
-	DrawTitle(m_Node->GetName(), headerbb.Min + ImVec2(node_rounding, 0.0f), {}, nodeDrawList);
-
-	DrawSeperator({ headerbb.Min.x, headerbb.Max.y }, 
-		{ headerSize.x, 1.0f }, nodeDrawList);
-
-	
-	SetPosition(pos);
-
-	if (ImGui::IsItemHovered())
-	{
-		DrawToolTip("Tooltip", drawlist);
-	}
-
-	ed::Suspend();
-
-
-	//context menu
-	m_Menu->ShowAsContext();
-
-	ed::Resume();
-	
 }
 
 void NodeElement::SetPosition(const ImVec2& pos)
 {
 	m_Node->m_Position = { pos.x, pos.y };
+}
+
+bool NodeElement::HandleEvents()
+{
+	static ed::NodeId contextID = 0;
+	ed::Suspend();
+	if (ed::ShowNodeContextMenu(&contextID))
+	{
+		m_Menu->OpenMenu();
+
+	}
+	ed::Resume();
+
+
+	ed::Suspend();
+
+	//context menu
+	bool opened =  m_Menu->ShowAsContext();
+
+	ed::Resume();
+
+	return opened;
 }
 
 void NodeElement::DrawToolTip(const std::string& text, ImDrawList* drawlist)

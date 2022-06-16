@@ -6,9 +6,9 @@ class LabelElement : public UIElement
 {
 public:
 
-	LabelElement(const std::string& text = "");
+	LabelElement(std::string_view name, const std::string& text = "");
 
-	void OnDrawElement(ImDrawList* drawlist) override;
+	void OnDrawElement() override;
 
 	std::string m_Text = "";
 };

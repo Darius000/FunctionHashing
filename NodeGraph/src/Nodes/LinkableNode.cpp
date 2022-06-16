@@ -1,4 +1,3 @@
-#include "PCH.h"
 #include "LinkableNode.h"
 #include "Core/Helpers/Vectors/VectorHelper.h"
 
@@ -51,9 +50,4 @@ void LinkableNode::DeSerialize(YAML::detail::iterator_value& value)
 	{
 		m_LinkData.push_back(link);
 	}
-}
-
-RTTR_REGISTRATION
-{
-	registration::class_<LinkableNode>("LinkableNode")(policy::ctor::as_raw_ptr);
 }

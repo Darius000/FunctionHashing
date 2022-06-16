@@ -3,20 +3,25 @@
 
 #include "UIElement.h"
 #include "UI/GenericMenu.h"
+#include "PinElement.h"
 
 
-class NodeElement
+class NodeElement : public UIElement
 {
 public:
 	NodeElement(class BaseNode* node);
 
-	void DrawElement(ImDrawList* drawlist);
+	void OnBeginDraw() override;
+
+	void OnEndDraw() override;
 
 	void SetPosition(const ImVec2& pos);
 
 	class BaseNode* GetNode() { return m_Node;  }
 
 private:
+	bool HandleEvents() override;
+
 	void DrawToolTip(const std::string& text, ImDrawList* drawlist);
 
 	void DrawSeperator(const ImVec2& position, const ImVec2& size, ImDrawList* drawlist);

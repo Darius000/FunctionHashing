@@ -9,7 +9,7 @@ class NodeGraph
 {
 	using NodeList = typename std::vector<Scope<class NodeElement>>;
 	using NodesSelected = typename std::vector<ImGuiID>;
-	using NodeLinks = typename std::vector<Scope<struct Link>>;
+	using Edges = typename std::vector<Scope<class EdgeElement>>;
 	using PropertyList = std::vector<Ref<struct IProperty>>;
 
 public:
@@ -24,11 +24,13 @@ public:
 
 private:
 
-	class NodeEditorObject* FindNodeByID(ImGuiID id) const;
+	class NodeEditorObject* FindNodeByID(uint64_t id) const;
+
+	class PinElement* FindPin(uint64_t pinid) const;
 
 	void DrawVariableList();
 
-	virtual bool CanConnectPins(Pin* start, Pin* end, TEnum<EPinRejectReason>& refjectReason);
+	virtual bool CanConnectPins(class PinElement* start, class PinElement* end, std::string& error);
 
 	//draw the menu to create a new property
 	void DrawAddNewProperty();
@@ -41,14 +43,9 @@ private:
 
 	void DrawSelectedPropertyWidget(class NodeEditorObject* prop);
 
-	void DrawNodes();
-
-	void DrawNodeLinks();
+	void DrawElements();
 
 	//Creates the category hierarchy, returns when an item is clicked
-
-
-	Pin* FindPind(Core::UUID id);
 
 	//Ref<IProperty> FindProperty(ImGuiID id);
 
@@ -62,7 +59,7 @@ protected:
 
 	PropertyList m_Properties;
 
-	NodeLinks m_NodeLinks;
+	Edges m_Edges;
 
 	friend class GraphSerializer;
 };

@@ -23,9 +23,15 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 }
 
 template<typename T, typename U>
-constexpr T* Cast(U* t)
+constexpr T* Cast(U* t) noexcept
 {
 	return dynamic_cast<T*>(t);
+}
+
+template<typename T, typename U>
+constexpr Ref<T> Cast(const Ref<U>& t) noexcept
+{
+	return std::dynamic_pointer_cast<T>(t);
 }
 
 

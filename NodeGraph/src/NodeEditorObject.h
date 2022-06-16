@@ -1,13 +1,9 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_internal.h"
 #include "yaml-cpp/yaml.h"
 #include "Core/UUID/UUID.h"
-#include <rttr/type>
-#include <rttr/registration.h>
-#include <rttr/registration_friend.h>
+#include "Core/Reflection/Reflection.h"
 
 using namespace rttr;
 
@@ -70,7 +66,6 @@ private:
 
 	friend class GraphSerializer;
 
-	RTTR_REGISTRATION_FRIEND
-	RTTR_ENABLE()
+	REFLECTABLEV()
 };
 

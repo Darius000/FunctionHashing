@@ -1,4 +1,3 @@
-#include "PCH.h"
 #include "BaseNode.h"
 
 BaseNode::BaseNode(){}
@@ -37,10 +36,4 @@ void BaseNode::DeSerialize(YAML::detail::iterator_value& value)
 	NodeEditorObject::DeSerialize(value);
 
 	m_Position = value["Position"].as<Vec2>();
-}
-
-
-RTTR_REGISTRATION
-{
-	registration::class_<BaseNode>("BaseNode")(policy::ctor::as_raw_ptr);
 }

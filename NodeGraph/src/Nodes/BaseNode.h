@@ -2,8 +2,6 @@
 
 #include "NodeEditorObject.h"
 #include "LinkInfo.h"
-#include "Pin.h"
-
 
 enum class ENodeType
 {
@@ -17,7 +15,6 @@ class BaseNode : public NodeEditorObject
 public:
 	using Children = std::vector<BaseNode*>;
 	using LinkData = std::vector<LinkInfo>;
-	using Pins = std::vector<Scope<struct Pin>>;
 
 public:
 	BaseNode();
@@ -25,9 +22,9 @@ public:
 
 	virtual ~BaseNode();
 
-	Vec2 m_Position;
+	Vec2 m_Position = {0,0};
 
-	const Pins& GetPins() const { return m_Pins; }
+	Vec2 m_Size = {400, 50};
 
 	virtual inline Children GetChildren() { return {}; };
 
@@ -59,10 +56,7 @@ protected:
 
 private:
 
-	Pins m_Pins;
-
 	bool m_BeginExecution = false;
 
-	RTTR_REGISTRATION_FRIEND
-	RTTR_ENABLE(NodeEditorObject)
+	REFLECTABLEV(NodeEditorObject)
 };

@@ -17,5 +17,5 @@ public:
 
 	To m_Output = To();
 
-	RTTR_ENABLE(Node)
+	REFLECTABLEV(Node)
 };

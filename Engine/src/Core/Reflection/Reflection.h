@@ -1,5 +1,9 @@
 #pragma once
 
+#include <rttr/registration.h>
+#include <rttr/rttr_enable.h>
+#include <rttr/registration_friend.h>
+
 #define CAT_IMPL_(a, b) a##b
 #define CAT(a, b) CAT_IMPL_(a, b)
 
@@ -34,3 +38,32 @@ namespace refl_detail
 		refl_detail::get_reg<class_>(&rttr_auto_register_reflection_function_t<class_>);\
 	template<>\
 	inline void rttr_auto_register_reflection_function_t<class_>()
+
+#define REFLECT_EXTERN(cls)                                                                                  \
+	template <typename T>                                                                                    \
+	extern void rttr_auto_register_reflection_function_t();                                                  \
+	template <>                                                                                              \
+	void rttr_auto_register_reflection_function_t<cls>();                                                    \
+	static const int ANONYMOUS_VARIABLE(auto_register__) = []() {                                            \
+		rttr_auto_register_reflection_function_t<cls>();                                                     \
+		return 0;                                                                                            \
+	}();
+
+
+#define REFLECT(class_)\
+	template<>\
+		void rttr_auto_register_reflection_function_t<class_>()
+
+#define RTTR_REGISTRATION_FRIEND_NON_INTRUSIVE()\
+	template <typename T>\
+	friend void rttr_auto_register_reflection_function_t();\
+	RTTR_REGISTRATION_FRIEND
+
+#define EXPAND(x) x
+#define REFLECTABLE_VIRTUAL_IMPL(...)\
+	RTTR_REGISTRATION_FRIEND_NON_INTRUSIVE()\
+	RTTR_ENABLE(__VA_ARGS__)\
+public:
+
+#define REFLECTABLE() RTTR_REGISTRATION_FRIEND_NON_INTRUSIVE()
+#define REFLECTABLEV(...) EXPAND(REFLECTABLE_VIRTUAL_IMPL(__VA_ARGS__))

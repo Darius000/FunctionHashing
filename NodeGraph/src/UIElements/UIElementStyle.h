@@ -96,7 +96,7 @@ struct HoveredStyle
 	ImGuiMouseCursor cursor = ImGuiMouseCursor_Hand;
 };
 
-enum class LayoutDirection : UINT8
+enum class LayoutDirection : uint8_t
 {
 	Column,
 	ColumnReverse,

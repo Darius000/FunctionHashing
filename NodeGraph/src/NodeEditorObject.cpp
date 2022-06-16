@@ -72,9 +72,3 @@ bool NodeEditorObject::operator==(const NodeEditorObject& obj) const
 {
 	return m_Name == obj.m_Name && m_ID == obj.m_ID;
 }
-
-RTTR_REGISTRATION
-{
-	registration::class_<NodeEditorObject>("NodeEditorObject")(policy::ctor::as_raw_ptr)
-	.constructor<>();
-}

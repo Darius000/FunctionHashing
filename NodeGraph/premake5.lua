@@ -13,7 +13,8 @@ project "NodeGraph"
 		"src/**.h", 
 		"src/**.cpp", 
 		"src/**.hpp",
-		"src/**.inl"
+		"src/**.inl",
+		"Generated/**.cpp"
 	}
 
 
@@ -43,7 +44,7 @@ project "NodeGraph"
 		"YAML_CPP_STATIC_DEFINE",
 		"YAML_CPP_DEPRECATED_NO_EXPORT"
     }
-
+	
 	filter "system:windows"
 		systemversion "latest"
 
