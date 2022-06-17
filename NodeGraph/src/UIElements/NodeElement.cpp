@@ -40,6 +40,7 @@ void NodeElement::OnBeginDraw()
 	ed::BeginNode(id);
 
 	ImGui::Dummy({ m_Node->m_Size.x, m_Node->m_Size.y });
+	ImGui::Spring(0);
 }
 
 void NodeElement::OnEndDraw()
