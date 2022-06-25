@@ -1,11 +1,16 @@
 #include "PCH.h"
 #include "UIElement.h"
-#include "Core/Helpers/Vectors/VectorHelper.h"
+#include "Layouts.h"
 
 
 UIElement::UIElement()
 {
 
+}
+
+UIElement::UIElement(std::string_view name)
+{
+	m_Name = name;
 }
 
 UIElement::~UIElement()
@@ -17,66 +22,30 @@ void UIElement::DrawElement()
 {
 	if (m_Enabled == false) return;
 
-	OnBeginDraw();
+	ImGui::PushID((uint32_t)GetID());
 
-	for (auto child : GetChildren())
-	{
-		child->DrawElement();
-	}
+	//OnBeginDraw();
 
 	OnDrawElement();
 
-	OnEndDraw();
+	//OnEndDraw();
 
-	bool handled = false;
-	for (auto child : GetChildren())
-	{
-		handled |= child->HandleEvents();
-		if (handled)
-		{
-			break;
-		}
-	}
+	if (m_Interactive == false) return;
 
-	if (!handled)
-	{
-		HandleEvents();
-	}
+	//handles events from bottom to top
+	HandleEvents();
+
+	ImGui::PopID();
 }
 
-void UIElement::AddChild(UIElement* element)
+void UIElement::OnDrawElement()
 {
-	element->m_ParentElement = this;
-
-	m_Children.push_back(Ref<UIElement>(element));
-}
-
-void UIElement::RemoveElement(UIElement* element)
-{
-	Helpers::Vector::Remove(m_Children, Ref<UIElement>(element));
 	
-	element->m_ParentElement = nullptr;
-}
-
-void UIElement::RemoveElement(const std::string& name)
-{
-	auto element = Helpers::Vector::FindPred(m_Children, [&](Ref<UIElement>& element) {
-		return element->m_Name == name;
-		});
-
-	Helpers::Vector::Remove(m_Children, element);
-
-	element->m_ParentElement = nullptr;
-}
-
-void UIElement::Clear()
-{
-	m_Children.clear();
 }
 
 ImVec2 UIElement::GetPosition() 
 {
-	return m_ParentElement ? m_ParentElement->GetPosition() + GetLocalPosition() : GetLocalPosition();
+	return GetParent() ? GetParent()->GetPosition() + GetLocalPosition() : GetLocalPosition();
 }
 
 ImVec2 UIElement::GetLocalPosition() 
@@ -102,14 +71,28 @@ void UIElement::SetPosition(const ImVec2& pos)
 	m_Style.m_Position.top = pos.y;
 }
 
-void UIElement::AddElementItem(const ImRect& bounds, ImGuiID id)
+void UIElement::SetParent(LayoutElement* layout)
 {
-	ImGui::PushID(id);
-	ImGui::PushClipRect(bounds.Min, bounds.Max, false);
-	ImGui::ItemAdd(bounds, id);
-	ImGui::ItemSize(bounds);
-	ImGui::PopClipRect();
-	ImGui::PopID();
+	m_ParentElement = layout;
+}
+
+ImVec2 UIElement::GetCursorPos()
+{
+	auto window = ImGui::GetCurrentWindow();
+	
+	return ImVec2(window->DC.CursorPos.x, window->DC.CursorPos.y + window->DC.CurrLineTextBaseOffset);
+}
+
+void UIElement::AddElementItem()
+{
+	auto id = (uint32_t)GetID();
+	auto bounds = GetBounds();
+
+	
+	//ImGui::PushClipRect(bounds.Min, bounds.Max, false);
+	ImGui::ItemAdd(bounds, id, 0);
+	ImGui::ItemSize(bounds, 0);
+	//ImGui::PopClipRect();
 }
 
 bool UIElement::HandleEvents()

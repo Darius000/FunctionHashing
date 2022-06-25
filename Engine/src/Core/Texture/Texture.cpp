@@ -7,6 +7,8 @@
 Texture::Texture(const std::string& file)
 {
 	m_Data.m_Data = stbi_load(file.c_str(), &m_Width, &m_Height, &m_Channels, 0);
+
+	if (!m_Data.m_Data) return;
 	
 	if (m_Channels == 4)
 	{
@@ -41,4 +43,13 @@ Texture::Texture(const std::string& file)
 	glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_Data.m_DataFormat, 
 		GL_UNSIGNED_BYTE, m_Data.m_Data);
 	glGenerateMipmap(m_RendererID);
+}
+
+bool Texture::IsValidExtension(const char* extension)
+{
+	// // O: insert return statement here
+	std::vector<std::string> extensions = { ".png", ".jpeg", ".jpg", ".targa", ".tiff", ".tif" };
+
+	bool found = std::find(extensions.begin(), extensions.end(), extension) != extensions.end();
+	return found;
 }

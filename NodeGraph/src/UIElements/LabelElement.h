@@ -10,5 +10,7 @@ public:
 
 	void OnDrawElement() override;
 
+	ImRect GetBounds() override;
+
 	std::string m_Text = "";
 };

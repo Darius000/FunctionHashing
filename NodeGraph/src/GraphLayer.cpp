@@ -4,7 +4,8 @@
 #include "Core/ImGui/LogPanel.h"
 #include "WindowGUI/NodeListPanel.h"
 #include "WindowGUI/ObjectDetailsPanel.h"
-
+#include "WindowGUI/BlackBoardView.h"
+#include "AssetManager/AssetManager.h"
 
 
 namespace ed = ax::NodeEditor;
@@ -19,6 +20,8 @@ GraphLayer::GraphLayer()
 
 void GraphLayer::OnAttach()
 {
+	AssetManager::LoadAssetsAtPath("resources");
+
 	g_Context = ed::CreateEditor();
 
 	auto log = m_WindowStack.OpenPanel<LogPanel>("Log", ImGuiWindowFlags_None);
@@ -26,9 +29,11 @@ void GraphLayer::OnAttach()
 	auto nodelist = m_WindowStack.OpenPanel<NodeListPanel>(ImGuiWindowFlags_None);
 	auto details = m_WindowStack.OpenPanel<ObjectDetailsPanel>();
 	auto nodeGraph = graph->GetGraph();
+	auto blackboardview = m_WindowStack.OpenPanel<BlackBoardView>();
 
 	nodelist->OnMenuItemSelected.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::Instantiate));
 	details->OnGetSelectedObject.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::GetSelectedObject));
+	blackboardview->OnGetBlackBoard.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::GetBlackBoard));
 }
 
 void GraphLayer::OnDetach()

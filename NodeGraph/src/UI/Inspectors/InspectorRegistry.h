@@ -44,6 +44,10 @@ struct InspectorRegistry
 
 	static bool InspectProperty(const rttr::property& property, rttr::instance& obj);
 
+	static bool InspectArray(rttr::variant& var, bool read_only = false, const Inspector::meta_getter& get_metadata = get_metadata_empty);
+
+	static bool InspectAssociativeContainter(rttr::variant& var, bool read_only = false);
+
 	std::unordered_map<rttr::type, std::shared_ptr<Inspector>> type_map;
 };
 

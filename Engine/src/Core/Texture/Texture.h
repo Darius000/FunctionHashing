@@ -6,7 +6,7 @@
 
 struct FPixelData
 {
-	void* m_Data;
+	void* m_Data = nullptr;
 
 	GLenum m_InternalFormat;
 
@@ -22,7 +22,11 @@ public:
 	int GetHeight() const { return m_Height; }
 	int GetChannels() const { return m_Channels; }
 	
-	uintptr_t GetRenderID() { return m_RendererID; }
+	unsigned int GetRenderID() { return m_RendererID; }
+
+	bool IsValid() { return m_Data.m_Data != nullptr; }
+
+	static bool IsValidExtension(const char* extension);
 
 private:
 

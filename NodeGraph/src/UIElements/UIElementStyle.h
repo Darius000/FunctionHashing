@@ -45,14 +45,64 @@ struct Value
 
 struct Color
 {
+	Color()
+		:r(1.0f), g(1.0f), b(1.0f), a(1.0f)
+	{}
+
+	Color(float _r, float _g, float _b, float _a = 1.0f)
+		:r(_r), g(_g), b(_b), a(_a)
+	{}
+
+	Color(const ImVec4& color)
+		:r(color.x), g(color.y), b(color.z), a(color.w)
+	{
+
+	}
+
+	Color(const ImColor& color)
+		:Color(color.Value)
+	{
+
+	}
+
 	Value<float> r = 1.0f;
 	Value<float> g = 1.0f;
 	Value<float> b = 1.0f;
 	Value<float> a = 1.0f;
 
+	Color& operator=(const Color& rhs)
+	{
+		r = rhs.r;
+		g = rhs.g;
+		b = rhs.b;
+		a = rhs.a;
+
+		return *this;
+	}
+
+	Color& operator=(const ImColor& rhs)
+	{
+		r = rhs.Value.x;
+		g = rhs.Value.y;
+		b = rhs.Value.z;
+		a = rhs.Value.w;
+
+		return *this;
+	}
+
 	operator ImVec4()
 	{
 		return ImVec4(r, g, b, a);
+	}
+
+	operator ImColor()
+	{
+		return ImColor(r, g, b, a);
+	}
+
+	operator ImU32()
+	{
+		return *(ImColor*)(this);
 	}
 };
 
@@ -77,9 +127,9 @@ struct FontSize
 
 struct FontStyle
 {
-	FontSize size { 13.0f };
+	FontSize size { 16.0f };
 
-	Color color {1.0f, 0.0f, 0.0f, 1.0f};
+	Color color {1.0f, 1.0f, 1.0f, 1.0f};
 
 	ImFont* font{ ImGui::GetDefaultFont() };
 };
@@ -124,6 +174,12 @@ enum class Align
 
 struct UIElementStyle
 {
+	UIElementStyle() {};
+
+	UIElementStyle(const UIElementStyle& other) = default;
+
+	virtual ~UIElementStyle() {};
+
 	Position m_Position;
 	Color m_Color;
 	HoveredStyle hoveredStyle;

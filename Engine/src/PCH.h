@@ -15,6 +15,7 @@
 #include <functional>
 #include <stack>
 #include <glm/glm.hpp>
+#include <string_view>
 
 #include "Core/ImGui/ImGuiOperators.h"
 #include "Core/ImGui/ImguiExtras.h"

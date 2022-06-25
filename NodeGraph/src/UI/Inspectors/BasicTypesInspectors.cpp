@@ -62,7 +62,7 @@ bool Inspector_Int32::Inspect(rttr::variant& var, bool read_only, const meta_get
     }
     else
     {
-        if (ImGui::InputInt("", &data, 1, 100))
+        if (ImGui::DragInt("", &data))
         {
             var = data;
 
@@ -85,7 +85,7 @@ bool Inspector_Float::Inspect(rttr::variant& var, bool read_only, const meta_get
     }
     else
     {
-        if (ImGui::InputFloat("", &data, 1, 100, details::format.c_str()))
+        if (ImGui::DragFloat("", &data, 1, -1.0f, -1.0f, details::format.c_str()))
         {
             var = data;
 
@@ -98,7 +98,7 @@ bool Inspector_Float::Inspect(rttr::variant& var, bool read_only, const meta_get
 
 bool Inspector_Double::Inspect(rttr::variant& var, bool read_only, const meta_getter& get_metadata)
 {
-    auto data = var.get_value<double>();
+    auto data = static_cast<float>(var.get_value<double>());
 
     if (read_only)
     {
@@ -106,7 +106,7 @@ bool Inspector_Double::Inspect(rttr::variant& var, bool read_only, const meta_ge
     }
     else
     {
-        if (ImGui::InputDouble("", &data, 0, 0 , details::format.c_str()))
+        if (ImGui::DragFloat("", &data, 1, -1, -1, details::format.c_str()))
         {
             var = data;
 

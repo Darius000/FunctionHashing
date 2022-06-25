@@ -20,12 +20,12 @@ void GraphSerializer::Serialize(const std::string& filepath)
 
 	out << YAML::Value << YAML::BeginSeq;
 
-	for (auto prop : m_Graph->m_Properties)
-	{
-		out << YAML::BeginMap;
-		prop->Serialize(out);
-		out << YAML::EndMap;
-	}
+	//for (auto prop : m_Graph->m_Properties)
+	//{
+	//	out << YAML::BeginMap;
+	//	prop->Serialize(out);
+	//	out << YAML::EndMap;
+	//}
 
 	out << YAML::EndSeq;
 
@@ -65,19 +65,7 @@ void GraphSerializer::DeSerialize(const std::string& filepath)
 	std::string graphName = data["Graph"].as<std::string>();
 	LOG("Loading Graph... %s", graphName.c_str());
 
-	auto properties = data["Properties"];
-	if (properties)
-	{
-		for (auto property : properties)
-		{
-			auto type = property["Property Type"].as<std::string>();
-			
-			auto prop = DataTypeRegistry::Instaniate(type);
-			prop->DeSerialize(property);
-	
-			m_Graph->m_Properties.push_back(Ref<IProperty>(prop));
-		}
-	}
+	//save blackboard
 
 	auto nodes = data["Nodes"];
 	if (nodes)

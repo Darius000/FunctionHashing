@@ -1,23 +1,32 @@
 #pragma once
 
 
-#include "UIElement.h"
+#include "Layouts.h"
 #include "UI/GenericMenu.h"
 #include "PinElement.h"
 
 
-class NodeElement : public UIElement
+class NodeElement : public LayoutElement
 {
 public:
 	NodeElement(class BaseNode* node);
 
-	void OnBeginDraw() override;
+	void BeginLayout(uint32_t id);
 
-	void OnEndDraw() override;
+	void EndLayout();
 
 	void SetPosition(const ImVec2& pos);
 
 	class BaseNode* GetNode() { return m_Node;  }
+
+	VerticalElement* GetInputs() { return m_InputContainer; }
+
+	VerticalElement* GetOutputs() { return m_OutputContainer; }
+
+protected:
+
+	void AddPinElement(std::string_view name, ed::PinKind kind, rttr::property& property, rttr::instance& obj, bool canMultiConnect);
+
 
 private:
 	bool HandleEvents() override;
@@ -31,6 +40,11 @@ private:
 	void DrawHeader(const ImVec2& position, const ImVec2& size, const ImVec4& color, float rounding, ImDrawCornerFlags flags, ImDrawList* drawlist);
 
 protected:
+
+	VerticalElement* m_InputContainer = nullptr;
+
+	VerticalElement* m_OutputContainer = nullptr;
+
 
 	class BaseNode* m_Node = nullptr;
 

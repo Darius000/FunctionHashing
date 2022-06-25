@@ -1,11 +1,10 @@
 #include "NodeGraph.h"
-#include "DataTypes/Property.h"
-#include "DataTypes/DataTypeRegistry.h"
 #include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
 #include "Core/Events/MouseEvent.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "Core\Debug\Instrumentor.h"
 #include "Core/Helpers/Vectors/VectorHelper.h"
 #include "UIElements/NodeElement.h"
@@ -19,7 +18,6 @@ namespace ed = ax::NodeEditor;
 
 NodeGraph::NodeGraph()
 {
-	PROFILE_FUNCTION();
 	m_OpenNodePopup = false;
 	
 }
@@ -43,10 +41,6 @@ void NodeGraph::Instantiate(std::string_view name)
 
 void NodeGraph::Draw()
 {
-	PROFILE_FUNCTION();
-
-	DrawVariableList();
-
 	ed::PushStyleVar(ed::StyleVar_PinRadius, 20.0f);
 	ed::PushStyleVar(ed::StyleVar_PinBorderWidth, 2.0f);
 	ed::PushStyleVar(ed::StyleVar_LinkStrength, 100.0f);
@@ -151,15 +145,10 @@ void NodeGraph::Draw()
 	ed::PopStyleVar(3);
 }
 
-//Ref<IProperty> NodeGraph::FindProperty(ImGuiID id)
-//{
-//	auto it = std::find_if(m_Properties.begin(), m_Properties.end(), [id](Ref<IProperty>& prop)
-//	{
-//		return prop->GetID() == id;
-//	});
-//
-//	return it != m_Properties.end() ? *it : nullptr;
-//}
+NodeEditorObject* NodeGraph::GetSelectedObject()
+{
+	return m_SelectedObject; 
+}
 
 NodeEditorObject* NodeGraph::FindNodeByID(uint64_t id) const
 {
@@ -178,14 +167,19 @@ PinElement* NodeGraph::FindPin(uint64_t pinid) const
 {
 	for (auto& node_element : m_Nodes)
 	{
-		for (auto& child : node_element->GetChildren())
+		for (auto& input : node_element->GetInputs()->GetChildren())
 		{
-			if (auto& pin_element = Cast<PinElement>(child))
+			if (auto pin = Cast<PinElement>(input); pin && (uint64_t)pin->GetID() == pinid)
 			{
-				if ((uint64_t)pin_element->GetID() == pinid)
-				{
-					return pin_element.get();
-				}
+				return pin.get();
+			}
+		}
+
+		for (auto& output: node_element->GetOutputs()->GetChildren())
+		{
+			if (auto pin = Cast<PinElement>(output); pin && (uint64_t)output->GetID() == pinid)
+			{
+				return pin.get();
 			}
 		}
 	}
@@ -193,44 +187,17 @@ PinElement* NodeGraph::FindPin(uint64_t pinid) const
 	return nullptr;
 }
 
-void NodeGraph::DrawVariableList()
-{
-	if (ImGui::Begin("Variables"))
-	{
-		DrawAddNewProperty();
-	
-		for (auto it = m_Properties.begin(); it != m_Properties.end();)
-		{
-			if ((*it)->IsPendingDestroy())
-			{
-				if(m_SelectedObject == it->get()) m_SelectedObject = nullptr;
-
-				//remove property from vector
-				it = m_Properties.erase(it);
-			}
-			else
-			{
-				//render property in window
-				DrawVariableListProp(*it);
-				++it;
-			}
-
-		}
-
-	}
-
-	ImGui::End();
-
-
-}
 
 
 bool NodeGraph::CanConnectPins(PinElement* start, PinElement* end, std::string& error)
 {
 	if (start && end)
 	{
+		auto start_type = start->GetType();
+		auto end_type = end->GetType();
+
 		bool different_kinds = start->GetKind() != end->GetKind();
-		bool same_type = start->GetType() == end->GetType();
+		bool same_type = start_type == end_type;
 		bool can_connect = different_kinds && same_type;
 
 		if (!different_kinds) error = "Pin kinds are not different!";
@@ -244,33 +211,6 @@ bool NodeGraph::CanConnectPins(PinElement* start, PinElement* end, std::string& 
 	return false;
 }
 
-void NodeGraph::DrawAddNewProperty()
-{
-	float width = ImGui::GetContentRegionAvail().x;
-
-	ImGui::BeginGroup();
-
-	if (ImGui::Button("Add New Variable", { width, 20 }))
-	{
-		ImGui::OpenPopup("DataTypesPopUp");
-	}
-
-	if (ImGui::BeginPopup("DataTypesPopUp"))
-	{
-		for (auto& registeredtype : DataTypeRegistry::RegisteredTypes())
-		{
-			if (ImGui::Selectable(registeredtype.c_str()))
-			{
-				auto type = DataTypeRegistry::Instaniate(registeredtype);
-				
-				m_Properties.emplace_back(type);
-			}
-		}
-		ImGui::EndPopup();
-	}
-
-	ImGui::EndGroup();
-}
 
 void NodeGraph::DrawNodeListContextMenu()
 {
@@ -281,137 +221,6 @@ void NodeGraph::DrawNodeListContextMenu()
 
 		ImGui::EndPopup();
 	}
-}
-
-void NodeGraph::DrawVariableListProp(Ref<IProperty> prop)
-{
-	ImDrawList* drawlist = ImGui::GetWindowDrawList();
-	
-	ImGuiID id = prop->GetID();
-	ImVec2 rectSize = ImVec2(30, 15);
-	ImVec2 cursorpos = ImGui::GetCursorScreenPos() + ImGui::GetStyle().FramePadding;
-	
-	ImGui::PushID(id);
-	ImGui::BeginGroup();
-	
-	//draw oval shape representing property
-	drawlist->AddRectFilled(cursorpos, cursorpos + rectSize,
-		ImGui::GetColorU32(prop->GetColor()), rectSize.x / 4.0f, ImDrawCornerFlags_All);
-	
-	ImGui::SetCursorPosX(rectSize.x + 20.0f);
-
-	auto textSize = ImVec2(100.0f, 20.f);
-
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(.1f, .1f, .1f, 1.0f));
-
-	if (ImGui::Button(prop->GetName().c_str(), textSize + ImVec2(5, 5)))
-	{
-		if (m_SelectedObject && m_SelectedObject->GetObjectType() == EObjectType::Node)
-		{
-			ed::NodeId selectedNodes;
-			while (ed::GetSelectedNodes(&selectedNodes, 1))
-			{
-				ed::DeselectNode(selectedNodes);
-			}
-		}
-
-		m_SelectedObject = prop.get();
-	}
-	
-	ImGui::PopStyleColor(2);
-
-	ImGui::EndGroup();	
-
-	if (ImGui::IsItemHovered() && prop->HasToolTip())
-	{
-		//Display tooltip
-		ImGui::BeginTooltip();
-		ImGui::TextUnformatted(prop->GetToolTip().c_str());
-		ImGui::EndTooltip();
-	}
-	
-
-	if (ImGui::BeginPopupContextItem("VaribaleContextMenu"))
-	{
-		for (unsigned int i = 0; i < TEnum<EVariableNodeType>::GetMax(); i++)
-		{
-			auto nodecreationtype = TEnum<EVariableNodeType>::GetStrings()[i];
-			if (ImGui::Selectable(nodecreationtype.c_str(), false))
-			{
-				
-			}
-		}
-	
-		if (ImGui::Selectable("Delete Variable", false))
-		{
-			//destroy the prop
-			prop->Destroy();
-		}
-	
-		ImGui::EndPopup();
-	}
-	
-	ImGui::PopID();
-}
-
-void NodeGraph::DrawSelectedPropertyWidget(NodeEditorObject* obj)
-{
-	if (ImGui::Begin("Details"))
-	{
-
-		if (obj)
-		{
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
-			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(.1f, .1f, .1f, 1.0f));
-
-			auto item_width = ImGui::GetContentRegionAvail().x - 20.0f;
-			ImGui::SetCursorPosX(10.0f);
-
-			//ImGui::BeginVertical("details");
-
-			switch (obj->GetObjectType())
-			{
-			case EObjectType::None:
-				break;
-			case EObjectType::Node:
-				{
-					
-					
-				}
-				break;
-			case EObjectType::Property:
-				{
-					IProperty* prop = Cast<IProperty>(obj);
-
-					//ImGui::BeginHorizontal("prop");
-
-					ImGui::SetNextItemWidth(item_width / 2.0f);
-					auto str = prop->GetName();
-					if (ImGui::InputText("##propertyname", & str))
-					{
-						prop->SetName(str);
-					}
-
-					ImGui::SetNextItemWidth(item_width / 2.0f);
-					prop->DrawDetails();
-
-					//ImGui::EndHorizontal();
-				}
-				break;
-			default:
-				break;
-			}
-			
-			//ImGui::EndVertical();
-
-			ImGui::PopStyleColor();
-			ImGui::PopStyleVar();
-
-		}
-	}
-
-	ImGui::End();
 }
 
 void NodeGraph::DrawElements()

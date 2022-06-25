@@ -13,18 +13,26 @@ public:
 	ImGuiPanel() = default;
 	ImGuiPanel(const std::string& label, ImGuiWindowFlags flags = ImGuiWindowFlags_None, ImGuiID id = 1 ,bool runtimecreated  = false);
 	virtual ~ImGuiPanel();
-
-	void OnBeginWindow();
-	virtual void OnRenderMenuBar() = 0;
-	virtual	void OnRenderWindow() = 0;
 	void OnRender();
+
+protected:
+
+	virtual void OnRenderMenuBar() {};
+	virtual	void OnRenderWindow() = 0;
+	virtual void OnFocused();
+	virtual void OnUnFocused();
+
+private:
+	void OnBeginWindow();
 	void OnEndWindow();
 
+public:
 	//Receive events
 	void OnRecieveEvent(Event& event);
 
 	void Close();
 
+protected:
 	virtual bool OnMouseScrolled(MouseScrolledEvent& e);
 	virtual bool OnMouseMoved(MouseMovedEvent& e);
 	virtual bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
@@ -32,10 +40,8 @@ public:
 	virtual bool OnKeyPressed(KeyPressedEvent& e);
 	virtual bool OnKeyReleased(KeyReleasedEvent& e);
 
+public:
 	inline bool IsOpen() const { return m_IsOpen; }
-
-	virtual void OnFocused();
-	virtual void OnUnFocused();
 	bool IsFocusedAndHoverd() const;
 
 protected:

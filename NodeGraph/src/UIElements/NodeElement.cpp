@@ -3,6 +3,7 @@
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "Nodes/BaseNode.h"
 #include "LabelElement.h"
+#include "InputPin.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -19,6 +20,23 @@ NodeElement::NodeElement(class BaseNode* node)
 	m_Menu->AddMenuItem(copy);
 	m_Menu->AddMenuItem(deleteItem);
 
+	m_InputContainer = new VerticalElement();
+	m_OutputContainer = new VerticalElement();
+
+	auto node_element = new VerticalElement();
+	auto header = new HorizontalElement();
+	auto content = new HorizontalElement();
+
+	header->AddChild(new LabelElement("Header", GetName()));
+
+	content->AddChild(m_InputContainer);
+	content->AddChild(m_OutputContainer);
+
+	node_element->AddChild(header);
+	node_element->AddChild(content);
+
+	AddChild(node_element);
+
 	for (auto property : rttr::type::get(*node).get_properties())
 	{
 		auto meta_data = property.get_metadata("Kind");
@@ -26,60 +44,25 @@ NodeElement::NodeElement(class BaseNode* node)
 		{
 			auto kind = meta_data.get_value<std::string>() == "Input" ? ed::PinKind::Input : ed::PinKind::Output;
 
-			AddChild(new PinElement(property.get_name().data(), kind, property, rttr::instance(m_Node)));
+			AddPinElement(property.get_name().data(), kind, property, rttr::instance(m_Node), false);
 		}
 
 	}
 }
 
-void NodeElement::OnBeginDraw()
+void NodeElement::BeginLayout(uint32_t id)
 {
-	auto id = (uint64_t)GetID();
-
 	ed::PushStyleColor(ed::StyleColor_NodeBg, m_Node->GetColor());
 	ed::BeginNode(id);
-
-	ImGui::Dummy({ m_Node->m_Size.x, m_Node->m_Size.y });
-	ImGui::Spring(0);
 }
 
-void NodeElement::OnEndDraw()
+void NodeElement::EndLayout()
 {
 	ed::EndNode();
 	ed::PopStyleColor();
 
-	auto id = (uint64_t)GetID();
-	ImDrawList* drawlist = ed::GetNodeBackgroundDrawList((uint64_t)GetID());
-
-	if (ImGui::IsItemVisible())
-	{
-		bool isSelected = ed::IsActive();
-		auto pos = ed::GetNodePosition(id);
-		auto size = ed::GetNodeSize(id);
-		auto node_Border_Width = ed::GetStyle().NodeBorderWidth;
-		auto node_rounding = ed::GetStyle().NodeRounding;
-
-
-		ImVec2 headerSize = { size.x - node_Border_Width * 2.0f, 30.0f };
-		ImRect headerbb{ pos.x + node_Border_Width, pos.y + node_Border_Width , pos.x + headerSize.x, pos.y + headerSize.y };
-
-
-		DrawHeader(headerbb.Min, headerSize, m_Node->GetHeaderColor(), node_rounding, ImDrawCornerFlags_Top, drawlist);
-
-		DrawTitle(m_Node->GetName(), headerbb.Min + ImVec2(node_rounding, 0.0f), {}, drawlist);
-
-		DrawSeperator({ headerbb.Min.x, headerbb.Max.y },
-			{ headerSize.x, 1.0f }, drawlist);
-
-
-
-		SetPosition(pos);
-
-		if (ImGui::IsItemHovered())
-		{
-			DrawToolTip("Tooltip", drawlist);
-		}
-	}
+	auto pos = ed::GetNodePosition((uint32_t)GetID());
+	SetPosition(pos);
 }
 
 void NodeElement::SetPosition(const ImVec2& pos)
@@ -87,26 +70,60 @@ void NodeElement::SetPosition(const ImVec2& pos)
 	m_Node->m_Position = { pos.x, pos.y };
 }
 
+void NodeElement::AddPinElement(std::string_view name, ed::PinKind kind, rttr::property& property, rttr::instance& obj, bool canMultiConnect)
+{
+	if (kind == ed::PinKind::Input)
+	{
+		auto pin = new InputPin(name, property, obj, canMultiConnect);
+		m_InputContainer->AddChild(pin);
+	}
+	else
+	{
+		auto pin = new OutputPin(name, property, obj, canMultiConnect);
+		m_OutputContainer->AddChild(pin);
+	}
+}
+
 bool NodeElement::HandleEvents()
 {
-	static ed::NodeId contextID = 0;
-	ed::Suspend();
-	if (ed::ShowNodeContextMenu(&contextID))
+	bool handled = LayoutElement::HandleEvents();
+
+	if (!handled)
 	{
-		m_Menu->OpenMenu();
+		if (ImGui::IsItemHovered())
+		{
+			auto meta_data = rttr::type::get(*m_Node).get_metadata(ClassMetaData::Description);
 
+			if (meta_data)
+			{
+				auto tooltip = meta_data.get_value<std::string>();
+				ImGui::SetCursorPos(ImGui::GetMousePos());
+				ImGui::BeginTooltip();
+				ImGui::TextUnformatted(tooltip.c_str());
+				ImGui::EndTooltip();
+			}
+					
+		}
+
+		static ed::NodeId contextID = 0;
+		ed::Suspend();
+		if (ed::ShowNodeContextMenu(&contextID))
+		{
+			m_Menu->OpenMenu();
+
+		}
+		ed::Resume();
+
+
+		ed::Suspend();
+
+		//context menu
+		handled = m_Menu->ShowAsContext();
+
+		ed::Resume();
 	}
-	ed::Resume();
 
-
-	ed::Suspend();
-
-	//context menu
-	bool opened =  m_Menu->ShowAsContext();
-
-	ed::Resume();
-
-	return opened;
+	return handled;
 }
 
 void NodeElement::DrawToolTip(const std::string& text, ImDrawList* drawlist)

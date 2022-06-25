@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Inspector.h"
+#include <memory>
 
 DELARE_INSPECTOR(Inspector_Bool, bool)
 

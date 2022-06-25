@@ -26,7 +26,7 @@ void ImGuiPanel::OnBeginWindow()
 		m_Flags = m_Flags | ImGuiWindowFlags_NoSavedSettings;
 	}
 
-	ImGui::Begin(m_Label.c_str(), &m_IsOpen, m_Flags | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin(m_Label.c_str(), &m_IsOpen, m_Flags);
 	ImGui::PushID((int)m_ID);
 
 	//Check if window is focused and hovered

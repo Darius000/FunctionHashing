@@ -1,13 +1,14 @@
 #pragma once
 
-#include "UIElement.h"
+#include "Layouts.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include <rttr/type.h>
 #include <Engine.h>
 
 namespace ed = ax::NodeEditor;
 
-class PinElement : public UIElement
+
+class PinElement : public LayoutElement
 {
 public:
 	PinElement(std::string_view name, ed::PinKind kind, rttr::property& property, rttr::instance& obj, bool canMultiConnect = false);
@@ -18,11 +19,11 @@ public:
 
 	bool CanMultiConnect() const { return m_CanMulitConnect; }
 
-	virtual void OnBeginDraw() override;
+	void BeginLayout(uint32_t id) override;
 
-	virtual void OnEndDraw() override;
+	void EndLayout() override;
 
-private:
+protected:
 	ed::PinKind m_PinKind;
 
 	rttr::type m_PinType = rttr::type::get<rttr::detail::invalid_type>();

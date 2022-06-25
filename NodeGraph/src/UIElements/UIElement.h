@@ -6,6 +6,7 @@
 #include "imgui_internal.h"
 #include "UIElementStyle.h"
 #include "ImGuiExtensions.h"
+#include "ImGui/ImGuiOperators.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 
 namespace ed = ax::NodeEditor;
@@ -15,27 +16,13 @@ class UIElement : public NodeEditorObject
 public:
 	UIElement();
 
+	UIElement(std::string_view name);
+
 	virtual ~UIElement();
 
-	virtual void OnBeginDraw() {};
+	virtual void DrawElement();
 
-	virtual void OnEndDraw() {};
-
-	void DrawElement();
-
-	virtual void OnDrawElement() {};
-
-	void AddChild(UIElement* element);
-
-	void RemoveElement(UIElement* element);
-
-	void RemoveElement(const std::string& name);
-
-	std::vector<Ref<UIElement>>& GetChildren() { return m_Children; }
-
-	size_t GetChildCount() const { return m_Children.size(); }
-
-	void Clear();
+	virtual void OnDrawElement();
 
 	ImVec2 GetPosition();
 
@@ -43,11 +30,17 @@ public:
 
 	ImVec2 GetSize();
 
-	ImRect GetBounds();
+	virtual ImRect GetBounds();
 
 	virtual void SetPosition(const ImVec2& pos);
 
-	UIElement* GetParent() { return m_ParentElement; }
+	class LayoutElement* GetParent() { return m_ParentElement; }
+
+	void SetParent(class LayoutElement* layout);
+
+	UIElementStyle& GetStyle() { return m_Style; }
+
+	ImVec2 GetCursorPos();
 
 public:
 	//Properties
@@ -60,13 +53,13 @@ public:
 protected:
 
 	//adds item to imgui
-	void AddElementItem(const ImRect& bounds, ImGuiID id);
+	void AddElementItem();
 
 	virtual bool HandleEvents();
 
-private:
+protected:
 
-	std::vector<Ref<UIElement>> m_Children;
+	class LayoutElement* m_ParentElement = nullptr;
 
-	UIElement* m_ParentElement = nullptr;
+	friend class LayoutElement;
 };

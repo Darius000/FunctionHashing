@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "DataTypes/Property.h"
 #include "LinkableNode.h"
 #include "NodeEditorObject.h"
 
