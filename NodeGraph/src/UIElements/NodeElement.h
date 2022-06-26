@@ -1,31 +1,32 @@
 #pragma once
 
 
-#include "Layouts.h"
+#include "Layouts/Layouts.h"
 #include "UI/GenericMenu.h"
 #include "PinElement.h"
 
+class VerticalBox;
 
 class NodeElement : public LayoutElement
 {
 public:
 	NodeElement(class BaseNode* node);
 
-	void BeginLayout(uint32_t id);
+	void BeginLayout(uint64_t id) override;
 
-	void EndLayout();
+	void EndLayout() override;
 
 	void SetPosition(const ImVec2& pos);
 
 	class BaseNode* GetNode() { return m_Node;  }
 
-	VerticalElement* GetInputs() { return m_InputContainer; }
+	VerticalBox* GetInputs() { return m_InputContainer; }
 
-	VerticalElement* GetOutputs() { return m_OutputContainer; }
+	VerticalBox* GetOutputs() { return m_OutputContainer; }
 
 protected:
 
-	void AddPinElement(std::string_view name, ed::PinKind kind, rttr::property& property, rttr::instance& obj, bool canMultiConnect);
+	void AddPinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect);
 
 
 private:
@@ -41,9 +42,9 @@ private:
 
 protected:
 
-	VerticalElement* m_InputContainer = nullptr;
+	VerticalBox* m_InputContainer = nullptr;
 
-	VerticalElement* m_OutputContainer = nullptr;
+	VerticalBox* m_OutputContainer = nullptr;
 
 
 	class BaseNode* m_Node = nullptr;

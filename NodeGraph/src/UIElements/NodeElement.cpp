@@ -1,5 +1,6 @@
-#include "PCH.h"
 #include "NodeElement.h"
+#include "Layouts/VerticalBox.h"
+#include "Layouts/HorizontalBox.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "Nodes/BaseNode.h"
 #include "LabelElement.h"
@@ -20,17 +21,19 @@ NodeElement::NodeElement(class BaseNode* node)
 	m_Menu->AddMenuItem(copy);
 	m_Menu->AddMenuItem(deleteItem);
 
-	m_InputContainer = new VerticalElement();
-	m_OutputContainer = new VerticalElement();
+	m_InputContainer = new VerticalBox();
+	m_OutputContainer = new VerticalBox();
 
-	auto node_element = new VerticalElement();
-	auto header = new HorizontalElement();
-	auto content = new HorizontalElement();
+	auto node_element = new VerticalBox();
+	auto header = new HorizontalBox();
+	auto content = new HorizontalBox();
 
-	header->AddChild(new LabelElement("Header", GetName()));
+	auto header_slot = Cast<HorizontalBoxSlot>(header->AddChild(new LabelElement("Header", GetName())));
+	header_slot->m_StartWeight = 0.0f;
+	//header_slot->m_EndSpacing = 1.0f;
 
-	content->AddChild(m_InputContainer);
-	content->AddChild(m_OutputContainer);
+	Cast<HorizontalBoxSlot>(content->AddChild(m_InputContainer))->m_StartWeight = 1.0f;
+	Cast<HorizontalBoxSlot>(content->AddChild(m_OutputContainer))->m_StartWeight = 1.0f;
 
 	node_element->AddChild(header);
 	node_element->AddChild(content);
@@ -50,7 +53,7 @@ NodeElement::NodeElement(class BaseNode* node)
 	}
 }
 
-void NodeElement::BeginLayout(uint32_t id)
+void NodeElement::BeginLayout(uint64_t id)
 {
 	ed::PushStyleColor(ed::StyleColor_NodeBg, m_Node->GetColor());
 	ed::BeginNode(id);
@@ -70,17 +73,17 @@ void NodeElement::SetPosition(const ImVec2& pos)
 	m_Node->m_Position = { pos.x, pos.y };
 }
 
-void NodeElement::AddPinElement(std::string_view name, ed::PinKind kind, rttr::property& property, rttr::instance& obj, bool canMultiConnect)
+void NodeElement::AddPinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect)
 {
 	if (kind == ed::PinKind::Input)
 	{
 		auto pin = new InputPin(name, property, obj, canMultiConnect);
-		m_InputContainer->AddChild(pin);
+		auto input_slot = Cast<VerticalBoxSlot>(m_InputContainer->AddChild(pin));
 	}
 	else
 	{
 		auto pin = new OutputPin(name, property, obj, canMultiConnect);
-		m_OutputContainer->AddChild(pin);
+		auto output_slot = Cast<VerticalBoxSlot>(m_OutputContainer->AddChild(pin));
 	}
 }
 

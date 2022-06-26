@@ -11,6 +11,8 @@
 
 namespace ed = ax::NodeEditor;
 
+class LayoutSlot;
+
 class UIElement : public NodeEditorObject
 {
 public:
@@ -34,9 +36,7 @@ public:
 
 	virtual void SetPosition(const ImVec2& pos);
 
-	class LayoutElement* GetParent() { return m_ParentElement; }
-
-	void SetParent(class LayoutElement* layout);
+	class LayoutElement* GetParent();
 
 	UIElementStyle& GetStyle() { return m_Style; }
 
@@ -59,7 +59,7 @@ protected:
 
 protected:
 
-	class LayoutElement* m_ParentElement = nullptr;
+	Ref<LayoutSlot> m_ParentSlot;
 
 	friend class LayoutElement;
 };

@@ -1,8 +1,8 @@
 #include "InputPin.h"
+#include "Layouts/HorizontalBox.h"
 #include "UI/Inspectors/InspectorRegistry.h"
 #include "CircleElement.h"
 #include "LabelElement.h"
-#include "Layouts.h"
 #include "PropertyFieldElement.h"
 
 inline ImColor GetPinColor(rttr::type type)
@@ -18,7 +18,7 @@ inline ImColor GetPinColor(rttr::type type)
 
 
 
-InputPin::InputPin(std::string_view name, rttr::property& property, rttr::instance& obj, bool canMultiConnect)	
+InputPin::InputPin(std::string_view name, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect)	
 	:PinElement(name, ed::PinKind::Input, property, obj, canMultiConnect)
 {
 	auto pinStyle = CircleStyle();
@@ -33,20 +33,23 @@ InputPin::InputPin(std::string_view name, rttr::property& property, rttr::instan
 
 	circle_element->GetCircleStyle() = pinStyle;
 
-	auto h_element = new HorizontalElement();
+	auto h_element = new HorizontalBox();
 
-	h_element->AddChild(circle_element);
+	auto circle_slot = Cast<HorizontalBoxSlot>(h_element->AddChild(circle_element));
+	circle_slot->m_EndSpacing = 0.0f;
 
-	h_element->AddChild(new LabelElement("Label", name.data()));
+	auto label_slot = Cast<HorizontalBoxSlot>(h_element->AddChild(new LabelElement("Label", name.data())));
+	label_slot->m_EndSpacing = 0.0f;
 
-	h_element->AddChild(new PropertyFieldElement(property, obj));
+	auto property_slot = Cast<HorizontalBoxSlot>(h_element->AddChild(new PropertyFieldElement(property, obj)));
+	
 
 	AddChild(h_element);
 }
 
 
 
-OutputPin::OutputPin(std::string_view name, rttr::property& property, rttr::instance& obj, bool canMultiConnect)
+OutputPin::OutputPin(std::string_view name, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect)
 	:PinElement(name, ed::PinKind::Output, property, obj, canMultiConnect)
 {
 	auto pinStyle = CircleStyle();
@@ -61,7 +64,7 @@ OutputPin::OutputPin(std::string_view name, rttr::property& property, rttr::inst
 
 	circle_element->GetCircleStyle() = pinStyle;
 
-	auto h_element = new HorizontalElement();
+	auto h_element = new HorizontalBox();
 
 	h_element->AddChild(new LabelElement("Label", name.data()));
 

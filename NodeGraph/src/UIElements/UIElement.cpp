@@ -1,6 +1,5 @@
-#include "PCH.h"
 #include "UIElement.h"
-#include "Layouts.h"
+#include "Layouts/Layouts.h"
 
 
 UIElement::UIElement()
@@ -71,9 +70,14 @@ void UIElement::SetPosition(const ImVec2& pos)
 	m_Style.m_Position.top = pos.y;
 }
 
-void UIElement::SetParent(LayoutElement* layout)
+LayoutElement* UIElement::GetParent()
 {
-	m_ParentElement = layout;
+	if (m_ParentSlot)
+	{
+		return m_ParentSlot->m_Parent.get();
+	}
+
+	return nullptr;
 }
 
 ImVec2 UIElement::GetCursorPos()

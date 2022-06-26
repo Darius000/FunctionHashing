@@ -20,8 +20,9 @@ void LabelElement::OnDrawElement()
 
 	AddElementItem();
 
-	ImGui::GetWindowDrawList()->AddRect(
-		ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 0, 0, 255));
+	//Debug
+	/*ImGui::GetWindowDrawList()->AddRect(
+		ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 0, 0, 255));*/
 }
 
 ImRect LabelElement::GetBounds()

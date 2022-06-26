@@ -7,7 +7,7 @@ class PropertyFieldElement : public UIElement
 {
 public:
 
-	PropertyFieldElement(rttr::property& _property, rttr::instance& _object);
+	PropertyFieldElement(const rttr::property& _property, const rttr::instance& _object);
 
 	void OnDrawElement() override;
 

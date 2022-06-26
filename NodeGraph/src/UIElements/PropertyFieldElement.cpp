@@ -1,7 +1,7 @@
 #include "PropertyFieldElement.h"
 #include "UI/Inspectors/InspectorRegistry.h"
 
-PropertyFieldElement::PropertyFieldElement(rttr::property& _property, rttr::instance& _object)
+PropertyFieldElement::PropertyFieldElement(const rttr::property& _property, const rttr::instance& _object)
 	:m_Property(_property), m_Object(_object)
 {
 }

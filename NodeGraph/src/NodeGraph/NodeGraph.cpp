@@ -1,5 +1,4 @@
 #include "NodeGraph.h"
-#include "Nodes/VariableNodeInterface/VariableNodeInterface.h"
 #include "Core/Events/MouseEvent.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
@@ -11,6 +10,7 @@
 #include <Engine.h>
 #include <rttr/type.h>
 #include "imgui_stdlib.h"
+#include "UIElements/Layouts/VerticalBox.h"
 #include "UIElements/PinElement.h"
 #include "UIElements/EdgeElement.h"
 
@@ -169,17 +169,19 @@ PinElement* NodeGraph::FindPin(uint64_t pinid) const
 	{
 		for (auto& input : node_element->GetInputs()->GetChildren())
 		{
-			if (auto pin = Cast<PinElement>(input); pin && (uint64_t)pin->GetID() == pinid)
+			auto id = (uint64_t)input->GetID();
+			if (auto pin = Cast<PinElement>(input); pin && id == pinid)
 			{
-				return pin.get();
+				return pin;
 			}
 		}
 
 		for (auto& output: node_element->GetOutputs()->GetChildren())
 		{
-			if (auto pin = Cast<PinElement>(output); pin && (uint64_t)output->GetID() == pinid)
+			auto id = (uint64_t)output->GetID();
+			if (auto pin = Cast<PinElement>(output); pin && id == pinid)
 			{
-				return pin.get();
+				return pin;
 			}
 		}
 	}

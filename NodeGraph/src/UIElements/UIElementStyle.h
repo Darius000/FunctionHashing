@@ -90,6 +90,16 @@ struct Color
 		return *this;
 	}
 
+	Color& operator=(const ImVec4& rhs)
+	{
+		r = rhs.x;
+		g = rhs.y;
+		b = rhs.z;
+		a = rhs.w;
+
+		return *this;
+	}
+
 	operator ImVec4()
 	{
 		return ImVec4(r, g, b, a);
