@@ -19,7 +19,6 @@ group "Dependencies"
 	include "Engine/vendor/imgui"
 	include "Engine/vendor/yaml-cpp"
 	include "Engine/vendor/rttr"
-	include "Engine/vendor/header-parser"
 	include "Engine/vendor/imgui-node-editor"
 group ""
 
