@@ -3,5 +3,5 @@
 
 REFLECT_INLINE(Node)
 {
-	registration::class_<Node>("Node")(policy::ctor::as_raw_ptr);
+	rttr::registration::class_<Node>("Node")(rttr::policy::ctor::as_raw_ptr);
 }

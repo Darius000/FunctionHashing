@@ -3,7 +3,7 @@
 
 REFLECT_INLINE(Comment)
 {
-	registration::class_<Comment>("Comment")(metadata("Category", "Comments | "), metadata("Description", "Adds a new comment node"))
-		.constructor<>()(policy::ctor::as_raw_ptr)
-		.property("Message", &Comment::m_Comment)(metadata("Kind", "Input"));
+	rttr::registration::class_<Comment>("Comment")(rttr::metadata("Category", "Comments | "), rttr::metadata("Description", "Adds a new comment node"))
+		.constructor<>()(rttr::policy::ctor::as_raw_ptr)
+		.property("Message", &Comment::m_Comment)(rttr::metadata("Kind", "Input"));
 }

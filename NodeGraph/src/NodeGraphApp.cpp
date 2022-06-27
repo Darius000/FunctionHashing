@@ -11,6 +11,7 @@ public:
 		:Application("Node Graph", args)
 	{
 		PushLayer(new GraphLayer());
+
 	}
 
 	~NodeGraphApp()

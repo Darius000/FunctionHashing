@@ -1,7 +1,6 @@
-#ifndef BLACKBOARD_H
-#define BLACKBOARD_H
+#pragma once
 
-#include <Core/Core.h>
+#include "Engine.h"
 #include "BlackBoardKey.h"
 
 using BlackBoardKeysList = std::vector<Ref<BlackBoardKey>>;
@@ -37,6 +36,3 @@ private:
 
 	REFLECTABLEV();
 };
-
-
-#endif

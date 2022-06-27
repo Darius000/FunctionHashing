@@ -51,16 +51,7 @@ struct is_convertible
 	enum { value = std::is_convertible<U, T>::value };
 };
 
-
-
 #define  BIT(x) (1 << x)
-
-#define CLASS(...)
-#define PROPERTY(...)
-#define FUNCTION(...)
-#define ENUM()
-#define VALUE(...)
-#define STRUCT(...)
 
 #include "Specifiers/MetaDataSpecifiers.h"
 #include "Reflection/Reflection.h"

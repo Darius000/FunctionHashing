@@ -1,5 +1,4 @@
 #include "CommentNode.h"
-#include "NodeGraph/NodeGraph.h"
 
 Comment::Comment()
 {

@@ -1,8 +1,8 @@
-#ifndef TSUBCLASS_H
-#define TSUBCLASS_H
+#pragma once
 
 #include "Reflection/Reflection.h"
 #include <concepts>
+#include <iostream>
 
 template<typename TClass>
 class TSubClass
@@ -29,7 +29,9 @@ public:
 	{
 		if (!m_Class) return nullptr;
 
-		return m_Class.create(std::forward<Args>(args)...).get_value<TClass*>();
+		auto obj = m_Class.create(std::forward<Args>(args)...);
+
+		return obj.get_value<TClass*>();
 	}
 
 	TSubClass& operator=(const TSubClass& rhs)
@@ -51,4 +53,3 @@ private:
 	rttr::type m_Class = rttr::type::get<TClass>();
 };
 
-#endif

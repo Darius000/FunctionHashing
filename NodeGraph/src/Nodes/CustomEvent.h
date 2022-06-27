@@ -8,7 +8,7 @@ class CustomEventNode : public Node
 public:
 	CustomEventNode();
 
-	ImVec4 GetHeaderColor() const override { return { 1.0f, .4f, .4f, 1.0f }; }
+	Color GetHeaderColor() const override { return { 1.0f, .4f, .4f, 1.0f }; }
 
 	REFLECTABLEV(Node)
 };

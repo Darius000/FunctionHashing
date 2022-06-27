@@ -29,25 +29,7 @@ void LinkableNode::RemoveChild(BaseNode* child)
 }
 
 
-void LinkableNode::OnChildNodeDestroyed(NodeEditorObject* node)
+void LinkableNode::OnChildNodeDestroyed(BaseObject* node)
 {
 	RemoveChild(Cast<BaseNode>(node));
-}
-
-void LinkableNode::Serialize(YAML::Emitter& out)
-{
-	BaseNode::Serialize(out);
-
-	out << YAML::Key << "LinkData" << YAML::Value << GetLinkData();
-}
-
-void LinkableNode::DeSerialize(YAML::detail::iterator_value& value)
-{
-	BaseNode::DeSerialize(value);
-
-	auto links = value["LinkData"].as<LinkData>();
-	for (auto link : links)
-	{
-		m_LinkData.push_back(link);
-	}
 }

@@ -1,4 +1,7 @@
 #include "EdgeElement.h"
+#include "imgui-node-editor/imgui_node_editor.h"
+
+namespace ed = ax::NodeEditor;
 
 EdgeElement::EdgeElement(const Ref<Edge>& edge)
 	:m_Edge(edge)

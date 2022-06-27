@@ -27,6 +27,8 @@ project "Engine"
 
 	includedirs
 	{
+		"**Public/**",
+		"**Public",
 		"src",
 		"src/Core",
 		"%{IncludeDirs.GLFW}",

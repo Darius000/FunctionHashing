@@ -19,21 +19,3 @@ void BaseNode::Execute()
 
 	m_BeginExecution = false;
 }
-
-void BaseNode::Serialize(YAML::Emitter& out)
-{
-	NodeEditorObject::Serialize(out);
-
-	out << YAML::Key << "FactoryName";
-	out << YAML::Value << type::get<decltype(this)>().get_name().data();
-
-	out << YAML::Key << "Position" << YAML::Value << m_Position;
-
-}
-
-void BaseNode::DeSerialize(YAML::detail::iterator_value& value)
-{
-	NodeEditorObject::DeSerialize(value);
-
-	m_Position = value["Position"].as<Vec2>();
-}

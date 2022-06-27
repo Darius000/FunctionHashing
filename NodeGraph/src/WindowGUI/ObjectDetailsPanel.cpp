@@ -1,6 +1,6 @@
 #include "ObjectDetailsPanel.h"
-#include "NodeEditorObject.h"
-#include "UI/Inspectors/InspectorRegistry.h"
+#include "BaseObject.h"
+#include "Inspectors/InspectorRegistry.h"
 
 ObjectDetailsPanel::ObjectDetailsPanel(ImGuiWindowFlags flags ,ImGuiID id)
 	:ImGuiPanel("Details", flags, id)
@@ -19,7 +19,7 @@ void ObjectDetailsPanel::OnRenderWindow()
 
 void ObjectDetailsPanel::DrawSelectedObj()
 {
-	NodeEditorObject* selected = OnGetSelectedObject.Invoke();
+	BaseObject* selected = OnGetSelectedObject.Invoke();
 
 	if (selected)
 	{

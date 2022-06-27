@@ -3,5 +3,5 @@
 
 REFLECT_INLINE(LinkableNode)
 {
-	registration::class_<LinkableNode>("LinkableNode")(policy::ctor::as_raw_ptr);
+	rttr::registration::class_<LinkableNode>("LinkableNode")(rttr::policy::ctor::as_raw_ptr);
 }

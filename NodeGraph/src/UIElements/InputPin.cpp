@@ -1,9 +1,9 @@
 #include "InputPin.h"
-#include "Layouts/HorizontalBox.h"
-#include "UI/Inspectors/InspectorRegistry.h"
-#include "CircleElement.h"
-#include "LabelElement.h"
-#include "PropertyFieldElement.h"
+#include "Elements/HorizontalBox.h"
+#include "Inspectors/InspectorRegistry.h"
+#include "Elements/CircleElement.h"
+#include "Elements/LabelElement.h"
+#include "Elements/PropertyFieldElement.h"
 
 inline ImColor GetPinColor(rttr::type type)
 {

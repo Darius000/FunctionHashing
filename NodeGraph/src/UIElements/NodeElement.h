@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "Layouts/Layouts.h"
-#include "UI/GenericMenu.h"
+#include "Elements/Layouts.h"
+#include "Menu/Menu.h"
 #include "PinElement.h"
 
 class VerticalBox;
@@ -49,6 +49,6 @@ protected:
 
 	class BaseNode* m_Node = nullptr;
 
-	Ref<class UI::GenericMenu> m_Menu;
+	Ref<class Menu> m_Menu;
 
 };

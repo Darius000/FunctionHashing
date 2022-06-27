@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <format>
 #include <unordered_map>
 #include <set>
 #include <array>
@@ -17,8 +18,6 @@
 #include <glm/glm.hpp>
 #include <string_view>
 
-#include "Core/ImGui/ImGuiOperators.h"
-#include "Core/ImGui/ImguiExtras.h"
-#include "Core/YamlExtensions/YamlExtensions.h"
+#include "Core/UUID/UUID.h"
 
 #include <Windows.h>

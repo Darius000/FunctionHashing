@@ -45,7 +45,7 @@ bool BlackBoard::CanAdd(std::string_view name) const
 
 bool BlackBoard::Contains(std::string_view name) const
 {
-	auto& it = std::find_if(cbegin(), cend(), [name](const Ref<BlackBoardKey>& item) {
+	auto it = std::find_if(cbegin(), cend(), [name](const Ref<BlackBoardKey>& item) {
 		return item->GetName() == name;
 		});
 

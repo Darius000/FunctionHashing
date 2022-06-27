@@ -17,14 +17,10 @@ public:
 
 	inline LinkData GetLinkData() const override { return m_LinkData; }
 
-	virtual void Serialize(YAML::Emitter& out) override;
-
-	virtual void DeSerialize(YAML::detail::iterator_value& value) override;
-
 private:
 
 	//called when child node is destroyed
-	virtual void OnChildNodeDestroyed(NodeEditorObject* node);
+	virtual void OnChildNodeDestroyed(BaseObject* node);
 
 
 protected:

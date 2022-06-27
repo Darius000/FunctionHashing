@@ -1,7 +1,8 @@
 #pragma once
 
-#include "NodeEditorObject.h"
+#include "BaseObject.h"
 #include "LinkInfo.h"
+#include "Core/Types/Color.h"
 
 enum class ENodeType
 {
@@ -10,7 +11,7 @@ enum class ENodeType
 	Comment
 };
 
-class BaseNode : public NodeEditorObject
+class BaseNode : public BaseObject
 {
 public:
 	using Children = std::vector<BaseNode*>;
@@ -22,9 +23,9 @@ public:
 
 	virtual ~BaseNode();
 
-	Vec2 m_Position = {0,0};
+	glm::vec2 m_Position = {0,0};
 
-	Vec2 m_Size = {400, 50};
+	glm::vec2 m_Size = {400, 50};
 
 	virtual inline Children GetChildren() { return {}; };
 
@@ -38,13 +39,10 @@ public:
 
 	virtual const ENodeType GetNodeType() { return ENodeType::Blueprint; }
 
-	virtual ImVec4 GetHeaderColor() const { return ImVec4{ .4f, .4f, .4f, 1.0f }; }
+	virtual Color GetHeaderColor() const { return { .4f, .4f, .4f, 1.0f }; }
 
-	virtual ImVec4 GetColor() const { return ImVec4{.2f, .2f, .2f, 1.0f}; }
+	virtual Color GetColor() const { return {.2f, .2f, .2f, 1.0f}; }
 
-	virtual void Serialize(YAML::Emitter& out);
-
-	virtual void DeSerialize(YAML::detail::iterator_value& value);
 
 protected:
 	//initilize before exectuion starts
@@ -58,5 +56,5 @@ private:
 
 	bool m_BeginExecution = false;
 
-	REFLECTABLEV(NodeEditorObject)
+	REFLECTABLEV(BaseObject)
 };

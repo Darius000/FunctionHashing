@@ -1,6 +1,4 @@
-#include "PCH.h"
 #include "NodeGraphPanel.h"
-#include "Serializer/GraphSerializer.h"
 #include "Core/Utils.h"
 #include <fstream>
 #include <filesystem>
@@ -162,20 +160,20 @@ void NodeGraphPanel::SaveToRecentFiles(const std::string& filename)
 
 void NodeGraphPanel::SaveGraph(const std::string& filename)
 {
-	GraphSerializer serializer(m_Nodegraph);
+	/*GraphSerializer serializer(m_Nodegraph);
 	serializer.Serialize(filename);
 	m_LastFileUsed = filename;
-	SaveToRecentFiles(filename);
+	SaveToRecentFiles(filename);*/
 }
 
 void NodeGraphPanel::LoadGraph(const std::string& filename)
 {
-	m_Nodegraph.reset();
+	/*m_Nodegraph.reset();
 	m_Nodegraph = MakeRef<NodeGraph>();
 	GraphSerializer serializer(m_Nodegraph);
 	serializer.DeSerialize(filename);
 	m_LastFileUsed = filename;
-	SaveToRecentFiles(filename);
+	SaveToRecentFiles(filename);*/
 }
 
 void NodeGraphPanel::SavePrefs()

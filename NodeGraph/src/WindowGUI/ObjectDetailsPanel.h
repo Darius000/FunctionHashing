@@ -2,6 +2,7 @@
 
 #include "ImGui/ImGuiPanel.h"
 
+class BaseObject;
 
 class ObjectDetailsPanel : public ImGuiPanel
 {
@@ -13,7 +14,7 @@ public:
 
 	void OnRenderWindow() override;
 
-	RetEngineEvent<class NodeEditorObject*> OnGetSelectedObject;
+	RetEngineEvent<BaseObject*> OnGetSelectedObject;
 
 private:
 

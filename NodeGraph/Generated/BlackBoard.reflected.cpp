@@ -4,7 +4,7 @@
 
 REFLECT_INLINE(BlackBoard)
 {
-	registration::class_<BlackBoard>("BlackBoard")
+	rttr::registration::class_<BlackBoard>("BlackBoard")
 		.constructor<>()(rttr::policy::ctor::as_raw_ptr)
 		.property("Keys", &BlackBoard::m_Keys);
 
@@ -12,38 +12,38 @@ REFLECT_INLINE(BlackBoard)
 
 REFLECT_INLINE(BlackBoardKey)
 {
-	registration::class_<BlackBoardKey>("BlackBoardKey")
+	rttr::registration::class_<BlackBoardKey>("BlackBoardKey")
 		.constructor<>()(rttr::policy::ctor::as_raw_ptr);
 }
 
 REFLECT_INLINE(TBlackBoardKey<int>)
 {
-	registration::class_<TBlackBoardKey<int>>("BlackBoardKey-Int")
+	rttr::registration::class_<TBlackBoardKey<int>>("BlackBoardKey-Int")
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
-		.property("Value", &TBlackBoardKey<int>::m_Value)(registration::public_access);
+		.property("Value", &TBlackBoardKey<int>::m_Value)(rttr::registration::public_access);
 
 
 }
 
 REFLECT_INLINE(TBlackBoardKey<float>)
 {
-	registration::class_<TBlackBoardKey<float>>("BlackBoardKey-Float")
+	rttr::registration::class_<TBlackBoardKey<float>>("BlackBoardKey-Float")
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
-		.property("Value", &TBlackBoardKey<float>::m_Value)(registration::public_access);
+		.property("Value", &TBlackBoardKey<float>::m_Value)(rttr::registration::public_access);
 
 
 }
 
 REFLECT_INLINE(TBlackBoardKey<bool>)
 {
-	registration::class_<TBlackBoardKey<bool>>("BlackBoardKey-Bool")
+	rttr::registration::class_<TBlackBoardKey<bool>>("BlackBoardKey-Bool")
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
-		.property("Value", &TBlackBoardKey<bool>::m_Value)(registration::public_access);
+		.property("Value", &TBlackBoardKey<bool>::m_Value)(rttr::registration::public_access);
 }
 
 REFLECT_INLINE(TBlackBoardKey<std::string>)
 {
-	registration::class_<TBlackBoardKey<std::string>>("BlackBoardKey-String")
+	rttr::registration::class_<TBlackBoardKey<std::string>>("BlackBoardKey-String")
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
-		.property("Value", &TBlackBoardKey<std::string>::m_Value)(registration::public_access);
+		.property("Value", &TBlackBoardKey<std::string>::m_Value)(rttr::registration::public_access);
 }

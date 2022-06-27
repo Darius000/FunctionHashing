@@ -9,10 +9,10 @@
 #include "UIElements/NodeElement.h"
 #include <Engine.h>
 #include <rttr/type.h>
-#include "imgui_stdlib.h"
-#include "UIElements/Layouts/VerticalBox.h"
+#include "Elements/VerticalBox.h"
 #include "UIElements/PinElement.h"
 #include "UIElements/EdgeElement.h"
+#include "BaseObject.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -145,12 +145,12 @@ void NodeGraph::Draw()
 	ed::PopStyleVar(3);
 }
 
-NodeEditorObject* NodeGraph::GetSelectedObject()
+BaseObject* NodeGraph::GetSelectedObject()
 {
 	return m_SelectedObject; 
 }
 
-NodeEditorObject* NodeGraph::FindNodeByID(uint64_t id) const
+BaseObject* NodeGraph::FindNodeByID(uint64_t id) const
 {
 	for (auto& node_element : m_Nodes)
 	{

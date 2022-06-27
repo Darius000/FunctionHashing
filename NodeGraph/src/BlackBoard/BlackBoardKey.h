@@ -1,9 +1,8 @@
-#ifndef BLACKBOARDKEY_H
-#define BLACKBOARDKEY_H
+#pragma once
 
-#include "NodeEditorObject.h"
+#include "BaseObject.h"
 
-class BlackBoardKey : public NodeEditorObject
+class BlackBoardKey : public BaseObject
 {
 protected:
 	BlackBoardKey() {};
@@ -49,6 +48,3 @@ inline void TBlackBoardKey<T>::SetToDefault()
 {
 	m_Value = T();
 }
-
-#endif
-

@@ -1,5 +1,4 @@
-#ifndef BLACKBOARDVIEW_H
-#define BLACKBOARDVIEW_H
+#pragma once
 
 #include "ImGui/ImGuiPanel.h"
 #include "BlackBoard/BlackBoard.h"
@@ -25,5 +24,3 @@ private:
 
 	static Ref<Texture> s_CapsuleImage;
 };
-
-#endif

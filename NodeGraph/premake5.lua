@@ -20,6 +20,7 @@ project "NodeGraph"
 
 	includedirs
 	{
+		"%{wks.location}/Engine/**Public",
 		"Generated",
 		"src",
 		"%{IncludeDirs.GLM}",

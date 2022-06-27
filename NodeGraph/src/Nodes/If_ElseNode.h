@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Core.h"
 #include "Node.h"
 
 class If_ElseNode :public Node
@@ -10,7 +9,7 @@ public:
 
 	void OnExecute() override;
 
-	ImVec4 GetHeaderColor() const override { return { 1.0f, 0.0f, 0.0f, 1.0f }; }
+	Color GetHeaderColor() const override { return { 1.0f, 0.0f, 0.0f, 1.0f }; }
 
 	bool m_InCondition;
 

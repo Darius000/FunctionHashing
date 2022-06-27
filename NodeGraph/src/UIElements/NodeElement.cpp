@@ -1,9 +1,9 @@
 #include "NodeElement.h"
-#include "Layouts/VerticalBox.h"
-#include "Layouts/HorizontalBox.h"
+#include "Elements/VerticalBox.h"
+#include "Elements/HorizontalBox.h"
+#include "Elements/LabelElement.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "Nodes/BaseNode.h"
-#include "LabelElement.h"
 #include "InputPin.h"
 
 namespace ed = ax::NodeEditor;
@@ -13,11 +13,11 @@ NodeElement::NodeElement(class BaseNode* node)
 	m_Name = node->GetName();
 	m_Node = node;
 
-	UI::MenuItem copy{ "Copy", []() {} };
+	MenuItem copy{ "Copy", []() {} };
 
-	UI::MenuItem deleteItem{ "Delete", []() {} };
+	MenuItem deleteItem{ "Delete", []() {} };
 
-	m_Menu = MakeRef<UI::GenericMenu>("NodeContextMenu");
+	m_Menu = MakeRef<Menu>("NodeContextMenu");
 	m_Menu->AddMenuItem(copy);
 	m_Menu->AddMenuItem(deleteItem);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Core.h"
+#include "Engine.h"
 #include "BlackBoard/BlackBoard.h"
 #include "Nodes/Node.h"
 #include "UIElements/NodeElement.h"
@@ -20,13 +20,13 @@ public:
 
 	void Draw();
 
-	class NodeEditorObject* GetSelectedObject();
+	class BaseObject* GetSelectedObject();
 
 	class BlackBoard* GetBlackBoard() { return &m_BlackBoard; }
 
 private:
 
-	class NodeEditorObject* FindNodeByID(uint64_t id) const;
+	class BaseObject* FindNodeByID(uint64_t id) const;
 
 	class PinElement* FindPin(uint64_t pinid) const;
 
@@ -40,14 +40,12 @@ private:
 protected:
 	bool m_OpenNodePopup;
 
-	class NodeEditorObject* m_SelectedObject = nullptr;
+	class BaseObject* m_SelectedObject = nullptr;
 
 	NodeList m_Nodes;
 
 	Edges m_Edges;
 
 	BlackBoard m_BlackBoard;
-
-	friend class GraphSerializer;
 };
 
