@@ -7,6 +7,7 @@
 #include "Core/Events/ApplicationEvents.h"
 #include "Core/Events/KeyEvents.h"
 #include "Core/Events/MouseEvent.h"
+#include "SplashScreen.h"
 
 static bool s_GLFWInitialized = false;
 
@@ -30,10 +31,19 @@ Window::Window(const WindowSpecs& specs)
 	m_Context = new class OpenGlContext(m_Window);
 	m_Context->Init();
 
+	
+
 	////set glfw window context to opengl version 4.6
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	if (!m_WindowSpecs.m_SplashScreenImageName.empty())
+	{
+		m_SplashScreen = new SplashScreen(m_WindowSpecs.m_SplashScreenImageName);
+	}
+
+	m_SplashScreen->Begin();
 
 	SetVSync(true);
 

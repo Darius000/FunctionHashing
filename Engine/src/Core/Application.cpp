@@ -12,12 +12,18 @@ Application::Application(const std::string& name , ApplicationCommandLineArgs ar
 
 	s_Instance = this;
 
-	m_Window = MakeScope<Window>();
+	WindowSpecs specs;
+	specs.m_SplashScreenImageName = "resources/splash_test.png";
+
+	m_Window = MakeScope<Window>(specs);
+
 	m_Window->SetEventCallback(BIND_EVENT(this, OnEvent));
 
 	m_ImGuiLayer = new ImGuiLayer();
 
 	PushLayer(m_ImGuiLayer);
+
+	m_Window->GetSplashScreen()->End();
 }
 
 Application::~Application()

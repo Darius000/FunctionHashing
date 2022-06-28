@@ -14,6 +14,7 @@ struct WindowSpecs
 	const char* title = "Window";
 	bool m_VSync = false;
 	WindowEventCallback  WindowCallback;
+	std::string m_SplashScreenImageName;
 };
 
 class Window
@@ -36,6 +37,7 @@ public:
 
 	static void glfwErrorCallback(int error, const char* description);
 
+	class SplashScreen* GetSplashScreen() { return m_SplashScreen;  }
 
 private:
 
@@ -46,4 +48,5 @@ private:
 
 	WindowSpecs m_WindowSpecs;
 
+	class SplashScreen* m_SplashScreen;
 };

@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 #include "Layer.h"
 #include "Window/Window.h"
+#include "Window/SplashScreen.h"
 #include "Events/ApplicationEvents.h"
 #include "Event.h"
 
