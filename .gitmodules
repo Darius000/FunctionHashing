@@ -25,3 +25,6 @@
 [submodule "Engine/vendor/imgui-node-editor"]
 	path = Engine/vendor/imgui-node-editor
 	url = https://github.com/Darius000/imgui-node-editor.git
+[submodule "Engine/vendor/spdlog"]
+	path = Engine/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
