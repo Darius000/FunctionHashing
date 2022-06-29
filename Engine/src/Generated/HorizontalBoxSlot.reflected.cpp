@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "Reflection/Reflection.h"
-#include "HorizontalBoxSlot.h"
-#include "VerticalBoxSlot.h"
+#include "Runtime/UI/Elements/HorizontalBoxSlot.h"
+#include "Runtime/UI/Elements/VerticalBoxSlot.h"
 
 REFLECT_INLINE(HorizontalBoxSlot)
 {

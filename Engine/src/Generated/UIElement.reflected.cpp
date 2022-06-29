@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "Reflection/Reflection.h"
-#include "UIElement.h"
-#include "LayoutSlot.h"
+#include "Runtime/UI/Elements/UIElement.h"
+#include "Runtime/UI/Elements/LayoutSlot.h"
 
 REFLECT_INLINE(UIElementStyle)
 {

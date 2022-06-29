@@ -1,18 +1,18 @@
 #include "NodeGraph.h"
-#include "Core/Events/MouseEvent.h"
+#include "Events/MouseEvent.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "Core\Debug\Instrumentor.h"
-#include "Core/Helpers/Vectors/VectorHelper.h"
+#include "Debug/Instrumentor.h"
+#include "Utilities/VectorUtilities.h"
 #include "UIElements/NodeElement.h"
 #include <Engine.h>
 #include <rttr/type.h>
-#include "Elements/VerticalBox.h"
+#include "Runtime/UI/Elements/VerticalBox.h"
 #include "UIElements/PinElement.h"
 #include "UIElements/EdgeElement.h"
-#include "BaseObject.h"
+#include "Runtime/BaseObject/BaseObject.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -31,7 +31,7 @@ void NodeGraph::Instantiate(std::string_view name)
 	auto new_variant = nodetype.create();
 	auto new_node = new_variant.get_value<BaseNode*>();
 
-	assert(new_node != nullptr);
+	CORE_ASSERT(new_node != nullptr);
 
 
 	auto nodeElement = MakeScope<class NodeElement>(new_node);
@@ -75,7 +75,7 @@ void NodeGraph::Draw()
 					{
 						if (!error_message.empty())
 						{
-							LOG("Error unable to link : reason : %s", error_message.c_str());
+							LOG_ERROR("Error unable to link : reason : {0}", error_message.c_str());
 						}
 					}
 				}
@@ -109,7 +109,7 @@ void NodeGraph::Draw()
 
 					if ((uint64_t)edge_ids.first == (uint64_t)deletedlinkid || (uint64_t)edge_ids.second == (uint64_t)deletedlinkid)
 					{
-						Helpers::Vector::Remove(m_Edges, link);
+						VectorUtilities::Remove(m_Edges, link);
 					}
 				}
 			}

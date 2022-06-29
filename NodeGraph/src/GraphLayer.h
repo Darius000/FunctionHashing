@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine.h>
+#include "ImGui/WindowStack.h"
 
 class GraphLayer : public Layer
 {

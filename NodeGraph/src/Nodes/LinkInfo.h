@@ -1,7 +1,7 @@
 #pragma once
 
-#include "PCH.h"
-#include "Core/UUID/UUID.h"
+#include "Core/UUID.h"
+#include <yaml-cpp/yaml.h>
 
 struct LinkInfo
 {
@@ -13,7 +13,7 @@ struct LinkInfo
 
 inline YAML::Emitter& operator << (YAML::Emitter& out, const LinkInfo& id)
 {
-	out << YAML::BeginSeq << (UINT64)id.m_StartPinId << (UINT64)id.m_EndPinId << YAML::EndSeq;
+	out << YAML::BeginSeq << (uint64_t)id.m_StartPinId << (uint64_t)id.m_EndPinId << YAML::EndSeq;
 	return out;
 }
 

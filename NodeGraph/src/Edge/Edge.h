@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/UUID/UUID.h"
+#include "Core/UUID.h"
 
 class Edge
 {

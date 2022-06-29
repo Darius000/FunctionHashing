@@ -1,6 +1,7 @@
 #include "NodeListPanel.h"
 #include "Category/Category.h"
 #include <rttr/type>
+#include "Reflection/MetaDataSpecifiers.h"
 
 NodeListPanel::NodeListPanel(ImGuiWindowFlags flags, ImGuiID id, bool runtimecreated)
 	:ImGuiPanel("Create New Node", flags)

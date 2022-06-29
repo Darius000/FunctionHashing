@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Reflection/Reflection.h"
+#include <rttr/type.h>
 #include <concepts>
 #include <iostream>
 

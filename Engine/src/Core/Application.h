@@ -2,8 +2,8 @@
 
 #include "Core/Core.h"
 #include "Layer.h"
-#include "Window/Window.h"
-#include "Window/SplashScreen.h"
+#include "Window.h"
+#include "SplashScreen.h"
 #include "Events/ApplicationEvents.h"
 #include "Event.h"
 

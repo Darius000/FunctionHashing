@@ -1,6 +1,6 @@
 #include "BlackBoard.h"
 #include "BlackBoardKey.h"
-#include "Helpers/Vectors/VectorHelper.h"
+#include "Utilities/VectorUtilities.h"
 
 BlackBoard::BlackBoard()
 {
@@ -12,7 +12,7 @@ BlackBoardKey* BlackBoard::Create(std::string_view name, rttr::type type)
 	auto new_variant = type.create({name});
 	auto new_key = new_variant.get_value<BlackBoardKey*>();
 
-	assert(new_key != nullptr);
+	CORE_ASSERT(new_key != nullptr);
 
 	return new_key;
 };
@@ -32,7 +32,7 @@ void BlackBoard::Remove(const Ref<BlackBoardKey>& key)
 	auto name = key->GetName();
 	if (Contains(name))
 	{
-		Helpers::Vector::Remove(m_Keys, [name](const Ref<BlackBoardKey>& item) {
+		VectorUtilities::Remove(m_Keys, [name](const Ref<BlackBoardKey>& item) {
 			return item->GetName() == name;
 		});
 	}

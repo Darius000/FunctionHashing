@@ -1,8 +1,17 @@
 #pragma once
 
-
-#include "Log/Log.h"
 #include <memory>
+
+#ifdef DEBUG
+	#define DEBUGBREAK() __debugbreak()
+	#define ENABLE_ASSERTS
+#else
+	#define DEBUDBREAK()
+#endif
+
+#define EXPAND_MACRO(x) x
+#define STRINGIFY_MACRO(x) #x
+
 
 template<typename T>
 using Scope = std::unique_ptr<T>;
@@ -53,7 +62,8 @@ struct is_convertible
 
 #define  BIT(x) (1 << x)
 
-#include "Specifiers/MetaDataSpecifiers.h"
-#include "Reflection/Reflection.h"
+
 #include "Events/EventDelegate.h"
 #include "Event.h"
+#include "Log.h"
+#include "Assert.h"

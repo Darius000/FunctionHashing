@@ -1,5 +1,5 @@
 #include "LinkableNode.h"
-#include "Core/Helpers/Vectors/VectorHelper.h"
+#include "Utilities/VectorUtilities.h"
 
 LinkableNode::LinkableNode ()
 {
@@ -23,7 +23,7 @@ void LinkableNode::AddChild(BaseNode* child)
 
 void LinkableNode::RemoveChild(BaseNode* child)
 {
-	Helpers::Vector::Remove(m_Children, child);
+	VectorUtilities::Remove(m_Children, child);
 
 	OnRemoveChild(child);
 }

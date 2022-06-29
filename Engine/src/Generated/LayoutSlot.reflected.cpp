@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "Reflection/Reflection.h"
-#include "LayoutSlot.h"
+#include "Runtime/UI/Elements/LayoutSlot.h"
 
 
 REFLECT_INLINE(LayoutSlot)

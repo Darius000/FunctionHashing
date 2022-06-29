@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseObject.h"
+#include "Runtime/BaseObject/BaseObject.h"
 
 class BlackBoardKey : public BaseObject
 {

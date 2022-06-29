@@ -1,4 +1,4 @@
-#include "Core/Reflection/Reflection.h"
+#include "Reflection/Reflection.h"
 #include "Nodes/BaseNode.h"
 
 REFLECT_INLINE(BaseNode)

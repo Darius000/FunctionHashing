@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "Elements/Layouts.h"
-#include "Menu/Menu.h"
+#include "Runtime/UI/Elements/Layouts.h"
+#include "Runtime/UI/Menu/Menu.h"
 #include "PinElement.h"
 
 class VerticalBox;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BaseObject.h"
+#include "Runtime/BaseObject/BaseObject.h"
 #include "LinkInfo.h"
-#include "Core/Types/Color.h"
+#include "Types/Color.h"
 
 enum class ENodeType
 {

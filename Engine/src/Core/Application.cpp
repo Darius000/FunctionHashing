@@ -12,6 +12,8 @@ Application::Application(const std::string& name , ApplicationCommandLineArgs ar
 
 	s_Instance = this;
 
+	Log::Init();
+
 	WindowSpecs specs;
 	specs.m_SplashScreenImageName = "resources/splash_test.png";
 

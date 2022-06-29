@@ -30,7 +30,7 @@ project "NodeGraph"
 		"%{IncludeDirs.IMGUI}",
 		"%{IncludeDirs.GLAD}",
 		"%{wks.location}/Engine/src",
-		"%{wks.location}/Engine/src/Core"
+		"%{IncludeDirs.SPDLOG}"
 	}
 	
 	links

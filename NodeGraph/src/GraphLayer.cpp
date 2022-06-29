@@ -1,11 +1,12 @@
 #include "GraphLayer.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "WindowGUI/NodeGraphPanel.h"
-#include "Core/ImGui/LogPanel.h"
+#include "ImGui/LogPanel.h"
 #include "WindowGUI/NodeListPanel.h"
 #include "WindowGUI/ObjectDetailsPanel.h"
 #include "WindowGUI/BlackBoardView.h"
 #include "AssetManager/AssetManager.h"
+
 
 
 namespace ed = ax::NodeEditor;

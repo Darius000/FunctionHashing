@@ -18,6 +18,7 @@
 #include <glm/glm.hpp>
 #include <string_view>
 
-#include "Core/UUID/UUID.h"
+#include "Core/Core.h"
+#include "Core/UUID.h"
 
 #include <Windows.h>

@@ -1,6 +1,6 @@
 #include "ObjectDetailsPanel.h"
-#include "BaseObject.h"
-#include "Inspectors/InspectorRegistry.h"
+#include "Runtime/BaseObject/BaseObject.h"
+#include "Runtime/UI/Inspectors/InspectorRegistry.h"
 
 ObjectDetailsPanel::ObjectDetailsPanel(ImGuiWindowFlags flags ,ImGuiID id)
 	:ImGuiPanel("Details", flags, id)

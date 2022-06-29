@@ -1,4 +1,4 @@
-#include "Core/Reflection/Reflection.h"
+#include "Reflection/Reflection.h"
 #include "Nodes/Cast.h"
 
 using IntToBool = CastTo<int, bool>;

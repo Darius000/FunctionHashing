@@ -1,7 +1,8 @@
 #pragma once
 
-#include "PCH.h"
+
 #include "Core/Core.h"
-#include "Core/Types/Enum.h"
+#include "Core/Application.h"
+#include "Core/Log.h"
+#include "Core/Assert.h"
 #include "Core/Layer.h"
-#include "Core/ImGui/WindowStack.h"

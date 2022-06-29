@@ -81,7 +81,7 @@ void BlackBoardView::DrawKey(Ref<BlackBoardKey>& key)
 
 	ImGui::BeginHorizontal(name.c_str(), {0,0},0.0f);
 
-	ImGui::Image((void*)s_CapsuleImage->GetRenderID(), {40, 40});
+	ImGui::Image(reinterpret_cast<ImTextureID>((uint64_t)s_CapsuleImage->GetRenderID()), {40, 40});
 
 	if (ImGui::Selectable(name.c_str(), m_SelectedKey == key.get(), 0, {0, 40}))
 	{

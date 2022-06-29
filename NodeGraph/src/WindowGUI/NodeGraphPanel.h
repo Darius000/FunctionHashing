@@ -2,6 +2,7 @@
 
 #include <Engine.h>
 #include "NodeGraph\NodeGraph.h"
+#include "ImGui/ImGuiPanel.h"
 
 class NodeGraphPanel : public ImGuiPanel
 {

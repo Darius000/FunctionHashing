@@ -27,17 +27,15 @@ project "Engine"
 
 	includedirs
 	{
-		"**Public/**",
-		"**Public",
 		"src",
-		"src/Core",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.IMGUI}",
 		"%{IncludeDirs.STB_IMAGE}",
 		"%{IncludeDirs.YAML}",
 		"%{IncludeDirs.GLM}",
-		"%{IncludeDirs.Reflection}"
+		"%{IncludeDirs.Reflection}",
+		"%{IncludeDirs.SPDLOG}"
 	}
 	
 	defines
