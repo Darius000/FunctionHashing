@@ -1,7 +1,16 @@
 #pragma once
 
-#include "VertexBuffer.h"
-#include "Shader.h"
+#include "Core/Core.h"
+
+class Shader;
+
+class VertexArray;
+
+struct Vertex
+{
+	glm::vec3 m_Position;
+	glm::vec2 m_TexCoord;
+};
 
 class Mesh
 {
@@ -12,7 +21,7 @@ public:
 
 private:
 
-	VertexBuffer* m_VertexBuffer;
+	Ref<VertexArray> m_VertexArray;
 
-	Ref<class Shader> m_Shader;
+	Ref<Shader> m_Shader;
 };

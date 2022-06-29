@@ -18,6 +18,8 @@ class Texture
 public:
 	Texture(const std::string& file);
 
+	void Bind(uint32_t slot) const;
+
 	int GetWidth() const {return m_Width; }
 	int GetHeight() const { return m_Height; }
 	int GetChannels() const { return m_Channels; }
@@ -30,15 +32,15 @@ public:
 
 private:
 
-	uint32_t m_Width;
+	uint32_t m_Width = 0;
 
-	uint32_t m_Height;
+	uint32_t m_Height = 0;
 
-	uint32_t m_Channels;
+	uint32_t m_Channels = 0;
 
 	FPixelData m_Data;
 
-	bool b_HasAlphaChannel;
+	bool b_HasAlphaChannel = false;
 
-	uint32_t m_RendererID;
+	uint32_t m_RendererID = -1;
 };

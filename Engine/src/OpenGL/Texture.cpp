@@ -6,6 +6,8 @@
 
 Texture::Texture(const std::string& file)
 {
+	stbi_set_flip_vertically_on_load(1);
+
 	int width, height, channels;
 	m_Data.m_Data = stbi_load(file.c_str(), &width, &height, &channels, 0);
 
@@ -49,6 +51,12 @@ Texture::Texture(const std::string& file)
 		GL_UNSIGNED_BYTE, m_Data.m_Data);
 	glGenerateMipmap(m_RendererID);
 }
+
+void Texture::Bind(uint32_t slot) const
+{
+	glBindTextureUnit(slot, m_RendererID);
+}
+
 
 bool Texture::IsValidExtension(const char* extension)
 {

@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "OpenGL/OpenGlContext.h"
 #include "OpenGL/Mesh.h"
+#include "imgui.h"
 
 SplashScreen::SplashScreen(const std::string& filename)
 	:m_EndTime(), m_ApplicationWindow(nullptr), m_SplashScreenWindow(nullptr), m_Quad(nullptr)
@@ -40,6 +41,8 @@ void SplashScreen::Begin(float minimumDuration)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	m_Quad = new Mesh();
+	m_Image->Bind(0);
+	m_Quad->Draw();
 
 	glfwSwapBuffers(m_SplashScreenWindow);
 
