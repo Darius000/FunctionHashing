@@ -22,10 +22,11 @@ void ImGuiPanel::OnBeginWindow()
 	ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 0.0f);
 	if(m_RuntimeCreated) 
 	{	
-		ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Once);
+		
 		m_Flags = m_Flags | ImGuiWindowFlags_NoSavedSettings;
 	}
 
+	ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_FirstUseEver);
 	ImGui::Begin(m_Label.c_str(), &m_IsOpen, m_Flags);
 	ImGui::PushID((int)m_ID);
 

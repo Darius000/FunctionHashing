@@ -27,7 +27,7 @@ void GraphLayer::OnAttach()
 	auto log = m_WindowStack.OpenPanel<LogPanel>("Log", ImGuiWindowFlags_None);
 	auto graph = m_WindowStack.OpenPanel<NodeGraphPanel>("Node Graph", ImGuiWindowFlags_MenuBar);
 	auto nodelist = m_WindowStack.OpenPanel<NodeListPanel>(ImGuiWindowFlags_None);
-	auto details = m_WindowStack.OpenPanel<ObjectDetailsPanel>();
+	auto details = m_WindowStack.OpenPanel<ObjectDetailsPanel>(ImGuiWindowFlags_None);
 	auto nodeGraph = graph->GetGraph();
 	auto blackboardview = m_WindowStack.OpenPanel<BlackBoardView>();
 
