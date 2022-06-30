@@ -39,6 +39,8 @@
 
 #json
 *.json
+*.ini
+*.log
 
 # Executables
 *.exe
