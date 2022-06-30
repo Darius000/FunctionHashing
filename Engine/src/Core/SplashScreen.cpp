@@ -5,6 +5,8 @@
 #include "OpenGL/OpenGlContext.h"
 #include "OpenGL/Mesh.h"
 #include "imgui.h"
+#include "examples/imgui_impl_glfw.h"
+#include "examples/imgui_impl_opengl3.h"
 
 SplashScreen::SplashScreen(const std::string& filename)
 	:m_EndTime(), m_ApplicationWindow(nullptr), m_SplashScreenWindow(nullptr), m_Quad(nullptr)
@@ -21,7 +23,7 @@ SplashScreen::~SplashScreen()
 void SplashScreen::Begin(float minimumDuration)
 {
 
-	m_EndTime = (float)glfwGetTime() + minimumDuration;
+	m_EndTime = m_Timer.GetElapsedTime() + minimumDuration;
 	m_ApplicationWindow = glfwGetCurrentContext();
 
 	glfwHideWindow(m_ApplicationWindow);
@@ -44,6 +46,8 @@ void SplashScreen::Begin(float minimumDuration)
 	m_Image->Bind(0);
 	m_Quad->Draw();
 
+	
+
 	glfwSwapBuffers(m_SplashScreenWindow);
 
 	glFlush();
@@ -59,7 +63,7 @@ void SplashScreen::End()
 		return;
 	}
 
-	while (m_EndTime > glfwGetTime())
+	while (m_EndTime > m_Timer.GetElapsedTime())
 	{
 		Sleep(1);
 	}

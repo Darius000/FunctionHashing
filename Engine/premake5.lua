@@ -18,16 +18,17 @@ project "Engine"
 		"src/**.cpp", 
 		"src/**.hpp",
 		"src/**.inl",
-		"vendor/stb_image/**.h",
-		"vendor/stb_image/**.cpp",
-		"vendor/glm/glm/**.inl",
-		"vendor/glm/glm/**.hpp"
+		"%{wks.location}/BHive/stb_image/**.h",
+		"%{wks.location}/BHive/stb_image/**.cpp",
+		"%{wks.location}/BHive/glm/glm/**.inl",
+		"%{wks.location}/BHive/glm/glm/**.hpp"
 	}
 
 
 	includedirs
 	{
 		"src",
+		"%{wks.location}/BHive/src",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLAD}",
 		"%{IncludeDirs.IMGUI}",
@@ -54,30 +55,29 @@ project "Engine"
 		"ImGui",
 		"yaml-cpp",
 		"rttr",
+		"BHive",
 		"imgui-node-editor",
 		 "opengl32.lib"
 	}
 
-	filter "files:src/Core/Entrypoint.cpp"
-		flags{ "NoPCH" }
-
 	filter "system:windows"
 		systemversion "latest"
 	
-
 	filter "configurations:Debug"
-		defines "DEBUG"
-		runtime "Debug"
-		symbols "On"
+			defines "DEBUG"
+			runtime "Debug"
+			symbols "On"
 		
 	filter "configurations:Release"
-      defines "NDEBUG"
-	  runtime "Release"
-      optimize "On"
+      	defines "RELEASE"
+	  	runtime "Release"
+      	optimize "On"
+		symbols "On"
 
 	filter "configurations:Dist"
-      defines "DIST"
-	  runtime "Release"
-      optimize "On"
+      	defines "DIST"
+	  	runtime "Release"
+      	optimize "On"
+		symbols "off"
 	
 	

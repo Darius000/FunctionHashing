@@ -1,27 +1,37 @@
 #include <Engine.h>
-#include <Core/Entrypoint.h>
+#include <Entrypoint.h>
 
 #include "GraphLayer.h"
+#include "Core/SplashScreen.h"
 
-class NodeGraphApp : public Application
+BHive::Application* BHive::CreateApplication(int argc, char** argv)
 {
-public:
+	Log::Init();
 
-	NodeGraphApp(ApplicationCommandLineArgs args)
-		:Application("Node Graph", args)
-	{
-		PushLayer(new GraphLayer());
+	BHive::ApplicationSpecification spec;
+	spec.m_Name = "Node Editor";
 
-	}
+	BHive::Application* app = new BHive::Application(spec, { argc, argv });
 
-	~NodeGraphApp()
-	{
+	SplashScreen m_SplashScreen = SplashScreen("resources/splash_test.png");
+	m_SplashScreen.Begin();
 
-	}
+	app->PushLayer<GraphLayer>();
+	app->SetMenuBarCallback([app]() 
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Exit"))
+				{
+					app->Close();
+				}
 
-};
+				ImGui::EndMenu();
+			}
+			
+		});
 
-Application* CreateApplication(ApplicationCommandLineArgs args)
-{
-	return new NodeGraphApp(args);
+	m_SplashScreen.End();
+
+	return app;
 }

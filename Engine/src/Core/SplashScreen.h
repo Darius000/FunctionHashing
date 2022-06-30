@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Timer.h"
 
 struct GLFWwindow;
 
@@ -17,8 +18,9 @@ protected:
 
 	float m_EndTime;
 
-	class Texture* m_Image;
+	BHive::Timer m_Timer;
 
+	class Texture* m_Image;
 
 	struct GLFWwindow* m_SplashScreenWindow;
 

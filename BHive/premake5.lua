@@ -1,12 +1,11 @@
-project "NodeGraph"
-	kind "ConsoleApp"
+project "BHive"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
 	
 	targetdir ("%{wks.location}/bin/" ..outputdir.. "/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" ..outputdir.. "/%{prj.name}")
-	
+    	objdir ("%{wks.location}/bin-int/" ..outputdir.. "/%{prj.name}")
 
 	files 
 	{
@@ -14,47 +13,41 @@ project "NodeGraph"
 		"src/**.cpp", 
 		"src/**.hpp",
 		"src/**.inl",
-		"Generated/**.cpp"
+		"vendor/stb_image/**.h",
+		"vendor/stb_image/**.cpp",
+		"vendor/glm/glm/**.inl",
+		"vendor/glm/glm/**.hpp"
 	}
 
 
 	includedirs
 	{
-		"Generated",
 		"src",
-		"%{wks.location}/BHive/src",
-		"%{IncludeDirs.GLM}",
-		"%{IncludeDirs.YAML}",
-		"%{IncludeDirs.Reflection}",
-		"%{wks.location}/Engine/vendor",
-		"%{IncludeDirs.IMGUI}",
+		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.GLAD}",
-		"%{wks.location}/Engine/src",
-		"%{IncludeDirs.SPDLOG}"
-	}
-	
-	links
-	{	
-		"Engine"
+		"%{IncludeDirs.IMGUI}",
+		"%{IncludeDirs.STB_IMAGE}",
+		"%{IncludeDirs.GLM}"
 	}
 	
 	defines
     {
-        "_CRT_SECURE_NO_WARNINGS",
+        	"_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE",
 		"NOMINMAX",
-		"YAML_CPP_STATIC_DEFINE",
-		"YAML_CPP_DEPRECATED_NO_EXPORT"
     }
-	
+
+	links
+	{
+		"GLFW",
+		"Glad",
+		"ImGui",
+		 "opengl32.lib"
+	}
+
 	filter "system:windows"
 		systemversion "latest"
-
-		
-		defines
-		{
-			"_CRT_SECURE_NO_WARNINGS",
-			"NOMINMAX"
-		}
+	
 
 	filter "configurations:Debug"
 		defines "DEBUG"
@@ -68,9 +61,9 @@ project "NodeGraph"
 		symbols "On"
 
 	filter "configurations:Dist"
-		kind "WindowedApp"
       	defines "DIST"
 	  	runtime "Release"
       	optimize "On"
 		symbols "off"
-	  
+	
+	

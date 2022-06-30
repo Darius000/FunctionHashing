@@ -1,9 +1,10 @@
 #pragma once
 
 #include <Engine.h>
+#include "Layer.h"
 #include "ImGui/WindowStack.h"
 
-class GraphLayer : public Layer
+class GraphLayer : public BHive::Layer
 {
 public:
 	GraphLayer();
@@ -12,14 +13,8 @@ public:
 
 	void OnDetach() override;
 
-	void OnUpdate(float deltaTime) override;
-
-	void OnImGuiRender() override;
-
-	void ProcessEvents(Event& e) override;
+	void OnUIRender() override;
 
 private:
 	WindowStack m_WindowStack;
-
-	bool b_ShowDemoWindow;
 };
