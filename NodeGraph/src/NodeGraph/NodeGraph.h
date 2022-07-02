@@ -20,8 +20,6 @@ public:
 
 	void Draw();
 
-	class BaseObject* GetSelectedObject();
-
 	class BlackBoard* GetBlackBoard() { return &m_BlackBoard; }
 
 private:
@@ -37,10 +35,10 @@ private:
 
 	void DrawElements();
 
+
 protected:
 	bool m_OpenNodePopup;
 
-	class BaseObject* m_SelectedObject = nullptr;
 
 	NodeList m_Nodes;
 

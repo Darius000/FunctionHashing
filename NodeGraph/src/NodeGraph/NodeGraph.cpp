@@ -34,7 +34,7 @@ void NodeGraph::Instantiate(std::string_view name)
 	CORE_ASSERT(new_node != nullptr);
 
 
-	auto nodeElement = MakeScope<class NodeElement>(new_node);
+	auto nodeElement = MakeScope<class NodeElement>(Ref<BaseNode>(new_node));
 	ed::CenterNodeOnScreen((uint64_t)nodeElement->GetID());
 	m_Nodes.push_back(std::move(nodeElement));	
 }
@@ -120,34 +120,32 @@ void NodeGraph::Draw()
 		{
 			if (ed::AcceptDeletedItem())
 			{
-				ImGuiID id = (ImGuiID)deletednodeid.Get();
-				/*if (m_Nodes.find(id) != m_Nodes.end())
+				auto id = (uint64_t)deletednodeid.Get();
+				if (auto node = FindNodeByID(id))
 				{
-					m_Nodes[id]->Destroy();
+					node->Destroy();
 					break;
-				}*/
+				}
 			}
 		}
 	}
 	ed::EndDelete();
 
 	
-	{
+	/*{
 		ed::NodeId selectednode;
 		ed::GetSelectedNodes(&selectednode, 1);
 
 		auto id = (uint64_t)selectednode.Get();
 		auto node = FindNodeByID(id);
-		m_SelectedObject = node;
-	}
+		if (node)
+		{
+			OnObjectSelected.Invoke(node);
+		}
+	}*/
 
 	ed::End();
 	ed::PopStyleVar(3);
-}
-
-BaseObject* NodeGraph::GetSelectedObject()
-{
-	return m_SelectedObject; 
 }
 
 BaseObject* NodeGraph::FindNodeByID(uint64_t id) const
@@ -156,7 +154,7 @@ BaseObject* NodeGraph::FindNodeByID(uint64_t id) const
 	{
 		if ((uint64_t)node_element->GetID() == id)
 		{
-			return node_element->GetNode();
+			return node_element.get();
 		}
 	}
 
@@ -227,16 +225,33 @@ void NodeGraph::DrawNodeListContextMenu()
 
 void NodeGraph::DrawElements()
 {
-	for (size_t i = 0; i < m_Nodes.size(); i++)
+	for (auto it = m_Nodes.begin(); it != m_Nodes.end();)
 	{
-		auto& nodeElement = m_Nodes[i];
+		auto& nodeElement = (*it);
 
-		nodeElement->DrawElement();
+		if (nodeElement->IsPendingDestroy())
+		{
+			it = m_Nodes.erase(it);
+		}
+		else
+		{
+			nodeElement->DrawElement();
+			it++;
+		}
 	}
 
-	for (size_t j = 0; j < m_Edges.size(); j++)
+	for (auto it = m_Edges.begin(); it != m_Edges.end();)
 	{
-		auto& edge_element = m_Edges[j];
-		edge_element->DrawElement();
+		auto& edgeElement = (*it);
+
+		if (edgeElement->IsPendingDestroy())
+		{
+			it = m_Edges.erase(it);
+		}
+		else
+		{
+			edgeElement->DrawElement();
+			it++;
+		}
 	}
 }

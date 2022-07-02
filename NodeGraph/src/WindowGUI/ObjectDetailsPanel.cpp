@@ -1,6 +1,7 @@
 #include "ObjectDetailsPanel.h"
 #include "Runtime/BaseObject/BaseObject.h"
 #include "Runtime/UI/Inspectors/InspectorRegistry.h"
+#include "Runtime/BaseObject/Selection.h"
 
 ObjectDetailsPanel::ObjectDetailsPanel(ImGuiWindowFlags flags ,ImGuiID id)
 	:ImGuiPanel("Details", flags, id)
@@ -16,12 +17,10 @@ void ObjectDetailsPanel::OnRenderWindow()
 	DrawSelectedObj();
 }
 
-
 void ObjectDetailsPanel::DrawSelectedObj()
 {
-	BaseObject* selected = OnGetSelectedObject.Invoke();
-
-	if (selected)
+	auto selection = Selection::Get();
+	if (selection)
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
 		ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(.1f, .1f, .1f, 1.0f));
@@ -31,7 +30,7 @@ void ObjectDetailsPanel::DrawSelectedObj()
 
 		//ImGui::BeginVertical("details");
 
-		rttr::variant var = selected;
+		rttr::variant var = selection.get();
 		InspectorRegistry::InspectVar(var);
 
 		//ImGui::EndVertical();

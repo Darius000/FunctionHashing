@@ -13,14 +13,10 @@ public:
 
 	RetEngineEvent<BlackBoard*> OnGetBlackBoard;
 
-	BlackBoardKey* GetSelectedKey() { return m_SelectedKey; }
-
 	void OnRenderWindow() override;
 
 	void DrawKey(Ref<BlackBoardKey>& key);
 
 private:
-	BlackBoardKey* m_SelectedKey = nullptr;
-
 	static Ref<Texture> s_CapsuleImage;
 };

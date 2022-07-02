@@ -14,8 +14,6 @@ public:
 
 	void OnRenderWindow() override;
 
-	RetEngineEvent<BaseObject*> OnGetSelectedObject;
-
 private:
 
 	void DrawSelectedObj();

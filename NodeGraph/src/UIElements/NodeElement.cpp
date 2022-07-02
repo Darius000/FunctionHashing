@@ -5,13 +5,18 @@
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "Nodes/BaseNode.h"
 #include "InputPin.h"
+#include "Runtime/BaseObject/Selection.h"
 
 namespace ed = ax::NodeEditor;
 
-NodeElement::NodeElement(class BaseNode* node)
+NodeElement::NodeElement(const Ref<class BaseNode>& node)
 {
 	m_Name = node->GetName();
 	m_Node = node;
+
+	OnDestroyed.AddBinding([&](BaseObject* objPtr) {
+		m_Node->Destroy();
+	});
 
 	MenuItem copy{ "Copy", []() {} };
 
@@ -66,6 +71,13 @@ void NodeElement::EndLayout()
 
 	auto pos = ed::GetNodePosition((uint32_t)GetID());
 	SetPosition(pos);
+
+	if (ImGui::IsItemClicked())
+	{
+		ed::SelectNode((uint32_t)GetID());
+
+		Selection::Select(m_Node);
+	}
 }
 
 void NodeElement::SetPosition(const ImVec2& pos)

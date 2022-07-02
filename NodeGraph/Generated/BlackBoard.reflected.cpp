@@ -1,6 +1,7 @@
 #include "Reflection/Reflection.h"
 #include "BlackBoard/BlackBoard.h"
 #include "BlackBoard/BlackBoardKey.h"
+#include "Types/Color.h"
 
 REFLECT_INLINE(BlackBoard)
 {
@@ -18,7 +19,7 @@ REFLECT_INLINE(BlackBoardKey)
 
 REFLECT_INLINE(TBlackBoardKey<int>)
 {
-	rttr::registration::class_<TBlackBoardKey<int>>("BlackBoardKey-Int")
+	rttr::registration::class_<TBlackBoardKey<int>>("BlackBoardKey-Int")(rttr::metadata("Color", Color(0.0f, 0.6f, 0.0f, 1.0f)))
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
 		.property("Value", &TBlackBoardKey<int>::m_Value)(rttr::registration::public_access);
 
@@ -27,7 +28,7 @@ REFLECT_INLINE(TBlackBoardKey<int>)
 
 REFLECT_INLINE(TBlackBoardKey<float>)
 {
-	rttr::registration::class_<TBlackBoardKey<float>>("BlackBoardKey-Float")
+	rttr::registration::class_<TBlackBoardKey<float>>("BlackBoardKey-Float")(rttr::metadata("Color", Color(0.2f, 1.0f, 0.2f, 1.0f)))
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
 		.property("Value", &TBlackBoardKey<float>::m_Value)(rttr::registration::public_access);
 
@@ -36,14 +37,14 @@ REFLECT_INLINE(TBlackBoardKey<float>)
 
 REFLECT_INLINE(TBlackBoardKey<bool>)
 {
-	rttr::registration::class_<TBlackBoardKey<bool>>("BlackBoardKey-Bool")
+	rttr::registration::class_<TBlackBoardKey<bool>>("BlackBoardKey-Bool")(rttr::metadata("Color", Color(1.0f, 0.0f, 0.0f, 1.0f)))
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
 		.property("Value", &TBlackBoardKey<bool>::m_Value)(rttr::registration::public_access);
 }
 
 REFLECT_INLINE(TBlackBoardKey<std::string>)
 {
-	rttr::registration::class_<TBlackBoardKey<std::string>>("BlackBoardKey-String")
+	rttr::registration::class_<TBlackBoardKey<std::string>>("BlackBoardKey-String")(rttr::metadata("Color", Color(1.0f, 0.5f, 0.5f, 1.0f)))
 		.constructor<std::string_view>()(rttr::policy::ctor::as_raw_ptr)
 		.property("Value", &TBlackBoardKey<std::string>::m_Value)(rttr::registration::public_access);
 }

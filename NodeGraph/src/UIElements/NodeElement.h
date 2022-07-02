@@ -10,7 +10,7 @@ class VerticalBox;
 class NodeElement : public LayoutElement
 {
 public:
-	NodeElement(class BaseNode* node);
+	NodeElement(const Ref<class BaseNode>& node);
 
 	void BeginLayout(uint64_t id) override;
 
@@ -18,7 +18,7 @@ public:
 
 	void SetPosition(const ImVec2& pos);
 
-	class BaseNode* GetNode() { return m_Node;  }
+	Ref<class BaseNode> GetNode() { return m_Node;  }
 
 	VerticalBox* GetInputs() { return m_InputContainer; }
 
@@ -47,7 +47,7 @@ protected:
 	VerticalBox* m_OutputContainer = nullptr;
 
 
-	class BaseNode* m_Node = nullptr;
+	Ref<class BaseNode> m_Node = nullptr;
 
 	Ref<class Menu> m_Menu;
 

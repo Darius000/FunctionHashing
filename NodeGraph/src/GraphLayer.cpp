@@ -31,7 +31,6 @@ void GraphLayer::OnAttach()
 	auto blackboardview = m_WindowStack.OpenPanel<BlackBoardView>();
 
 	nodelist->OnMenuItemSelected.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::Instantiate));
-	details->OnGetSelectedObject.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::GetSelectedObject));
 	blackboardview->OnGetBlackBoard.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::GetBlackBoard));
 
 	//const uint8_t bluetex[] = { 0x00, 0xFF, 0x00, 0xFF};

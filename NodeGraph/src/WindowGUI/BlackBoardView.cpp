@@ -1,6 +1,8 @@
 #include "BlackBoardView.h"
 #include "Events/EventDelegate.h"
 #include "AssetManager/AssetManager.h"
+#include "Types/Color.h"
+#include "Runtime/BaseObject/Selection.h"
 
 BlackBoardView::BlackBoardView(ImGuiID id)
 	:ImGuiPanel("BlackBoard", ImGuiWindowFlags_None, id)
@@ -78,19 +80,32 @@ void BlackBoardView::OnRenderWindow()
 void BlackBoardView::DrawKey(Ref<BlackBoardKey>& key)
 {
 	auto name = key->GetName();
+	Color image_color = Color();
 
-	ImGui::BeginHorizontal(name.c_str(), {0,0},0.0f);
-
-	ImGui::Image(reinterpret_cast<ImTextureID>((uint64_t)s_CapsuleImage->GetRendererID()), { 40, 40 }, { 0, 1 }, {1, 0});
-
-	if (ImGui::Selectable(name.c_str(), m_SelectedKey == key.get(), 0, {0, 40}))
+	auto type = rttr::type::get(*key.get());
+	auto meta_data = type.get_metadata("Color");
+	if (meta_data)
 	{
-		m_SelectedKey = key.get();
+		image_color = meta_data.get_value<Color>();
 	}
 
-	
+	auto region_size = ImVec2(ImGui::GetContentRegionAvail().x, 50.0f);
+	ImGui::BeginHorizontal(name.c_str(), region_size);
+
+	auto imageratio = s_CapsuleImage->GetWidth() / s_CapsuleImage->GetHeight();
+	auto image_size = ImVec2(imageratio * 50.0f, imageratio * 50.0f);
+
+	ImGui::Image(reinterpret_cast<ImTextureID>((uint64_t)s_CapsuleImage->GetRendererID()), image_size, { 0, 1 }, {1, 0}, image_color);
+
+	ImGui::Spring(1, 1);
+
+	if (ImGui::Selectable(name.c_str(), Selection::Get() == key))
+	{
+		Selection::Select(key);
+	}
 
 	ImGui::EndHorizontal();
+
 }
 
 Ref<Texture> BlackBoardView::s_CapsuleImage = nullptr;
