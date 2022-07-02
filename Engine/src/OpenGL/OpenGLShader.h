@@ -1,17 +1,17 @@
 #pragma once
 
-
-#include "OpenGLObject.h"
+#include "Core/Core.h"
+#include "Renderer/Shader.h"
 #include <glad/glad.h>
 
-class Shader : public OpenGLObject
+class OpenGLShader : public Shader
 {
 public:
 
-	Shader(const std::string& filepath);
-	Shader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+	OpenGLShader(const std::string& filepath);
+	OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
 
-	~Shader();
+	~OpenGLShader();
 
 	void Bind() override;
 	void UnBind() override;

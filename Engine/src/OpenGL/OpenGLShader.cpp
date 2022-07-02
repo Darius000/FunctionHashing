@@ -1,5 +1,5 @@
 #include "PCH.h"
-#include "Shader.h"
+#include "OpenGLShader.h"
 #include <filesystem>
 #include <glm/gtc/type_ptr.hpp>
 #include <fstream>
@@ -12,7 +12,7 @@ static GLenum ShaderTypeFromString(const std::string& type)
 	return 0;
 }
 
-Shader::Shader(const std::string& filepath)
+OpenGLShader::OpenGLShader(const std::string& filepath)
 {
 	std::string source = ReadFile(filepath);
 	auto shader_sources = PreProcess(source);
@@ -22,7 +22,7 @@ Shader::Shader(const std::string& filepath)
 	m_Name = path.stem().string();
 }
 
-Shader::Shader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 	:m_Name(name)
 {
 	std::unordered_map<GLenum, std::string> sources;
@@ -31,67 +31,67 @@ Shader::Shader(const std::string& name, const std::string& vertexSrc, const std:
 	Compile(sources);
 }
 
-Shader::~Shader()
+OpenGLShader::~OpenGLShader()
 {
-	glDeleteProgram(m_RenderID);
+	glDeleteProgram(m_RendererID);
 }
 
-void Shader::Bind()
+void OpenGLShader::Bind()
 {
-	glUseProgram(m_RenderID);
+	glUseProgram(m_RendererID);
 }
 
-void Shader::UnBind()
+void OpenGLShader::UnBind()
 {
 	glUseProgram(0);
 }
 
-void Shader::SetInt(const std::string& name, int value)
+void OpenGLShader::SetInt(const std::string& name, int value)
 {
 	glUniform1i(GetUniformLocation(name), value);
 }
 
-void Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
+void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
 {
 	glUniform1iv(GetUniformLocation(name), count, values);
 }
 
-void Shader::SetFloat(const std::string& name, float value)
+void OpenGLShader::SetFloat(const std::string& name, float value)
 {
 	glUniform1f(GetUniformLocation(name), value);
 }
 
-void Shader::SetFloat2(const std::string& name, const glm::vec2& value)
+void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
 {
 	glUniform2f(GetUniformLocation(name), value.x, value.y);
 }
 
-void Shader::SetFloat3(const std::string& name, const glm::vec3& value)
+void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 {
 	glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
 }
 
-void Shader::SetFloat4(const std::string& name, const glm::vec4& value)
+void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
 {
 	glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
 }
 
-void Shader::SetMat3(const std::string& name, const glm::mat3& value)
+void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& value)
 {
 	glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Shader::SetMat4(const std::string& name, const glm::mat4& value)
+void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Shader::SetBool(const std::string& name, bool value)
+void OpenGLShader::SetBool(const std::string& name, bool value)
 {
 	glUniform1i(GetUniformLocation(name), value);
 }
 
-std::string Shader::ReadFile(const std::string& filepath)
+std::string OpenGLShader::ReadFile(const std::string& filepath)
 {
 	std::string result;
 	std::ifstream in(filepath, std::ios::in | std::ios::binary);
@@ -120,7 +120,7 @@ std::string Shader::ReadFile(const std::string& filepath)
 	return result;
 }
 
-std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source)
+std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 {
 	std::unordered_map<GLenum, std::string> shader_sources;
 
@@ -147,7 +147,7 @@ std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& so
 	return shader_sources;
 }
 
-void Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
+void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 {
 	GLuint program = glCreateProgram();
 
@@ -188,7 +188,7 @@ void Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource
 		glShaderIDs[glShaderIDIndex++] = shader;
 	}
 
-	m_RenderID = program;
+	m_RendererID = program;
 
 	glLinkProgram(program);
 
@@ -220,7 +220,7 @@ void Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource
 	}
 }
 
-GLint Shader::GetUniformLocation(const std::string& name)
+GLint OpenGLShader::GetUniformLocation(const std::string& name)
 {
-	return glGetUniformLocation(m_RenderID, name.c_str());
+	return glGetUniformLocation(m_RendererID, name.c_str());
 }

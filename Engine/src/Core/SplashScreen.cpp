@@ -1,23 +1,24 @@
 #include "PCH.h"
 #include "SplashScreen.h"
-#include "OpenGL/Texture.h"
+#include "Renderer/Texture.h"
 #include <GLFW/glfw3.h>
-#include "OpenGL/OpenGlContext.h"
-#include "OpenGL/Mesh.h"
+#include "Renderer/Mesh.h"
+#include "Renderer/RenderCommand.h"
 #include "imgui.h"
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_opengl3.h"
+#include "glad/glad.h"
+
 
 SplashScreen::SplashScreen(const std::string& filename)
 	:m_EndTime(), m_ApplicationWindow(nullptr), m_SplashScreenWindow(nullptr), m_Quad(nullptr)
 {
-	m_Image = new Texture(filename);
+	m_Image = Texture::Create(filename);
 }
 
 SplashScreen::~SplashScreen()
 {
-	delete m_Image;
-	delete m_Quad;
+	
 }
 
 void SplashScreen::Begin(float minimumDuration)
@@ -27,7 +28,7 @@ void SplashScreen::Begin(float minimumDuration)
 	m_ApplicationWindow = glfwGetCurrentContext();
 
 	glfwHideWindow(m_ApplicationWindow);
-	glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+	glfwWindowHint(GLFW_DECORATED, 0);
 	m_SplashScreenWindow = glfwCreateWindow(m_Image->GetWidth(), m_Image->GetHeight(), "SplashScreen", nullptr, m_ApplicationWindow);
 
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -39,18 +40,18 @@ void SplashScreen::Begin(float minimumDuration)
 	
 	glfwMakeContextCurrent(m_SplashScreenWindow);
 
-	glClearColor(0, 0, 1 , 1);
-	glClear(GL_COLOR_BUFFER_BIT);
+	RenderCommand::Init();
+	RenderCommand::SetClearColor({ 1.0f, .5f, 0.0f, 1.0f });
+	RenderCommand::Clear();
 
-	m_Quad = new Mesh();
+	m_Quad = MakeRef<Mesh>();
 	m_Image->Bind(0);
 	m_Quad->Draw();
 
-	
 
 	glfwSwapBuffers(m_SplashScreenWindow);
 
-	glFlush();
+	RenderCommand::Flush();
 
 	glfwMakeContextCurrent(m_ApplicationWindow);
 

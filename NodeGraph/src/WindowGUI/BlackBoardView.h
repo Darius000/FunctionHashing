@@ -2,7 +2,7 @@
 
 #include "ImGui/ImGuiPanel.h"
 #include "BlackBoard/BlackBoard.h"
-#include "OpenGL/Texture.h"
+#include "Renderer/Texture.h"
 
 
 class BlackBoardView : public ImGuiPanel

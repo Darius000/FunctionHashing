@@ -22,6 +22,5 @@ public:
 private:
 
 	Ref<VertexArray> m_VertexArray;
-
 	Ref<Shader> m_Shader;
 };

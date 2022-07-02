@@ -20,13 +20,13 @@ protected:
 
 	BHive::Timer m_Timer;
 
-	class Texture* m_Image;
+	Ref<class Texture> m_Image;
 
 	struct GLFWwindow* m_SplashScreenWindow;
 
 	struct GLFWwindow* m_ApplicationWindow;
 
-	class Mesh* m_Quad;
+	Ref<class Mesh> m_Quad;
 
 };
 

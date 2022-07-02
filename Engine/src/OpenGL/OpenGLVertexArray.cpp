@@ -1,5 +1,5 @@
 #include "PCH.h"
-#include "VertexArray.h"
+#include "OpenGLVertexArray.h"
 #include <glad/glad.h>
 
 static GLenum ShaderDataTypeToGLenum(ShaderDataType type)
@@ -27,29 +27,29 @@ static GLenum ShaderDataTypeToGLenum(ShaderDataType type)
 	return 0;
 }
 
-VertexArray::VertexArray()
+OpenGLVertexArray::OpenGLVertexArray()
 {
-	glCreateVertexArrays(1, &m_RenderID);
+	glCreateVertexArrays(1, &m_RendererID);
 }
 
-VertexArray::~VertexArray()
+OpenGLVertexArray::~OpenGLVertexArray()
 {
-	glDeleteVertexArrays(1, &m_RenderID);
+	glDeleteVertexArrays(1, &m_RendererID);
 }
 
-void VertexArray::Bind()
+void OpenGLVertexArray::Bind()
 {
-	glBindVertexArray(m_RenderID);
+	glBindVertexArray(m_RendererID);
 }
 
-void VertexArray::UnBind()
+void OpenGLVertexArray::UnBind()
 {
 	glBindVertexArray(0);
 }
 
-void VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 {
-	glBindVertexArray(m_RenderID);
+	glBindVertexArray(m_RendererID);
 	vertexBuffer->Bind();
 
 	const auto& layout = vertexBuffer->GetLayout();
@@ -117,15 +117,11 @@ void VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	m_VertexBuffers.push_back(vertexBuffer);
 }
 
-void VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
+void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 {
-	glBindVertexArray(m_RenderID);
+	glBindVertexArray(m_RendererID);
 	indexBuffer->Bind();
 
 	m_IndexBuffer = indexBuffer;
 }
 
-Ref<VertexArray> VertexArray::Create()
-{
-	return MakeRef<VertexArray>();
-}

@@ -3,10 +3,11 @@
 #include <glad/glad.h>
 #include "Shader.h"
 #include "VertexArray.h"
+#include "RenderCommand.h"
 
 Mesh::Mesh()
 {
-	m_Shader = MakeRef<Shader>("resources/Texture.glsl");
+	m_Shader = Shader::Create("resources/Texture.glsl");
 
 	Vertex vertices[] =
 	{
@@ -39,9 +40,7 @@ void Mesh::Draw()
 {
 	m_Shader->Bind();
 
-	m_VertexArray->Bind();
-	auto count = m_VertexArray->GetIndexBuffer()->GetCount();
-	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	RenderCommand::DrawIndexed(m_VertexArray);
 
 	m_VertexArray->UnBind();
 

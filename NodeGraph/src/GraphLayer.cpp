@@ -8,7 +8,6 @@
 #include "AssetManager/AssetManager.h"
 
 
-
 namespace ed = ax::NodeEditor;
 static ed::EditorContext* g_Context = nullptr;
 
@@ -34,6 +33,11 @@ void GraphLayer::OnAttach()
 	nodelist->OnMenuItemSelected.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::Instantiate));
 	details->OnGetSelectedObject.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::GetSelectedObject));
 	blackboardview->OnGetBlackBoard.AddBinding(BIND_EVENT(nodeGraph, NodeGraph::GetBlackBoard));
+
+	//const uint8_t bluetex[] = { 0x00, 0xFF, 0x00, 0xFF};
+
+	//m_ImageTest = MakeRef<BHive::Image>(1, 1, BHive::ImageFormat::RGBA, bluetex);
+	//m_ImageTest->Resize(200, 200);
 }
 
 void GraphLayer::OnDetach()
@@ -45,10 +49,13 @@ void GraphLayer::OnUIRender()
 {
 	ed::SetCurrentEditor(g_Context);
 
-	ImGui::ShowAboutWindow();
-	ImGui::ShowDemoWindow();
-
 	m_WindowStack.Update();
+
+	/*ImGui::Begin("Image Test");
+
+	ImGui::Image(m_ImageTest.get(), { (float)m_ImageTest->GetWidth(), (float)m_ImageTest->GetHeight() });
+
+	ImGui::End();*/
 
 	ed::SetCurrentEditor(nullptr);
 }

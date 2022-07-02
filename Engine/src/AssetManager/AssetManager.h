@@ -3,7 +3,7 @@
 
 #include "Asset.h"
 #include <filesystem>
-#include "Opengl/Texture.h"
+#include "Renderer/Texture.h"
 
 
 class AssetManager
@@ -40,18 +40,16 @@ private:
 template<>
 inline bool AssetManager::LoadAsset<Texture>(std::string_view filename, std::string_view path)
 {
-	auto texture = new Texture(path.data());
+	auto texture = Texture::Create(path.data());
 
-	if (texture->IsValid())
+	if (texture)
 	{
-		Add<Texture>(filename, Ref<Texture>(texture));
+		Add<Texture>(filename, texture);
 
 		LOG_TRACE("Loaded {0}", filename.data());
 
 		return true;
 	}
-
-	delete texture;
 
 	return false;
 }
