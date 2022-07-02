@@ -74,7 +74,7 @@ void NodeElement::EndLayout()
 
 	if (ImGui::IsItemClicked())
 	{
-		ed::SelectNode((uint32_t)GetID());
+		ed::SelectNode((uint32_t)GetID(), true);
 
 		Selection::Select(m_Node);
 	}

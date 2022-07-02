@@ -96,35 +96,39 @@ void NodeGraph::Draw()
 	//handle deleted links
 	if(ed::BeginDelete())
 	{
-		ed::LinkId deletedlinkid;
-		while (ed::QueryDeletedLink(&deletedlinkid))
+		//delete edges
 		{
-			
-			if (ed::AcceptDeletedItem())
+			ed::LinkId deletedlinkid;
+			while (ed::QueryDeletedLink(&deletedlinkid))
 			{
-				for (int i = 0; i < m_Edges.size(); i++)
-				{
-					auto& link = m_Edges[i];
-					auto edge_ids = link->GetEdge()->GetIds();
 
-					if ((uint64_t)edge_ids.first == (uint64_t)deletedlinkid || (uint64_t)edge_ids.second == (uint64_t)deletedlinkid)
+				if (ed::AcceptDeletedItem())
+				{
+					for (auto& edge : m_Edges)
 					{
-						VectorUtilities::Remove(m_Edges, link);
+						if ((uint64_t)edge->GetID() == (uint64_t)deletedlinkid)
+						{
+							edge->Destroy();
+						}
 					}
 				}
 			}
 		}
 
-		ed::NodeId deletednodeid;
-		while (ed::QueryDeletedNode(&deletednodeid))
+		//delete nodes
 		{
-			if (ed::AcceptDeletedItem())
+			ed::NodeId deletednodeid;
+			while (ed::QueryDeletedNode(&deletednodeid))
 			{
-				auto id = (uint64_t)deletednodeid.Get();
-				if (auto node = FindNodeByID(id))
+				if (ed::AcceptDeletedItem())
 				{
-					node->Destroy();
-					break;
+					for (auto& node : m_Nodes)
+					{
+						if ((uint64_t)node->GetID() == (uint64_t)deletednodeid)
+						{
+							node->Destroy();
+						}
+					}
 				}
 			}
 		}
