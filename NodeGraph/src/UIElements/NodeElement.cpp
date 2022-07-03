@@ -20,7 +20,9 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 
 	MenuItem copy{ "Copy", []() {} };
 
-	MenuItem deleteItem{ "Delete", []() {} };
+	MenuItem deleteItem{ "Delete", [&]() {
+		ed::DeleteNode((uint64_t)GetID());
+	} };
 
 	m_Menu = MakeRef<Menu>("NodeContextMenu");
 	m_Menu->AddMenuItem(copy);
@@ -32,8 +34,16 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 	auto node_element = new VerticalBox();
 	auto header = new HorizontalBox();
 	auto content = new HorizontalBox();
+	auto node_label = new LabelElement("Header", GetName());
 
-	auto header_slot = Cast<HorizontalBoxSlot>(header->AddChild(new LabelElement("Header", GetName())));
+	auto binding = [&]()
+	{
+		return m_Node->GetName();
+	};
+
+	node_label->m_Binding += binding;
+
+	auto header_slot = Cast<HorizontalBoxSlot>(header->AddChild(node_label));
 	header_slot->m_StartWeight = 0.0f;
 	//header_slot->m_EndSpacing = 1.0f;
 

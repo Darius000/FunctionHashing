@@ -7,10 +7,10 @@ void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned
 {
 	switch (severity)
 	{
-	case GL_DEBUG_SEVERITY_HIGH: LOG_CRITICAL(message); return;
-	case GL_DEBUG_SEVERITY_MEDIUM: LOG_ERROR(message); return;
-	case GL_DEBUG_SEVERITY_LOW: LOG_WARN(message); return;
-	case GL_DEBUG_SEVERITY_NOTIFICATION: LOG_TRACE(message); return;
+	case GL_DEBUG_SEVERITY_HIGH: LOG_CRITICAL("{0}", message); return;
+	case GL_DEBUG_SEVERITY_MEDIUM: LOG_ERROR("{0}", message); return;
+	case GL_DEBUG_SEVERITY_LOW: LOG_WARN("{0}", message); return;
+	case GL_DEBUG_SEVERITY_NOTIFICATION: LOG_TRACE("{0}", message); return;
 	}
 
 }

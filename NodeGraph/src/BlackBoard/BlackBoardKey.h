@@ -7,7 +7,7 @@ class BlackBoardKey : public BaseObject
 protected:
 	BlackBoardKey() {};
 
-	REFLECTABLEV()
+	REFLECTABLEV(BaseObject)
 };
 
 template<typename T>

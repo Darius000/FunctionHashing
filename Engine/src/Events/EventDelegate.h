@@ -12,9 +12,14 @@ struct EngineEventBase
 	using FuncList = std::vector<Func>;
 
 public:
-	EngineEventBase() {};
+	EngineEventBase() {}
 
-	~EngineEventBase() { UnBindAll(); }
+	EngineEventBase(const EngineEventBase& other)
+	{
+		BindedFunctions = other.BindedFunctions;
+	}
+
+	virtual ~EngineEventBase() { UnBindAll(); }
 
 	inline bool IsBound() { return BindedFunctions.size() > 0; }
 
@@ -38,7 +43,13 @@ public:
 		}
 	}
 
-	
+	EngineEventBase& operator= (const EngineEventBase& other)
+	{
+		BindedFunctions = other.BindedFunctions;
+
+		return *this;
+	}
+
 
 	EngineEventBase& operator+=(const Func& rhs)
 	{
@@ -82,7 +93,8 @@ struct RetEngineEvent : public EngineEventBase<Ret, Args...>
 			return function(std::forward<Args>(args)...);
 		}
 
-		return Ret();
+		Ret obj = Ret();
+		return obj;
 	}
 };
 

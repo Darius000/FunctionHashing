@@ -11,9 +11,10 @@ void LabelElement::OnDrawElement()
 {
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 
+	auto text = m_Binding.IsBound() ? m_Binding.Invoke() : m_Text;
 
 	drawlist->AddText(m_Style.m_FontStyle.font, m_Style.m_FontStyle.size, GetCursorPos() + GetPosition(),
-		m_Style.m_FontStyle.color, m_Text.c_str());
+		m_Style.m_FontStyle.color, text.c_str());
 
 	AddElementItem();
 
