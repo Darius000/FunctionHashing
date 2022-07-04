@@ -16,6 +16,14 @@ EdgeElement::EdgeElement(const Ref<Edge>& edge)
 	m_Menu = MakeRef<Menu>("EdgeContextMenu");
 	m_Menu->AddMenuItem(copy);
 	m_Menu->AddMenuItem(deleteItem);
+	m_Menu->m_CanOpenMenuCallBack += []()
+	{
+		static ed::LinkId contextID = 0;
+		ed::Suspend();
+		bool opened = ed::ShowLinkContextMenu(&contextID);
+		ed::Resume();
+		return opened;
+	};
 }
 
 void EdgeElement::OnDrawElement()
@@ -23,32 +31,11 @@ void EdgeElement::OnDrawElement()
 	auto ids = m_Edge->GetIds();
 	ed::Link((uint64_t)GetID(), (uint64_t)ids.first, (uint64_t)ids.second);
 
-	
-}
 
-bool EdgeElement::HandleEvents()
-{
-	bool handled = UIElement::HandleEvents();
+	ed::Suspend();
 
-	if (!handled)
-	{
-		static ed::LinkId contextID = 0;
-		ed::Suspend();
-		if (ed::ShowLinkContextMenu(&contextID))
-		{
-			m_Menu->OpenMenu();
+	//context menu
+	m_Menu->Show();
 
-		}
-		ed::Resume();
-
-		ed::Suspend();
-
-		//context menu
-		handled = m_Menu->ShowAsContext();
-
-		ed::Resume();
-	}
-
-
-	return handled;
+	ed::Resume();
 }

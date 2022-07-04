@@ -14,8 +14,6 @@ public:
 
 	Ref<Edge> GetEdge() { return m_Edge; }
 
-	bool HandleEvents() override;
-
 private:
 
 	Ref<Edge> m_Edge;

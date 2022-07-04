@@ -58,21 +58,6 @@ std::vector<UIElement*> LayoutElement::GetChildren()
 	return results;
 }
 
-bool LayoutElement::HandleEvents()
-{
-	bool handled = false;
-	for (auto child : GetSlots())
-	{
-		handled |= child->m_Content->HandleEvents();
-		if (handled)
-		{
-			break;
-		}
-	}
-
-	return handled;
-}
-
 void LayoutElement::ClearChildren()
 {
 	m_Slots.clear();

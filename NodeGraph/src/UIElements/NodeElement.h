@@ -30,8 +30,6 @@ protected:
 
 
 private:
-	bool HandleEvents() override;
-
 	void DrawToolTip(const std::string& text, ImDrawList* drawlist);
 
 	void DrawSeperator(const ImVec2& position, const ImVec2& size, ImDrawList* drawlist);

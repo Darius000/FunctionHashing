@@ -30,11 +30,6 @@ void UIElement::DrawElement()
 
 	//OnEndDraw();
 
-	if (m_Interactive == false) return;
-
-	//handles events from bottom to top
-	HandleEvents();
-
 	ImGui::PopID();
 }
 
@@ -97,9 +92,4 @@ void UIElement::AddElementItem()
 	ImGui::ItemAdd(bounds, id, 0);
 	ImGui::ItemSize(bounds, 0);
 	//ImGui::PopClipRect();
-}
-
-bool UIElement::HandleEvents()
-{
-	return false;
 }

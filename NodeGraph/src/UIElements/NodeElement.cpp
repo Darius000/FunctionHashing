@@ -27,6 +27,14 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 	m_Menu = MakeRef<Menu>("NodeContextMenu");
 	m_Menu->AddMenuItem(copy);
 	m_Menu->AddMenuItem(deleteItem);
+	m_Menu->m_CanOpenMenuCallBack += []()
+	{
+		static ed::NodeId contextID = 0;
+		ed::Suspend();
+		bool opened = ed::ShowNodeContextMenu(&contextID);
+		ed::Resume();
+		return opened;
+	};
 
 	m_InputContainer = new VerticalBox();
 	m_OutputContainer = new VerticalBox();
@@ -88,6 +96,28 @@ void NodeElement::EndLayout()
 
 		Selection::Select(m_Node);
 	}
+
+	if (ImGui::IsItemHovered())
+	{
+		auto meta_data = rttr::type::get(*m_Node).get_metadata(ClassMetaData::Description);
+
+		if (meta_data)
+		{
+			auto tooltip = meta_data.get_value<std::string>();
+			ImGui::SetCursorPos(ImGui::GetMousePos());
+			ImGui::BeginTooltip();
+			ImGui::TextUnformatted(tooltip.c_str());
+			ImGui::EndTooltip();
+		}
+
+	}
+
+	ed::Suspend();
+
+	//context menu
+	m_Menu->Show();
+
+	ed::Resume();
 }
 
 void NodeElement::SetPosition(const ImVec2& pos)
@@ -107,48 +137,6 @@ void NodeElement::AddPinElement(std::string_view name, ed::PinKind kind, const r
 		auto pin = new OutputPin(name, property, obj, canMultiConnect);
 		auto output_slot = Cast<VerticalBoxSlot>(m_OutputContainer->AddChild(pin));
 	}
-}
-
-bool NodeElement::HandleEvents()
-{
-	bool handled = LayoutElement::HandleEvents();
-
-	if (!handled)
-	{
-		if (ImGui::IsItemHovered())
-		{
-			auto meta_data = rttr::type::get(*m_Node).get_metadata(ClassMetaData::Description);
-
-			if (meta_data)
-			{
-				auto tooltip = meta_data.get_value<std::string>();
-				ImGui::SetCursorPos(ImGui::GetMousePos());
-				ImGui::BeginTooltip();
-				ImGui::TextUnformatted(tooltip.c_str());
-				ImGui::EndTooltip();
-			}
-					
-		}
-
-		static ed::NodeId contextID = 0;
-		ed::Suspend();
-		if (ed::ShowNodeContextMenu(&contextID))
-		{
-			m_Menu->OpenMenu();
-
-		}
-		ed::Resume();
-
-
-		ed::Suspend();
-
-		//context menu
-		handled = m_Menu->ShowAsContext();
-
-		ed::Resume();
-	}
-
-	return handled;
 }
 
 void NodeElement::DrawToolTip(const std::string& text, ImDrawList* drawlist)

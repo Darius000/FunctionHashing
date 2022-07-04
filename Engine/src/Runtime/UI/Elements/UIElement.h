@@ -50,9 +50,6 @@ protected:
 
 	//adds item to imgui
 	void AddElementItem();
-
-	virtual bool HandleEvents();
-
 protected:
 
 	Ref<LayoutSlot> m_ParentSlot;

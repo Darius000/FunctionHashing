@@ -21,18 +21,13 @@ void Menu::RemoveMenuItem(const std::string& itemName)
 		});
 }
 
-void Menu::OpenMenu()
+void Menu::Show()
 {
-	ImGui::OpenPopup(m_Name.c_str());
-}
+	if (m_CanOpenMenuCallBack.Invoke())
+	{
+		ImGui::OpenPopup(m_Name.c_str());
+	}
 
-bool Menu::ShowAsContext()
-{
-	return Context();
-}
-
-bool Menu::Context()
-{
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(m_Padding, m_Padding));
 	bool opened = ImGui::BeginPopup(m_Name.c_str());
 
@@ -44,9 +39,8 @@ bool Menu::Context()
 	}
 
 	ImGui::PopStyleVar();
-
-	return opened;
 }
+
 void Menu::DrawMenuItems()
 {
 	for (auto& item : m_ItemsList)

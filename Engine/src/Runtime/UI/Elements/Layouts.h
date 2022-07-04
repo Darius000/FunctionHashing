@@ -42,8 +42,6 @@ protected:
 
 	void OnDrawElement() override;
 
-	bool HandleEvents() override;
-
 private:
 	Slots m_Slots;
 };

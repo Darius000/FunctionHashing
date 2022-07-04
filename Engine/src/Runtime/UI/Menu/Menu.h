@@ -33,14 +33,10 @@ public:
 
 	void RemoveMenuItem(const std::string& itemName);
 
-	bool ShowAsContext();
+	void Show();
 
-	void OpenMenu();
+	RetEngineEvent<bool> m_CanOpenMenuCallBack;
 
-protected:
-	bool Context();
-
-	
 private:
 
 	void DrawMenuItems();
