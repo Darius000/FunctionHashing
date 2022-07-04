@@ -22,6 +22,8 @@ public:
 
 	virtual void OnDrawElement();
 
+	const bool& IsEnabled() const { return m_Enabled; }
+
 	ImVec2 GetPosition();
 
 	ImVec2 GetLocalPosition();

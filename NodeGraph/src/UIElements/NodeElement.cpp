@@ -103,8 +103,14 @@ void NodeElement::EndLayout()
 
 		if (meta_data)
 		{
+			ICONINFO ii;
+			BITMAP bitmap;
+			GetIconInfo(GetCursor(), &ii);
+			GetObject(ii.hbmColor, sizeof(BITMAP), &bitmap);
+			float size = (float)bitmap.bmWidth / 2.0f;
+
 			auto tooltip = meta_data.get_value<std::string>();
-			ImGui::SetCursorPos(ImGui::GetMousePos());
+			ImGui::SetNextWindowPos(ed::CanvasToScreen(GetPosition()) + ImGui::GetMousePos() + ImVec2(size, 0.0f) );
 			ImGui::BeginTooltip();
 			ImGui::TextUnformatted(tooltip.c_str());
 			ImGui::EndTooltip();

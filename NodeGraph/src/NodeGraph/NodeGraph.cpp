@@ -13,6 +13,7 @@
 #include "UIElements/PinElement.h"
 #include "UIElements/EdgeElement.h"
 #include "Runtime/BaseObject/BaseObject.h"
+#include "Runtime/BaseObject/Selection.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -150,6 +151,12 @@ void NodeGraph::Draw()
 
 	ed::End();
 	ed::PopStyleVar(3);
+
+	//deslect on graph clicked
+	if (ed::IsBackgroundClicked())
+	{
+		Selection::Select(nullptr);
+	}
 }
 
 BaseObject* NodeGraph::FindNodeByID(uint64_t id) const
