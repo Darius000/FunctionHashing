@@ -20,7 +20,7 @@ namespace ed = ax::NodeEditor;
 NodeGraph::NodeGraph()
 {
 	m_OpenNodePopup = false;
-	
+
 }
 
 void NodeGraph::Instantiate(std::string_view name)
@@ -136,26 +136,27 @@ void NodeGraph::Draw()
 	}
 	ed::EndDelete();
 
-	
-	/*{
-		ed::NodeId selectednode;
-		ed::GetSelectedNodes(&selectednode, 1);
 
-		auto id = (uint64_t)selectednode.Get();
-		auto node = FindNodeByID(id);
-		if (node)
-		{
-			OnObjectSelected.Invoke(node);
-		}
-	}*/
+
+	ed::Suspend();
+	if (ed::ShowBackgroundContextMenu())
+	{
+		ImGui::OpenPopup("Nodes");
+	}
+
+	DrawNodeListContextMenu();
+
+	ed::Resume();
 
 	ed::End();
 	ed::PopStyleVar(3);
 
+	
 	//deselect on graph clicked
 	if (ed::IsBackgroundClicked())
 	{
 		Selection::Select(nullptr);
+
 	}
 }
 
@@ -226,13 +227,27 @@ bool NodeGraph::CanConnectPins(PinElement* start, PinElement* end, std::string& 
 
 void NodeGraph::DrawNodeListContextMenu()
 {
-
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 5.0f, 5.0f });
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(.2f, .2f, .2f, 1.0f));
 	if (ImGui::BeginPopupContextItem("Nodes"))
 	{
 		const ImVec2 click_pos = ImGui::GetMousePosOnOpeningCurrentPopup();
 
+		auto nodeType = rttr::type::get_by_name("Node");
+
+		for (auto derived_type : nodeType.get_derived_classes())
+		{
+			auto name = derived_type.get_name();
+			if (ImGui::MenuItem(name.data()))
+			{
+				Instantiate(name);
+			}
+		}
+
 		ImGui::EndPopup();
 	}
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
 }
 
 void NodeGraph::DrawElements()

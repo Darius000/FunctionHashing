@@ -29,6 +29,7 @@ void Menu::Show()
 	}
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(m_Padding, m_Padding));
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(.2f, .2f, .2f, 1.0f));
 	bool opened = ImGui::BeginPopup(m_Name.c_str());
 
 	if (opened)
@@ -38,6 +39,7 @@ void Menu::Show()
 		ImGui::EndPopup();
 	}
 
+	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
 }
 
