@@ -2,39 +2,18 @@
 #include "Runtime/UI/Elements/VerticalBox.h"
 #include "Runtime/UI/Elements/HorizontalBox.h"
 #include "Runtime/UI/Elements/LabelElement.h"
-#include "imgui-node-editor/imgui_node_editor.h"
 #include "Nodes/BaseNode.h"
 #include "InputPin.h"
 #include "Runtime/BaseObject/Selection.h"
-
-namespace ed = ax::NodeEditor;
 
 NodeElement::NodeElement(const Ref<class BaseNode>& node)
 {
 	m_Name = node->GetName();
 	m_Node = node;
 
-	OnDestroyed.AddBinding([&](BaseObject* objPtr) {
+	OnDestroyedEvent.AddBinding([&](BaseObject* objPtr) {
 		m_Node->Destroy();
 	});
-
-	MenuItem copy{ "Copy", []() {} };
-
-	MenuItem deleteItem{ "Delete", [&]() {
-		ed::DeleteNode((uint64_t)GetID());
-	} };
-
-	m_Menu = MakeRef<Menu>("NodeContextMenu");
-	m_Menu->AddMenuItem(copy);
-	m_Menu->AddMenuItem(deleteItem);
-	m_Menu->m_CanOpenMenuCallBack += []()
-	{
-		static ed::NodeId contextID = 0;
-		ed::Suspend();
-		bool opened = ed::ShowNodeContextMenu(&contextID);
-		ed::Resume();
-		return opened;
-	};
 
 	m_InputContainer = new VerticalBox();
 	m_OutputContainer = new VerticalBox();
@@ -118,17 +97,26 @@ void NodeElement::EndLayout()
 
 	}
 
-	ed::Suspend();
-
-	//context menu
-	m_Menu->Show();
-
-	ed::Resume();
+	GraphElement::EndLayout();
 }
 
 void NodeElement::SetPosition(const ImVec2& pos)
 {
 	m_Node->m_Position = { pos.x, pos.y };
+}
+
+bool NodeElement::OnShowContextMenu()
+{
+	static ed::NodeId contextID = 0;
+	ed::Suspend();
+	bool opened = ed::ShowNodeContextMenu(&contextID);
+	ed::Resume();
+	return opened;
+}
+
+void NodeElement::OnDestroyed()
+{
+	ed::DeleteNode((uint64_t)GetID());
 }
 
 void NodeElement::AddPinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect)

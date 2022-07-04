@@ -1,13 +1,13 @@
 #pragma once
 
 
-#include "Runtime/UI/Elements/Layouts.h"
+#include "GraphElement.h"
 #include "Runtime/UI/Menu/Menu.h"
 #include "PinElement.h"
 
 class VerticalBox;
 
-class NodeElement : public LayoutElement
+class NodeElement : public GraphElement
 {
 public:
 	NodeElement(const Ref<class BaseNode>& node);
@@ -17,6 +17,10 @@ public:
 	void EndLayout() override;
 
 	void SetPosition(const ImVec2& pos);
+
+	bool OnShowContextMenu() override;
+
+	void OnDestroyed() override;
 
 	Ref<class BaseNode> GetNode() { return m_Node;  }
 
@@ -46,7 +50,5 @@ protected:
 
 
 	Ref<class BaseNode> m_Node = nullptr;
-
-	Ref<class Menu> m_Menu;
 
 };

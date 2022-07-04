@@ -14,9 +14,11 @@ public:
 
 	void Destroy();
 
+	virtual void OnDestroyed() {};
+
 	void SetName(const std::string& str);
 
-	EngineEvent<class BaseObject*> OnDestroyed;
+	EngineEvent<class BaseObject*> OnDestroyedEvent;
 	
 	inline const std::string& GetName() const { return m_Name; }
 

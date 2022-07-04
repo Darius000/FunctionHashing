@@ -21,7 +21,8 @@ BaseObject::~BaseObject()
 void BaseObject::Destroy()
 {
 	m_PendingDestroy = true;
-	OnDestroyed.Invoke(this);
+	OnDestroyedEvent.Invoke(this);
+	OnDestroyed();
 }
 
 void BaseObject::SetName(const std::string& str)

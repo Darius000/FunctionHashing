@@ -4,6 +4,7 @@
 
 struct MenuItem
 {
+	MenuItem() = default;
 
 	MenuItem(const std::string& text = "", std::function<void()> onselected = nullptr)
 	{
@@ -13,6 +14,32 @@ struct MenuItem
 		{
 			OnMenuItemSelected += onselected;
 		}
+	}
+
+	MenuItem(const MenuItem& other)
+	{
+		OnMenuItemSelected = other.OnMenuItemSelected;
+		m_Text = other.m_Text;
+	}
+
+	MenuItem(MenuItem&& other) noexcept
+	{
+		OnMenuItemSelected = std::move(other.OnMenuItemSelected);
+		m_Text = std::move(other.m_Text);
+	}
+
+	MenuItem& operator =(const MenuItem& other)
+	{
+		OnMenuItemSelected = other.OnMenuItemSelected;
+		m_Text = other.m_Text;
+		return *this;
+	}
+
+	MenuItem& operator =(MenuItem&& other) noexcept
+	{
+		OnMenuItemSelected = std::move(other.OnMenuItemSelected);
+		m_Text = std::move(other.m_Text);
+		return *this;
 	}
 
 protected:
@@ -27,7 +54,7 @@ class Menu
 {
 public:
 
-	Menu(const std::string& menuName);
+	Menu(const std::string& menuName, const std::vector<MenuItem>& menuItems = {});
 
 	void AddMenuItem(const MenuItem& menuItem);
 

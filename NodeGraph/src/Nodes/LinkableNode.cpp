@@ -16,7 +16,7 @@ void LinkableNode::AddChild(BaseNode* child)
 {
 	m_Children.push_back(child);
 
-	child->OnDestroyed.AddBinding(BIND_EVENT(this, LinkableNode::OnChildNodeDestroyed));
+	child->OnDestroyedEvent.AddBinding(BIND_EVENT(this, LinkableNode::OnChildNodeDestroyed));
 
 	OnAddChild(child);
 }

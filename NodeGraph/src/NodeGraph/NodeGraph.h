@@ -6,9 +6,7 @@
 #include "UIElements/NodeElement.h"
 #include "UIElements/EdgeElement.h"
 
-using NodeList = typename std::vector<Scope<class NodeElement>>;
-using Edges = typename std::vector<Scope<class EdgeElement>>;
-
+using GraphElements = typename std::vector<Ref<class GraphElement>>;
 
 class NodeGraph 
 {
@@ -40,9 +38,7 @@ protected:
 	bool m_OpenNodePopup;
 
 
-	NodeList m_Nodes;
-
-	Edges m_Edges;
+	GraphElements m_Elements;
 
 	BlackBoard m_BlackBoard;
 };

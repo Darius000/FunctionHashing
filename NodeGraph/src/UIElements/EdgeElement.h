@@ -1,16 +1,20 @@
 #pragma once
 
 
-#include "Runtime/UI/Elements/UIElement.h"
+#include "GraphElement.h"
 #include "Edge/Edge.h"
 
-class EdgeElement : public UIElement
+class EdgeElement : public GraphElement
 {
 public:
 
 	EdgeElement(const Ref<Edge>& edge);
 
-	void OnDrawElement() override;
+	void BeginLayout(uint64_t id) override;
+
+	bool OnShowContextMenu() override;
+
+	void OnDestroyed() override;
 
 	Ref<Edge> GetEdge() { return m_Edge; }
 
@@ -18,5 +22,5 @@ private:
 
 	Ref<Edge> m_Edge;
 
-	Ref<class Menu> m_Menu;
+	
 };

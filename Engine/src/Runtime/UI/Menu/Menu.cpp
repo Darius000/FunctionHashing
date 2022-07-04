@@ -3,8 +3,8 @@
 #include "Utilities/VectorUtilities.h"
 #include "imgui.h"
 
-Menu::Menu(const std::string& menuName)
-	:m_Name(menuName)
+Menu::Menu(const std::string& menuName, const std::vector<MenuItem>& menuItems)
+	:m_Name(menuName), m_ItemsList(menuItems)
 {
 
 }

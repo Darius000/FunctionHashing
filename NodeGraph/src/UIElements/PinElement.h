@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Runtime/UI/Elements/Layouts.h"
+#include "GraphElement.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include <rttr/type.h>
 #include <Engine.h>
@@ -8,7 +8,7 @@
 namespace ed = ax::NodeEditor;
 
 
-class PinElement : public LayoutElement
+class PinElement : public GraphElement
 {
 public:
 	PinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect = false);
@@ -16,6 +16,12 @@ public:
 	ed::PinKind GetKind() const { return m_PinKind; }
 
 	rttr::type GetType() const { return m_PinType; }
+
+	bool OnShowContextMenu() override;
+
+	void OnDestroyed() override;
+
+	bool IsDeletable() override { return false; }
 
 	bool CanMultiConnect() const { return m_CanMulitConnect; }
 

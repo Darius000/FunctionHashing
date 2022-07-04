@@ -8,6 +8,19 @@ PinElement::PinElement(std::string_view name, ed::PinKind kind, const rttr::prop
 	m_Name = name;
 }
 
+bool PinElement::OnShowContextMenu()
+{
+	ed::PinId contextID;
+	ed::Suspend();
+	bool opened = ed::ShowPinContextMenu(&contextID);
+	ed::Resume();
+	return opened;
+}
+
+void PinElement::OnDestroyed()
+{
+}
+
 void PinElement::BeginLayout(uint64_t id)
 {
 	if (m_PinKind == ed::PinKind::Input)
@@ -29,5 +42,7 @@ void PinElement::EndLayout()
 	ed::EndPin();
 
 	ed::PopStyleVar(2);
+
+	GraphElement::EndLayout();
 }
 

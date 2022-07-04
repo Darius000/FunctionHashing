@@ -35,9 +35,9 @@ void NodeGraph::Instantiate(std::string_view name)
 	CORE_ASSERT(new_node != nullptr);
 
 
-	auto nodeElement = MakeScope<class NodeElement>(Ref<BaseNode>(new_node));
+	auto nodeElement = MakeRef<class NodeElement>(Ref<BaseNode>(new_node));
 	ed::CenterNodeOnScreen((uint64_t)nodeElement->GetID());
-	m_Nodes.push_back(std::move(nodeElement));	
+	m_Elements.push_back(nodeElement);	
 }
 
 void NodeGraph::Draw()
@@ -70,7 +70,7 @@ void NodeGraph::Draw()
 					{
 
 						auto edge = MakeRef<Edge>((uint64_t)start_pin->GetID(), (uint64_t)end_pin->GetID());
-						m_Edges.push_back(MakeScope<EdgeElement>(edge));
+						m_Elements.push_back(MakeScope<EdgeElement>(edge));
 					}
 					else
 					{
@@ -105,11 +105,11 @@ void NodeGraph::Draw()
 
 				if (ed::AcceptDeletedItem())
 				{
-					for (auto& edge : m_Edges)
+					for (auto& element : m_Elements)
 					{
-						if ((uint64_t)edge->GetID() == (uint64_t)deletedlinkid)
+						if ((uint64_t)element->GetID() == (uint64_t)deletedlinkid)
 						{
-							edge->Destroy();
+							element->Destroy();
 						}
 					}
 				}
@@ -123,11 +123,11 @@ void NodeGraph::Draw()
 			{
 				if (ed::AcceptDeletedItem())
 				{
-					for (auto& node : m_Nodes)
+					for (auto& element : m_Elements)
 					{
-						if ((uint64_t)node->GetID() == (uint64_t)deletednodeid)
+						if ((uint64_t)element->GetID() == (uint64_t)deletednodeid)
 						{
-							node->Destroy();
+							element->Destroy();
 						}
 					}
 				}
@@ -161,11 +161,11 @@ void NodeGraph::Draw()
 
 BaseObject* NodeGraph::FindNodeByID(uint64_t id) const
 {
-	for (auto& node_element : m_Nodes)
+	for (auto& element : m_Elements)
 	{
-		if ((uint64_t)node_element->GetID() == id)
+		if ((uint64_t)element->GetID() == id)
 		{
-			return node_element.get();
+			return element.get();
 		}
 	}
 
@@ -174,9 +174,10 @@ BaseObject* NodeGraph::FindNodeByID(uint64_t id) const
 
 PinElement* NodeGraph::FindPin(uint64_t pinid) const
 {
-	for (auto& node_element : m_Nodes)
+	for (auto element : m_Elements)
 	{
-		for (auto& input : node_element->GetInputs()->GetChildren())
+		auto node = Cast<NodeElement>(element);
+		for ( auto& input: node->GetInputs()->GetChildren())
 		{
 			auto id = (uint64_t)input->GetID();
 			if (auto pin = Cast<PinElement>(input); pin && id == pinid)
@@ -185,7 +186,7 @@ PinElement* NodeGraph::FindPin(uint64_t pinid) const
 			}
 		}
 
-		for (auto& output: node_element->GetOutputs()->GetChildren())
+		for (auto& output: node->GetOutputs()->GetChildren())
 		{
 			auto id = (uint64_t)output->GetID();
 			if (auto pin = Cast<PinElement>(output); pin && id == pinid)
@@ -236,32 +237,17 @@ void NodeGraph::DrawNodeListContextMenu()
 
 void NodeGraph::DrawElements()
 {
-	for (auto it = m_Nodes.begin(); it != m_Nodes.end();)
+	for (auto it = m_Elements.begin(); it != m_Elements.end();)
 	{
-		auto& nodeElement = (*it);
+		auto& element = (*it);
 
-		if (nodeElement->IsPendingDestroy())
+		if (element->IsPendingDestroy())
 		{
-			it = m_Nodes.erase(it);
+			it = m_Elements.erase(it);
 		}
 		else
 		{
-			nodeElement->DrawElement();
-			it++;
-		}
-	}
-
-	for (auto it = m_Edges.begin(); it != m_Edges.end();)
-	{
-		auto& edgeElement = (*it);
-
-		if (edgeElement->IsPendingDestroy())
-		{
-			it = m_Edges.erase(it);
-		}
-		else
-		{
-			edgeElement->DrawElement();
+			element->DrawElement();
 			it++;
 		}
 	}
