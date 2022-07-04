@@ -152,7 +152,7 @@ void NodeGraph::Draw()
 	ed::End();
 	ed::PopStyleVar(3);
 
-	//deslect on graph clicked
+	//deselect on graph clicked
 	if (ed::IsBackgroundClicked())
 	{
 		Selection::Select(nullptr);
