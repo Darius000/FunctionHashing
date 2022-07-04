@@ -39,6 +39,11 @@ void GraphLayer::OnAttach()
 	//m_ImageTest->Resize(200, 200);
 }
 
+void GraphLayer::OnUpdate(float deltatime)
+{
+	m_WindowStack.Update(deltatime);
+}
+
 void GraphLayer::OnDetach()
 {
 	ed::DestroyEditor(g_Context);
@@ -48,7 +53,7 @@ void GraphLayer::OnUIRender()
 {
 	ed::SetCurrentEditor(g_Context);
 
-	m_WindowStack.Update();
+	m_WindowStack.RenderWindows();
 
 	/*ImGui::Begin("Image Test");
 

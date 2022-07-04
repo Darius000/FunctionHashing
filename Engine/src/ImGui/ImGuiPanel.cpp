@@ -55,50 +55,9 @@ void ImGuiPanel::OnEndWindow()
 	ImGui::End();	
 }
 
-void ImGuiPanel::OnRecieveEvent(Event& event)
-{
-	EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<MouseScrolledEvent>(this, &ImGuiPanel::OnMouseScrolled);
-	dispatcher.Dispatch<MouseMovedEvent>(this, &ImGuiPanel::OnMouseMoved);
-	dispatcher.Dispatch<MouseButtonPressedEvent>(this, &ImGuiPanel::OnMouseButtonPressed);
-	dispatcher.Dispatch<MouseButtonReleasedEvent>(this, &ImGuiPanel::OnMouseButtonReleased);
-	dispatcher.Dispatch<KeyPressedEvent>(this, &ImGuiPanel::OnKeyPressed);
-	dispatcher.Dispatch<KeyReleasedEvent>(this, &ImGuiPanel::OnKeyReleased);
-}
-
 void ImGuiPanel::Close()
 {
 	m_IsOpen = false;
-}
-
-bool ImGuiPanel::OnMouseScrolled(MouseScrolledEvent& e)
-{
-	return false;
-}
-
-bool ImGuiPanel::OnMouseMoved(MouseMovedEvent& e)
-{
-	return false;
-}
-
-bool ImGuiPanel::OnMouseButtonPressed(MouseButtonPressedEvent& e)
-{
-	return false;
-}
-
-bool ImGuiPanel::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
-{
-	return false;
-}
-
-bool ImGuiPanel::OnKeyPressed(KeyPressedEvent& e)
-{
-	return false;
-}
-
-bool ImGuiPanel::OnKeyReleased(KeyReleasedEvent& e)
-{
-	return false;
 }
 
 void ImGuiPanel::OnFocused()

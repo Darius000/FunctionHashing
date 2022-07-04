@@ -14,6 +14,8 @@ public:
 
 	void OnAttach() override;
 
+	void OnUpdate(float deltatime) override;
+
 	void OnDetach() override;
 
 	void OnUIRender() override;

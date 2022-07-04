@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Engine.h>
-#include "NodeGraph\NodeGraph.h"
+#include "NodeGraph/NodeGraph.h"
 #include "ImGui/ImGuiPanel.h"
 
 class NodeGraphPanel : public ImGuiPanel
@@ -15,6 +15,8 @@ public:
 
 	void OnRenderWindow() override;
 
+	void OnUpdate(float deltatime) override;
+
 	Ref<NodeGraph>& GetGraph() { return m_Nodegraph; }
 
 private:
@@ -26,13 +28,6 @@ private:
 	void SavePrefs();
 	void LoadPrefs();
 	
-	bool OnKeyPressed(KeyPressedEvent& e) override;
-	bool OnKeyReleased(KeyReleasedEvent& e) override;
-	bool OnMouseButtonPressed(MouseButtonPressedEvent& e) override;
-	bool OnMouseButtonReleased(MouseButtonReleasedEvent& e) override;
-	bool OnMouseMoved(MouseMovedEvent& e) override;
-	bool OnMouseScrolled(MouseScrolledEvent& e) override;
-
 	Ref<class NodeGraph> m_Nodegraph;
 	std::string m_LastFileUsed = "";
 	std::vector<std::string> m_RecentFiles;

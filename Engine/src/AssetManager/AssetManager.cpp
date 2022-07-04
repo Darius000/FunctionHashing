@@ -21,19 +21,43 @@ bool AssetManager::Contains(std::string_view name)
 }
 
 template<typename T>
-bool AssetManager::LoadAsset(std::string_view filename, std::string_view path)
+void AssetManager::LoadAsset(std::string_view filename, std::string_view path)
 {
-	return false;
+	
 }
 
 
-bool AssetManager::LoadAssetsAtPath(std::filesystem::path path)
+void AssetManager::LoadAssetsAtPath(std::filesystem::path path)
+{
+	LoadAssetsAtPathAsync(path);
+}
+
+void AssetManager::TryLoadAsset(std::filesystem::directory_entry entry)
+{
+	auto path = entry.path();
+	auto filename = path.filename();
+	auto ext = path.extension().string();
+
+	if (!path.has_extension())
+	{
+		LOG_ERROR("Not a valid extension for {0}", filename.string());
+
+		return;
+	}
+
+	if (Texture::IsValidExtension(ext.c_str()))
+	{
+		LoadAsset<Texture>(filename.string(), path.string());
+	}
+}
+
+void AssetManager::LoadAssetsAtPathAsync(std::filesystem::path path)
 {
 	if (!fs::is_directory(path))
 	{
 		LOG_ERROR("Not a valid directory {0}", path.string());
 
-		return false;
+		return;
 	}
 
 	for (auto& item : fs::recursive_directory_iterator(path))
@@ -48,31 +72,6 @@ bool AssetManager::LoadAssetsAtPath(std::filesystem::path path)
 			TryLoadAsset(item);
 		}
 	}
-
-	return true;
-}
-
-bool AssetManager::TryLoadAsset(std::filesystem::directory_entry entry)
-{
-	auto path = entry.path();
-	auto filename = path.filename();
-	auto ext = path.extension().string();
-
-	if (!path.has_extension())
-	{
-		LOG_ERROR("Not a valid extension for {0}", filename.string());
-
-		return false;
-	}
-
-	if (Texture::IsValidExtension(ext.c_str()))
-	{
-		return LoadAsset<Texture>(filename.string(), path.string());
-
-	}
-
-
-	return false;
 }
 
 template<typename AssetT>
@@ -86,5 +85,4 @@ inline void AssetManager::Add(std::string_view name, const Ref<AssetT>& asset)
 
 template<typename AssetT>
 std::unordered_map<std::string, Scope<Asset<AssetT>>> AssetManager::m_Assets;
-
 

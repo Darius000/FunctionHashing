@@ -40,6 +40,21 @@ void NodeGraph::Instantiate(std::string_view name)
 	m_Elements.push_back(nodeElement);	
 }
 
+void NodeGraph::Update(float deltatime)
+{
+	if(m_Running)
+	{
+		if (!m_Paused)
+		{
+			LOG_TRACE("Running");
+		}
+		else
+		{
+			LOG_WARN("Paused");
+		}	
+	}
+}
+
 void NodeGraph::Draw()
 {
 	ed::PushStyleVar(ed::StyleVar_PinRadius, 20.0f);
@@ -158,6 +173,26 @@ void NodeGraph::Draw()
 		Selection::Select(nullptr);
 
 	}
+}
+
+void NodeGraph::Run()
+{
+	m_Running = true;
+}
+
+void NodeGraph::Stop()
+{
+	m_Running = false;
+}
+
+void NodeGraph::Pause()
+{
+	m_Paused = true;
+}
+
+void NodeGraph::Resume()
+{
+	m_Paused = false;
 }
 
 BaseObject* NodeGraph::FindNodeByID(uint64_t id) const

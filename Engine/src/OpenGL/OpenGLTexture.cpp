@@ -86,6 +86,8 @@ OpenGLTexture::OpenGLTexture(const std::string& filename)
 
 
 	InValidate(data);
+
+	STBI_FREE(data);
 }
 
 OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, BHive::ImageFormat format, const void* data)

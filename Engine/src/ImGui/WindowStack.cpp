@@ -13,10 +13,14 @@ WindowStack::~WindowStack()
 	m_Editors.clear();
 }
 
-void WindowStack::Update()
+void WindowStack::Update(float deltatime)
 {		
-	
-	RenderWindows();
+	for (auto it = m_Editors.begin(); it != m_Editors.end(); it++)
+	{
+		auto panel = it->second.get();
+
+		panel->OnUpdate(deltatime);
+	}
 }
 
 
@@ -28,19 +32,6 @@ void WindowStack::RenderWindows()
 		auto id = it->first;
 
 		RenderCurrentWindow(panel);
-	}
-}
-
-
-void WindowStack::ExecutePanelEvents(Event& event)
-{
-	for (auto it = m_Editors.begin(); it != m_Editors.end(); it++)
-	{
-		auto panel = it->second.get();
-		auto id = it->first;
-
-		if (panel->IsFocusedAndHoverd())
-			panel->OnRecieveEvent(event);
 	}
 }
 

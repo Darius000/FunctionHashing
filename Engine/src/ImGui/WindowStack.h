@@ -22,13 +22,8 @@ public:
 	}
 
 	//Updates the window stack
-	void Update();
+	void Update(float deltatime);
 
-
-	//Send events to panels
-	void ExecutePanelEvents(Event& event);
-
-private:
 	void RenderWindows();
 
 private:

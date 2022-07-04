@@ -72,6 +72,11 @@ void NodeGraphPanel::OnRenderWindow()
 
 }
 
+void NodeGraphPanel::OnUpdate(float deltatime)
+{
+	m_Nodegraph->Update(deltatime);
+}
+
 
 void NodeGraphPanel::ShowFileMenu()
 {
@@ -142,9 +147,23 @@ void NodeGraphPanel::ShowFileMenu()
 
 void NodeGraphPanel::ShowActionMenu()
 {
-	if (ImGui::MenuItem("Play"))	{}
-	if (ImGui::MenuItem("Stop"))	{}
-	if (ImGui::MenuItem("Pause"))	{}
+	if (!m_Nodegraph->IsRunning())
+	{
+		if (ImGui::MenuItem("Play")) { m_Nodegraph->Run(); }
+	}
+	else
+	{
+		if (ImGui::MenuItem("Stop")) { m_Nodegraph->Stop(); }
+
+		if (!m_Nodegraph->IsPaused())
+		{
+			if (ImGui::MenuItem("Pause")) { m_Nodegraph->Pause(); }
+		}
+		else
+		{
+			if (ImGui::MenuItem("Resume")) { m_Nodegraph->Resume(); }
+		}
+	}
 }
 
 void NodeGraphPanel::SaveToRecentFiles(const std::string& filename)
@@ -219,37 +238,5 @@ void NodeGraphPanel::LoadPrefs()
 			m_RecentFiles.push_back(file.as<std::string>());
 		}
 	}
-}
-
-bool NodeGraphPanel::OnKeyPressed(KeyPressedEvent& e)
-{
-
-	return false;
-}
-
-bool NodeGraphPanel::OnKeyReleased(KeyReleasedEvent& e)
-{
-
-	return false;
-}
-
-bool NodeGraphPanel::OnMouseButtonPressed(MouseButtonPressedEvent& e)
-{
-	return false;
-}
-
-bool NodeGraphPanel::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
-{
-	return false;
-}
-
-bool NodeGraphPanel::OnMouseMoved(MouseMovedEvent& e)
-{
-	return false;
-}
-
-bool NodeGraphPanel::OnMouseScrolled(MouseScrolledEvent& e)
-{
-	return false;
 }
 
