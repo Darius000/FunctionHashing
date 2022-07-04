@@ -58,5 +58,7 @@ protected:
 	GraphElements m_Elements;
 
 	BlackBoard m_BlackBoard;
+
+	Ref<class BaseNode> m_Root;
 };
 

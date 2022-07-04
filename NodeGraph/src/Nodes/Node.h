@@ -9,8 +9,6 @@ public:
 	Node();
 	virtual ~Node() = default;
 
-
-	virtual void OnExecute() {};
 private:
 
 	REFLECTABLEV(LinkableNode)

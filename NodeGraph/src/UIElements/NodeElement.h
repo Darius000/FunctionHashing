@@ -28,6 +28,8 @@ public:
 
 	VerticalBox* GetOutputs() { return m_OutputContainer; }
 
+	EngineEvent<const Ref<class BaseNode>&> m_SetRootEvent;
+
 protected:
 
 	void AddPinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect);

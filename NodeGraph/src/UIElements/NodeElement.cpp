@@ -53,6 +53,8 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 		}
 
 	}
+
+	m_Menu->AddMenuItem({ "Set As Root", [&]() { m_SetRootEvent.Invoke(m_Node); } });
 }
 
 void NodeElement::BeginLayout(uint64_t id)

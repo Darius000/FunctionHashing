@@ -48,7 +48,7 @@ protected:
 	//initilize before exectuion starts
 	virtual void OnBeginExecute() {};
 
-	virtual void OnExecute() {};
+	virtual void OnExecute();
 
 	virtual void OnEndExecute() {};
 

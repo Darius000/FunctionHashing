@@ -36,6 +36,14 @@ void NodeGraph::Instantiate(std::string_view name)
 
 
 	auto nodeElement = MakeRef<class NodeElement>(Ref<BaseNode>(new_node));
+	nodeElement->m_SetRootEvent += [&](const Ref<BaseNode>& node) { m_Root = node; };
+	nodeElement->OnDestroyedEvent += [&](BaseObject* obj) {
+		if (NodeElement* element = Cast<NodeElement>(obj))
+		{
+			if (element->GetNode() == m_Root) m_Root = nullptr;
+		}
+	};
+
 	ed::CenterNodeOnScreen((uint64_t)nodeElement->GetID());
 	m_Elements.push_back(nodeElement);	
 }
@@ -47,6 +55,11 @@ void NodeGraph::Update(float deltatime)
 		if (!m_Paused)
 		{
 			LOG_TRACE("Running");
+
+			if (m_Root)
+			{
+				m_Root->Execute();
+			}
 		}
 		else
 		{

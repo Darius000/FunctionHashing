@@ -19,3 +19,8 @@ void BaseNode::Execute()
 
 	m_BeginExecution = false;
 }
+
+void BaseNode::OnExecute()
+{
+	LOG_TRACE("Executing");
+}
