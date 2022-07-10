@@ -151,7 +151,7 @@ bool Inspector_UInt8::Inspect(rttr::variant& var, bool read_only, const meta_get
     }
     else
     {
-        if (ImGui::SliderInt("", &data, 0, 255))
+        if (ImGui::DragInt("", &data, 1, 0, 255))
         {
             var = static_cast<uint8_t>(data);
 

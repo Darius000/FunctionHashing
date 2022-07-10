@@ -11,6 +11,9 @@ inline ImColor GetPinColor(rttr::type type)
 	if (type == rttr::type::get<bool>()) return ImColor(1.0f, 0.0f, 0.0f);
 	if (type == rttr::type::get<float>()) return ImColor(0.6f, 1.0f, 0.6f);
 	if (type == rttr::type::get<std::string>()) return ImColor(1.0f, 0.5f, 0.5f);
+	if (type == rttr::type::get<glm::vec2>()) return ImColor(0.1f, 0.1f, 1.0f);
+	if (type == rttr::type::get<glm::vec3>()) return ImColor(1.0f, 1.0f, 0.0f);
+	if (type == rttr::type::get<glm::vec4>()) return ImColor(1.0f, 0.5f, 0.0f);
 
 	return ImColor();
 }

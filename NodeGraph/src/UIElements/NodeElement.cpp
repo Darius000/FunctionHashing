@@ -31,8 +31,8 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 	node_label->m_Binding += binding;
 
 	auto header_slot = Cast<HorizontalBoxSlot>(header->AddChild(node_label));
-	header_slot->m_StartWeight = 0.0f;
-	//header_slot->m_EndSpacing = 1.0f;
+	
+	
 
 	Cast<HorizontalBoxSlot>(content->AddChild(m_InputContainer))->m_StartWeight = 1.0f;
 	Cast<HorizontalBoxSlot>(content->AddChild(m_OutputContainer))->m_StartWeight = 1.0f;

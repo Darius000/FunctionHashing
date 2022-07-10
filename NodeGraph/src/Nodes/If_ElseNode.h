@@ -11,7 +11,7 @@ public:
 
 	Color GetHeaderColor() const override { return { 1.0f, 0.0f, 0.0f, 1.0f }; }
 
-	bool m_InCondition;
+	glm::vec4 m_InCondition{};
 
 	REFLECTABLEV(Node)
 };
