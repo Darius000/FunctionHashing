@@ -4,6 +4,12 @@
 #include "BlackBoard/BlackBoard.h"
 #include "Renderer/Texture.h"
 
+enum class EKeyContextMenuOptions
+{
+	Set,
+	Get
+};
+
 
 class BlackBoardView : public ImGuiPanel
 {
@@ -13,9 +19,13 @@ public:
 
 	RetEngineEvent<BlackBoard*> OnGetBlackBoard;
 
+	EngineEvent<const Ref<BlackBoardKey>& ,const EKeyContextMenuOptions&> OnOptionSelected;
+
 	void OnRenderWindow() override;
 
-	void DrawKey(Ref<BlackBoardKey>& key);
+	void DrawKey(const Ref<BlackBoardKey>& key);
+
+	void CreateContextMenu(const Ref<BlackBoardKey>& key);
 
 private:
 	static Ref<Texture> s_CapsuleImage;

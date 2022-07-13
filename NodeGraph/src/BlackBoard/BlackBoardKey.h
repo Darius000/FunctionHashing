@@ -16,11 +16,23 @@ class TBlackBoardKey : public BlackBoardKey
 public:
 	TBlackBoardKey(std::string_view name);
 
+	TBlackBoardKey(const TBlackBoardKey&& other)
+	{
+		m_Value = other.m_Value;
+	}
+
 	inline const T& GetValue() const { return m_Value; }
 
 	void SetValue(T value);
 
 	void SetToDefault();
+
+	TBlackBoardKey& operator=(const TBlackBoardKey& rhs)
+	{
+		m_Value = rhs.m_Value;
+
+		return *this;
+	}
 
 private:
 

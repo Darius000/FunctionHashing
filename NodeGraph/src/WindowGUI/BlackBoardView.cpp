@@ -77,7 +77,7 @@ void BlackBoardView::OnRenderWindow()
 	}
 }
 
-void BlackBoardView::DrawKey(Ref<BlackBoardKey>& key)
+void BlackBoardView::DrawKey(const Ref<BlackBoardKey>& key)
 {
 	auto name = key->GetName();
 	Color image_color = Color();
@@ -97,6 +97,8 @@ void BlackBoardView::DrawKey(Ref<BlackBoardKey>& key)
 
 	ImGui::Image(reinterpret_cast<ImTextureID>((uint64_t)s_CapsuleImage->GetRendererID()), image_size, { 0, 1 }, {1, 0}, image_color);
 
+
+
 	ImGui::Spring(1, 1);
 
 	if (ImGui::Selectable(name.c_str(), Selection::Get() == key))
@@ -104,8 +106,45 @@ void BlackBoardView::DrawKey(Ref<BlackBoardKey>& key)
 		Selection::Select(key);
 	}
 
+
 	ImGui::EndHorizontal();
+
+	CreateContextMenu(key);
+
+	/*if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_::ImGuiDragDropFlags_SourceAllowNullID))
+	{
+		ImGui::SetDragDropPayload("BLACKBOARDKEY", reinterpret_cast<const void*>(key.get()), sizeof(key.get()), ImGuiCond_Always);
+		ImGui::EndDragDropSource();
+	}*/
 
 }
 
+void BlackBoardView::CreateContextMenu(const Ref<BlackBoardKey>& key)
+{
+	auto options = rttr::type::get<EKeyContextMenuOptions>().get_enumeration();
+
+	if (ImGui::BeginPopupContextItem("Key Context Menu"))
+	{
+		for (auto option : options.get_names())
+		{
+			EKeyContextMenuOptions value = options.name_to_value(option).get_value<EKeyContextMenuOptions>();
+			if (ImGui::Selectable(option.data(), false))
+			{
+				OnOptionSelected.Invoke(key,value);
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
 Ref<Texture> BlackBoardView::s_CapsuleImage = nullptr;
+
+REFLECT_INLINE(EKeyContextMenuOptions)
+{
+	rttr::registration::enumeration<EKeyContextMenuOptions>("KeyContextMenuOptions")
+		(
+			rttr::value("Set", EKeyContextMenuOptions::Set),
+			rttr::value("Get", EKeyContextMenuOptions::Get)
+		);
+}

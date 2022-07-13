@@ -19,7 +19,7 @@ public:
 		BindedFunctions = other.BindedFunctions;
 	}
 
-	virtual ~EngineEventBase() { UnBindAll(); }
+	virtual ~EngineEventBase() { }
 
 	inline bool IsBound() { return BindedFunctions.size() > 0; }
 

@@ -164,6 +164,22 @@ void NodeGraph::Draw()
 	}
 	ed::EndDelete();
 
+	/*ed::Suspend();
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("BLACKBOARDKEY");
+
+		if (payload && payload->Data)
+		{
+			auto key = reinterpret_cast<BlackBoardKey*>(payload->Data);
+			LOG_TRACE("{0}", key->GetName().c_str());
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ed::Resume();*/
 
 
 	ed::Suspend();
