@@ -3,5 +3,6 @@
 
 REFLECT_INLINE(Node)
 {
-	rttr::registration::class_<Node>("Node")(rttr::policy::ctor::as_raw_ptr);
+	rttr::registration::class_<Node>("Node")
+		.constructor<>()(rttr::policy::ctor::as_raw_ptr);
 }
