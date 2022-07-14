@@ -44,10 +44,10 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 
 	for (auto property : rttr::type::get(*node).get_properties())
 	{
-		auto meta_data = property.get_metadata("Kind");
+		auto meta_data = property.get_metadata(EPropertyMetaData::PinType);
 		if (meta_data)
 		{
-			auto kind = meta_data.get_value<std::string>() == "Input" ? ed::PinKind::Input : ed::PinKind::Output;
+			auto kind = meta_data.get_value<EPinType>();
 
 			AddPinElement(property.get_name().data(), kind, property, rttr::instance(m_Node), false);
 		}
@@ -121,15 +121,15 @@ void NodeElement::OnDestroyed()
 	ed::DeleteNode((uint64_t)GetID());
 }
 
-void NodeElement::AddPinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect)
+void NodeElement::AddPinElement(std::string_view name, EPinType kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect)
 {
-	if (kind == ed::PinKind::Input)
+	if (kind & EPinType::Input)
 	{
 		auto pin = new InputPin(name, property, obj, canMultiConnect);
 		auto input_slot = Cast<VerticalBoxSlot>(m_InputContainer->AddChild(pin));
 	}
-	else
-	{
+	
+	if(kind & EPinType::Output || kind & EPinType::FlowOutput) {
 		auto pin = new OutputPin(name, property, obj, canMultiConnect);
 		auto output_slot = Cast<VerticalBoxSlot>(m_OutputContainer->AddChild(pin));
 	}

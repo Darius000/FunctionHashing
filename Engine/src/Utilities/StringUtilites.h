@@ -20,6 +20,18 @@ namespace StringUtilites
 		str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 	}
 
+	static inline void Trim(std::string& str)
+	{
+		size_t first = str.find_first_not_of(' ');
+		if (first == std::string::npos)
+		{
+			return;
+		}
+
+		size_t last = str.find_last_not_of(' ');
+		str = str.substr(first, (last - first + 1));
+	}
+
 	static inline void SplitString(const std::string& str, const std::string& delimiter, std::vector<std::string>& out)
 	{
 		size_t pos = 0;
@@ -33,7 +45,8 @@ namespace StringUtilites
 			//add 1 to offset space character
 			token = str.substr(start, pos - start);
 
-			RemoveWhiteSpace(token);
+			//RemoveWhiteSpace(token);
+			Trim(token);
 
 			out.push_back(token);
 		}

@@ -32,7 +32,7 @@ public:
 
 protected:
 
-	void AddPinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect);
+	void AddPinElement(std::string_view name, EPinType kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect);
 
 
 private:

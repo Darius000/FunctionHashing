@@ -68,4 +68,6 @@ public:
 #define REFLECTABLE() RTTR_REGISTRATION_FRIEND_NON_INTRUSIVE()
 #define REFLECTABLEV(...) EXPAND(REFLECTABLE_VIRTUAL_IMPL(__VA_ARGS__))
 
+#define COMMA ,
+
 #include "MetaDataSpecifiers.h"
