@@ -8,6 +8,16 @@ BlackBoardView::BlackBoardView(ImGuiID id)
 	:ImGuiPanel("BlackBoard", ImGuiWindowFlags_None, id)
 {
 	s_CapsuleImage = AssetManager::Get<Texture>("Capsule.png");
+
+	OnOptionSelected += [&](const Ref<BlackBoardKey>& key, const EKeyContextMenuOptions& option) {
+		if (option == EKeyContextMenuOptions::Delete)
+		{
+			if (auto blackboard = OnGetBlackBoard.Invoke())
+			{
+				blackboard->Remove(key);
+			}
+		}
+	};
 }
 
 void BlackBoardView::OnRenderWindow()
@@ -21,20 +31,28 @@ void BlackBoardView::OnRenderWindow()
 	{
 		auto padding = ImGui::GetStyle().FramePadding.x;
 
-		ImGui::BeginVertical("Keys");
+		ImGui::BeginVertical("Keys", ImGui::GetContentRegionAvail());
+
+		//Spring();
 
 		ImGui::BeginHorizontal("Keys Header");
 
+		Spring(0.0f, 1.0f);
 
 		//draw header
 		ImGui::Text("Keys");
 
+		Spring(1.f, 1.0f);
+
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 1, 0, 1));
 
-		ImGui::Spring(1, padding);
 
 		//draw drop down
 		bool addedkey = ImGui::Button("Add Key");
+
+		Spring(-1.0f, 1.0f);
+
+
 		bool changed = false;
 
 
@@ -58,10 +76,13 @@ void BlackBoardView::OnRenderWindow()
 			ImGui::EndPopup();
 		}
 
-
-		ImGui::EndHorizontal();
-
 		
+		ImGui::EndHorizontal();
+		
+		Spring(0.0f, 0.0f);
+
+		Spring(0.0f, 1.0f);
+
 		ImGui::BeginVertical("BlackBoard Keys", {}, 0.0f);
 	
 		//draw keys
@@ -69,6 +90,7 @@ void BlackBoardView::OnRenderWindow()
 		{
 			DrawKey(item);
 		}
+
 		ImGui::EndVertical();
 		
 		ImGui::PopStyleColor();
@@ -79,6 +101,8 @@ void BlackBoardView::OnRenderWindow()
 
 void BlackBoardView::DrawKey(const Ref<BlackBoardKey>& key)
 {
+	if (key == nullptr) return;
+
 	auto name = key->GetName();
 	Color image_color = Color();
 
@@ -90,7 +114,7 @@ void BlackBoardView::DrawKey(const Ref<BlackBoardKey>& key)
 	}
 
 	auto region_size = ImVec2(ImGui::GetContentRegionAvail().x, 50.0f);
-	ImGui::BeginHorizontal(name.c_str(), region_size);
+	ImGui::BeginHorizontal(name.c_str());
 
 	auto imageratio = s_CapsuleImage->GetWidth() / s_CapsuleImage->GetHeight();
 	auto image_size = ImVec2(imageratio * 50.0f, imageratio * 50.0f);
@@ -99,7 +123,7 @@ void BlackBoardView::DrawKey(const Ref<BlackBoardKey>& key)
 
 
 
-	ImGui::Spring(1, 1);
+	Spring(1, 1);
 
 	if (ImGui::Selectable(name.c_str(), Selection::Get() == key))
 	{
@@ -111,11 +135,6 @@ void BlackBoardView::DrawKey(const Ref<BlackBoardKey>& key)
 
 	CreateContextMenu(key);
 
-	/*if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_::ImGuiDragDropFlags_SourceAllowNullID))
-	{
-		ImGui::SetDragDropPayload("BLACKBOARDKEY", reinterpret_cast<const void*>(key.get()), sizeof(key.get()), ImGuiCond_Always);
-		ImGui::EndDragDropSource();
-	}*/
 
 }
 
@@ -123,7 +142,7 @@ void BlackBoardView::CreateContextMenu(const Ref<BlackBoardKey>& key)
 {
 	auto options = rttr::type::get<EKeyContextMenuOptions>().get_enumeration();
 
-	if (ImGui::BeginPopupContextItem("Key Context Menu"))
+	if (ImGui::BeginPopupContextItem(("Key Context Menu ##" + key->GetName()).c_str()))
 	{
 		for (auto option : options.get_names())
 		{
@@ -138,12 +157,21 @@ void BlackBoardView::CreateContextMenu(const Ref<BlackBoardKey>& key)
 	}
 }
 
+void BlackBoardView::Spring(float w, float s)
+{
+	ImGui::Spring(w, s);
+
+	/*ImGui::GetWindowDrawList()->AddRect(
+		ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 0, 0, 255));*/
+}
+
 Ref<Texture> BlackBoardView::s_CapsuleImage = nullptr;
 
 REFLECT_INLINE(EKeyContextMenuOptions)
 {
 	rttr::registration::enumeration<EKeyContextMenuOptions>("KeyContextMenuOptions")
 		(
+			rttr::value("Delete", EKeyContextMenuOptions::Delete),
 			rttr::value("Set", EKeyContextMenuOptions::Set),
 			rttr::value("Get", EKeyContextMenuOptions::Get)
 		);

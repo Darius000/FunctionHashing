@@ -15,7 +15,7 @@ inline ImColor GetPinColor(rttr::type type)
 	if (type == rttr::type::get<glm::vec3>()) return ImColor(1.0f, 1.0f, 0.0f);
 	if (type == rttr::type::get<glm::vec4>()) return ImColor(1.0f, 0.5f, 0.0f);
 
-	return ImColor();
+	return ImColor(.5f, .5f, .5f);
 }
 
 

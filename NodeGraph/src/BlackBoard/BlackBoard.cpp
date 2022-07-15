@@ -4,7 +4,7 @@
 
 BlackBoard::BlackBoard()
 {
-	Add(new TBlackBoardKey<int>("Int Key Default"));
+	
 }
 
 BlackBoardKey* BlackBoard::Create(std::string_view name, rttr::type type)
@@ -32,9 +32,13 @@ void BlackBoard::Remove(const Ref<BlackBoardKey>& key)
 	auto name = key->GetName();
 	if (Contains(name))
 	{
+		key->Destroy();
+
 		VectorUtilities::Remove(m_Keys, [name](const Ref<BlackBoardKey>& item) {
 			return item->GetName() == name;
 		});
+
+		
 	}
 }
 

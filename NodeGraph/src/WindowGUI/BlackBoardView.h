@@ -6,6 +6,7 @@
 
 enum class EKeyContextMenuOptions
 {
+	Delete,
 	Set,
 	Get
 };
@@ -26,6 +27,8 @@ public:
 	void DrawKey(const Ref<BlackBoardKey>& key);
 
 	void CreateContextMenu(const Ref<BlackBoardKey>& key);
+
+	void Spring(float w = 1.0f, float s = -1.0f);
 
 private:
 	static Ref<Texture> s_CapsuleImage;
