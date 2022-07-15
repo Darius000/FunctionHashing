@@ -29,25 +29,37 @@ InputPin::InputPin(std::string_view name, const rttr::property& property, const 
 	pinStyle.m_Resolution = 30;
 	pinStyle.m_Thickness = 2.0f;
 
-	auto circle_element = new CircleElement("");
-	auto& style = circle_element->GetStyle();
+	m_PinShape = new CircleElement("");
+	auto& style = m_PinShape->GetStyle();
 	style.m_Color = GetPinColor(property.get_type());
 
 
-	circle_element->GetCircleStyle() = pinStyle;
+	m_PinShape->GetCircleStyle() = pinStyle;
 
 	auto h_element = new HorizontalBox();
 
-	auto circle_slot = Cast<HorizontalBoxSlot>(h_element->AddChild(circle_element));
-	circle_slot->m_EndSpacing = 0.0f;
+	h_element->AddChild(m_PinShape, SlotConfiguration(-1.0f));
 
-	auto label_slot = Cast<HorizontalBoxSlot>(h_element->AddChild(new LabelElement("Label", name.data())));
-	label_slot->m_EndSpacing = 0.0f;
+	h_element->AddChild(new LabelElement("Label", name.data()), SlotConfiguration(- 1.0f));
 
-	auto property_slot = Cast<HorizontalBoxSlot>(h_element->AddChild(new PropertyFieldElement(property, obj)));
-	
+	m_PropertyField = new PropertyFieldElement(property, obj);
+	auto property_slot = Cast<HorizontalBoxSlot>(h_element->AddChild(m_PropertyField));
 
 	AddChild(h_element);
+}
+
+void InputPin::OnConnected()
+{
+	PinElement::OnConnected();
+
+	m_PropertyField->m_Enabled = false;
+}
+
+void InputPin::OnDisConnected()
+{
+	PinElement::OnDisConnected();
+
+	m_PropertyField->m_Enabled = true;
 }
 
 
@@ -60,18 +72,18 @@ OutputPin::OutputPin(std::string_view name, const rttr::property& property, cons
 	pinStyle.m_Resolution = 30;
 	pinStyle.m_Thickness = 2.0f;
 
-	auto circle_element = new CircleElement("");
-	auto& style = circle_element->GetStyle();
+	m_PinShape = new CircleElement("");
+	auto& style = m_PinShape->GetStyle();
 	style.m_Color = GetPinColor(property.get_type());
 
 
-	circle_element->GetCircleStyle() = pinStyle;
+	m_PinShape->GetCircleStyle() = pinStyle;
 
 	auto h_element = new HorizontalBox();
 
 	h_element->AddChild(new LabelElement("Label", name.data()));
 
-	h_element->AddChild(circle_element);
+	h_element->AddChild(m_PinShape);
 
 	AddChild(h_element);
 }

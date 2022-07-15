@@ -3,6 +3,7 @@
 #include "UIElement.h"
 #include "LayoutSlot.h"
 #include "Templates/TSubClass.h"
+#include "LayoutConfig.h"
 
 class LayoutElement : public UIElement
 {
@@ -22,6 +23,8 @@ protected:
 public:
 	LayoutSlot* AddChild(UIElement* element);
 
+	LayoutSlot* AddChild(UIElement* element, const LayoutConfig& config);
+
 	bool RemoveChild(UIElement* element);
 
 	bool RemoveChildAt(uint64_t index);
@@ -33,6 +36,9 @@ public:
 	size_t GetNumChildren() const { return m_Slots.size(); }
 
 	void ClearChildren();
+
+	ImVec2 m_ItemSpacing = { 10.0f, 10.0f };
+
 
 protected:
 

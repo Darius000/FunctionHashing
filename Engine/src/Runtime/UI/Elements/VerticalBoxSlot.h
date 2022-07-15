@@ -2,10 +2,17 @@
 
 #include "HorizontalBoxSlot.h"
 
-class VerticalBoxSlot : public HorizontalBoxSlot
+class VerticalBoxSlot : public LayoutSlot
 {
 public:
-	VerticalBoxSlot() {}
+	VerticalBoxSlot();
+	VerticalBoxSlot(const LayoutConfig& config) ;
 
-	REFLECTABLEV(HorizontalBoxSlot)
+	virtual void OnBeginSlotLayout() override;
+
+	virtual void OnEndSlotLayout() override;
+
+	SlotConfiguration m_Configuration;
+
+	REFLECTABLEV(LayoutSlot)
 };

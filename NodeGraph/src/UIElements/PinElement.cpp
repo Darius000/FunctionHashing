@@ -1,11 +1,31 @@
 #include "PinElement.h"
 #include "Nodes/BaseNode.h"
-
+#include "Runtime/UI/Elements/CircleElement.h"
 
 PinElement::PinElement(std::string_view name, ed::PinKind kind, const rttr::property& property, const rttr::instance& obj, bool canMultiConnect)
 	:m_PinKind(kind), m_PinType(property.get_type()), m_CanMulitConnect(canMultiConnect), m_Connections(0), m_Property(property), m_Object(obj)
 {
 	m_Name = name;
+}
+
+void PinElement::OnConnected()
+{
+	m_Connections++;
+
+	if (m_PinShape)
+	{
+		m_PinShape->GetCircleStyle().m_Filled = true;
+	}
+}
+
+void PinElement::OnDisConnected()
+{
+	m_Connections--;
+
+	if (m_PinShape)
+	{
+		m_PinShape->GetCircleStyle().m_Filled = false;
+	}
 }
 
 bool PinElement::OnShowContextMenu()

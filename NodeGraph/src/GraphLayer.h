@@ -24,4 +24,6 @@ public:
 
 private:
 	WindowStack m_WindowStack;
+
+	bool m_ShowDemoWindow = false;
 };

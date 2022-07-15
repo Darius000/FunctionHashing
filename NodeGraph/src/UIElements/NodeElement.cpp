@@ -30,15 +30,13 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 
 	node_label->m_Binding += binding;
 
-	auto header_slot = Cast<HorizontalBoxSlot>(header->AddChild(node_label));
-	
-	
+	header->AddChild(node_label, SlotConfiguration(0.0f, 1.0f, -1.0f, 1.0f));
 
-	Cast<HorizontalBoxSlot>(content->AddChild(m_InputContainer))->m_StartWeight = 1.0f;
-	Cast<HorizontalBoxSlot>(content->AddChild(m_OutputContainer))->m_StartWeight = 1.0f;
+	content->AddChild(m_InputContainer);
+	content->AddChild(m_OutputContainer, SlotConfiguration(1.0f, -1.0f, 0.0f, -1.0f));
 
-	node_element->AddChild(header);
-	node_element->AddChild(content);
+	node_element->AddChild(header, SlotConfiguration(1.0f, -1.0f, -1.0f));
+	node_element->AddChild(content, SlotConfiguration(1.0f, -1.0f, -1.0f));
 
 	AddChild(node_element);
 
@@ -126,12 +124,13 @@ void NodeElement::AddPinElement(std::string_view name, EPinType kind, const rttr
 	if (kind & EPinType::Input)
 	{
 		auto pin = new InputPin(name, property, obj, canMultiConnect);
-		auto input_slot = Cast<VerticalBoxSlot>(m_InputContainer->AddChild(pin));
+		m_InputContainer->AddChild(pin, SlotConfiguration(1.0f, -1.0f, 1.0f, -1.0f));
+	
 	}
 	
 	if(kind & EPinType::Output || kind & EPinType::FlowOutput) {
 		auto pin = new OutputPin(name, property, obj, canMultiConnect);
-		auto output_slot = Cast<VerticalBoxSlot>(m_OutputContainer->AddChild(pin));
+		m_OutputContainer->AddChild(pin, SlotConfiguration(1.0f, -1.0f, 1.0f, 1.0f));
 	}
 }
 

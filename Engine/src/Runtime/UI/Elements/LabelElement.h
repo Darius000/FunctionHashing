@@ -12,6 +12,7 @@ public:
 
 	ImRect GetBounds() override;
 
+
 	std::string m_Text = "";
 
 	RetEngineEvent<std::string> m_Binding;

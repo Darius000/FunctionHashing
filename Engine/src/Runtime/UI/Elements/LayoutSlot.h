@@ -2,12 +2,15 @@
 
 #include "UIElement.h"
 #include "Layouts.h"
+#include "LayoutConfig.h"
 
 class LayoutSlot : public UIElement
 {
 public:
 
-	LayoutSlot() {}
+	LayoutSlot() {};
+
+	LayoutSlot(const LayoutConfig& config) {}
 
 	virtual ~LayoutSlot(){}
 
@@ -22,6 +25,7 @@ public:
 	Ref<UIElement> m_Content;
 
 	Ref<LayoutElement> m_Parent;
+
 
 	REFLECTABLEV(UIElement)
 };

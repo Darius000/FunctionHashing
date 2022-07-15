@@ -24,12 +24,11 @@ public:
 
 	const rttr::type& Get() const { return m_Class; }
 
-	template<typename... Args>
-	TClass* Instaniate(Args... args)
+	TClass* Instaniate(const std::vector<rttr::argument>& args = {})
 	{
 		if (!m_Class) return nullptr;
 
-		auto obj = m_Class.create(std::forward<Args>(args)...);
+		auto obj = m_Class.create(args);
 
 		return obj.get_value<TClass*>();
 	}

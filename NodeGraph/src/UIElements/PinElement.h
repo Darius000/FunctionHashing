@@ -17,6 +17,10 @@ public:
 
 	rttr::type GetType() const { return m_PinType; }
 
+	virtual void OnConnected();
+
+	virtual void OnDisConnected();
+
 	bool OnShowContextMenu() override;
 
 	void OnDestroyed() override;
@@ -41,5 +45,7 @@ protected:
 	rttr::property m_Property;
 
 	rttr::instance m_Object;
+
+	class CircleElement* m_PinShape = nullptr;
 };
 

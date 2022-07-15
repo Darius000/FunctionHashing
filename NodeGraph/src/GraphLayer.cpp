@@ -55,6 +55,12 @@ void GraphLayer::OnUIRender()
 
 	m_WindowStack.RenderWindows();
 
+	if (m_ShowDemoWindow)
+	{
+		ImGui::ShowDemoWindow(&m_ShowDemoWindow);
+	}
+
+
 	/*ImGui::Begin("Image Test");
 
 	ImGui::Image(m_ImageTest.get(), { (float)m_ImageTest->GetWidth(), (float)m_ImageTest->GetHeight() });

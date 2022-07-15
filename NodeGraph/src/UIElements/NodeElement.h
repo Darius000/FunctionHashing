@@ -50,7 +50,6 @@ protected:
 
 	VerticalBox* m_OutputContainer = nullptr;
 
-
 	Ref<class BaseNode> m_Node = nullptr;
 
 };

@@ -15,7 +15,7 @@ void CircleElement::OnDrawElement()
 	auto style = GetStyle();
 	auto circle_style = m_CircleStyle;
 	auto bounds = GetBounds();
-	auto center = ImVec2(pos.x + GetPosition().x, pos.y + m_CircleStyle.m_Radius + m_CircleStyle.m_Thickness * .5f);
+	auto center = ImVec2(pos.x + GetPosition().x , pos.y + m_CircleStyle.m_Radius + m_CircleStyle.m_Thickness * .5f);
 
 	if (drawlist)
 	{

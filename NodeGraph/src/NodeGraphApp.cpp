@@ -26,6 +26,8 @@ BHive::Application* BHive::CreateApplication(int argc, char** argv)
 					app->Close();
 				}
 
+
+
 				ImGui::EndMenu();
 			}
 			

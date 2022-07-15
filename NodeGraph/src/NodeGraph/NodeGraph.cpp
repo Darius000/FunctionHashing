@@ -99,6 +99,8 @@ void NodeGraph::Draw()
 
 						auto edge = MakeRef<Edge>((uint64_t)start_pin->GetID(), (uint64_t)end_pin->GetID());
 						m_Elements.push_back(MakeScope<EdgeElement>(edge));
+						start_pin->OnConnected();
+						end_pin->OnConnected();
 					}
 					else
 					{
@@ -137,6 +139,16 @@ void NodeGraph::Draw()
 					{
 						if ((uint64_t)element->GetID() == (uint64_t)deletedlinkid)
 						{
+							if (auto edge = Cast<EdgeElement>(element))
+							{
+								auto ids = edge->GetEdge()->GetIds();
+								auto start_pin = FindPin((uint64_t)ids.first);
+								auto end_pin = FindPin((uint64_t)ids.second);
+
+								start_pin->OnDisConnected();
+								end_pin->OnDisConnected();
+							}
+
 							element->Destroy();
 						}
 					}
@@ -241,22 +253,24 @@ PinElement* NodeGraph::FindPin(uint64_t pinid) const
 {
 	for (auto element : m_Elements)
 	{
-		auto node = Cast<NodeElement>(element);
-		for ( auto& input: node->GetInputs()->GetChildren())
+		if (auto node = Cast<NodeElement>(element))
 		{
-			auto id = (uint64_t)input->GetID();
-			if (auto pin = Cast<PinElement>(input); pin && id == pinid)
+			for (auto& input : node->GetInputs()->GetChildren())
 			{
-				return pin;
+				auto id = (uint64_t)input->GetID();
+				if (auto pin = Cast<PinElement>(input); pin && id == pinid)
+				{
+					return pin;
+				}
 			}
-		}
 
-		for (auto& output: node->GetOutputs()->GetChildren())
-		{
-			auto id = (uint64_t)output->GetID();
-			if (auto pin = Cast<PinElement>(output); pin && id == pinid)
+			for (auto& output : node->GetOutputs()->GetChildren())
 			{
-				return pin;
+				auto id = (uint64_t)output->GetID();
+				if (auto pin = Cast<PinElement>(output); pin && id == pinid)
+				{
+					return pin;
+				}
 			}
 		}
 	}

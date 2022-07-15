@@ -7,6 +7,7 @@ REFLECT_INLINE(LayoutSlot)
 {
 	rttr::registration::class_<LayoutSlot>("LayoutSlot")
 		.constructor<>()(rttr::policy::ctor::as_raw_ptr)
+		.constructor<const LayoutConfig&>()(rttr::policy::ctor::as_raw_ptr)
 		.property("Content", &LayoutSlot::m_Content)
 		.property("Parent", &LayoutSlot::m_Parent);
 }
