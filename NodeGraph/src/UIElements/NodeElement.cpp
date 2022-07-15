@@ -46,6 +46,7 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 	{
 		auto header = new VerticalBox();
 		auto node_label = new LabelElement("Header", GetName());
+		node_label->m_Style.m_FontStyle.size = 30.0f;
 		header->AddChild(node_label, SlotConfiguration(0.0f, 1.0f, -1.0f, 1.0f));
 		content->AddChild(header, SlotConfiguration(1.0f, -1.0f, 0.0f, -1.0f));
 	}
