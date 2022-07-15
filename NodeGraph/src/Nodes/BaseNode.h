@@ -6,9 +6,10 @@
 
 enum class ENodeType
 {
-	Blueprint,
-	Simple,
-	Comment
+	Blueprint = 0,
+	Simple = 1 << 1,
+	Comment = 1 << 2,
+	Compact = Simple | 1 << 3
 };
 
 class BaseNode : public BaseObject
@@ -37,7 +38,7 @@ public:
 
 	void Execute();
 
-	virtual const ENodeType GetNodeType() { return ENodeType::Blueprint; }
+	virtual ENodeType GetNodeType() { return ENodeType::Blueprint; }
 
 	virtual Color GetHeaderColor() const { return { .4f, .4f, .4f, 1.0f }; }
 

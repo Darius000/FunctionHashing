@@ -8,7 +8,7 @@ class Comment : public Node
 public:
 	Comment();
 
-	const ENodeType GetNodeType() { return ENodeType::Comment;}
+	ENodeType GetNodeType() { return ENodeType::Comment;}
 
 	Color GetHeaderColor() const override { return { 0.f, 0.f, 0.f, .5f }; }
 

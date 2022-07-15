@@ -12,7 +12,7 @@ public:
 		m_Name = std::string("Cast ") + rttr::type::get<From>().get_name().to_string() + " to " + rttr::type::get<To>().get_name().to_string();
 	}
 
-	virtual const ENodeType GetNodeType() override { return ENodeType::Simple; }
+	virtual ENodeType GetNodeType() override { return ENodeType::Simple; }
 
 	From m_Input = From();
 

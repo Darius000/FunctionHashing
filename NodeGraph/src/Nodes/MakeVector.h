@@ -15,6 +15,8 @@ public:
 
 	glm::vec2 GetVec() { return glm::vec2(x, y); }
 
+	virtual ENodeType GetNodeType() override { return ENodeType::Simple; }
+
 	REFLECTABLEV(Node)
 
 };
@@ -31,6 +33,8 @@ public:
 	float z;
 
 	glm::vec3 GetVec() { return glm::vec3(x, y, z); }
+
+	virtual ENodeType GetNodeType() override { return ENodeType::Simple; }
 
 	REFLECTABLEV(Node)
 };
@@ -51,6 +55,8 @@ public:
 
 	glm::vec4 GetVec() { return glm::vec4(x, y, z, w); }
 
+	virtual ENodeType GetNodeType() override { return ENodeType::Simple; }
+
 	REFLECTABLEV(Node)
 };
 
@@ -65,6 +71,8 @@ public:
 	float GetX() { return vec.x; }
 
 	float GetY() { return vec.y; }
+
+	virtual ENodeType GetNodeType() override { return ENodeType::Simple; }
 
 	REFLECTABLEV(Node)
 
@@ -83,6 +91,8 @@ public:
 	float GetY() { return vec.y; }
 
 	float GetZ() { return vec.z; }
+
+	virtual ENodeType GetNodeType() override { return ENodeType::Simple; }
 
 	REFLECTABLEV(Node)
 
@@ -103,6 +113,8 @@ public:
 	float GetZ() { return vec.z; }
 
 	float GetW() { return vec.w; }
+
+	virtual ENodeType GetNodeType() override { return ENodeType::Simple; }
 
 	REFLECTABLEV(Node)
 

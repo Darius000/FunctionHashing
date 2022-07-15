@@ -19,23 +19,41 @@ NodeElement::NodeElement(const Ref<class BaseNode>& node)
 	m_OutputContainer = new VerticalBox();
 
 	auto node_element = new VerticalBox();
-	auto header = new HorizontalBox();
+	
 	auto content = new HorizontalBox();
-	auto node_label = new LabelElement("Header", GetName());
 
-	auto binding = [&]()
+	if ((int)m_Node->GetNodeType() & !(int)ENodeType::Simple)
 	{
-		return m_Node->GetName();
-	};
+		auto header = new HorizontalBox();
+		auto node_label = new LabelElement("Header", GetName());
 
-	node_label->m_Binding += binding;
+		auto binding = [&]()
+		{
+			return m_Node->GetName();
+		};
 
-	header->AddChild(node_label, SlotConfiguration(0.0f, 1.0f, -1.0f, 1.0f));
+		node_label->m_Binding += binding;
+
+		header->AddChild(node_label, SlotConfiguration(0.0f, 1.0f, -1.0f, 1.0f));
+
+		node_element->AddChild(header, SlotConfiguration(1.0f, -1.0f, -1.0f));
+	}
+	
 
 	content->AddChild(m_InputContainer);
+
+	if ((int)m_Node->GetNodeType() == (int)ENodeType::Compact)
+	{
+		auto header = new VerticalBox();
+		auto node_label = new LabelElement("Header", GetName());
+		header->AddChild(node_label, SlotConfiguration(0.0f, 1.0f, -1.0f, 1.0f));
+		content->AddChild(header, SlotConfiguration(1.0f, -1.0f, 0.0f, -1.0f));
+	}
+
+
 	content->AddChild(m_OutputContainer, SlotConfiguration(1.0f, -1.0f, 0.0f, -1.0f));
 
-	node_element->AddChild(header, SlotConfiguration(1.0f, -1.0f, -1.0f));
+	
 	node_element->AddChild(content, SlotConfiguration(1.0f, -1.0f, -1.0f));
 
 	AddChild(node_element);
