@@ -15,7 +15,7 @@ bool Inspector_Vec2::Inspect(rttr::variant& var, bool read_only, const meta_gett
 
     if (read_only)
     {
-        ImGui::Text("%d, %d, %d", data.x, data.y);
+        ImGui::Text("%d, %d", data.x, data.y);
     }
     else
     {
